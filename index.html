@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>奇美醫院標準化病人展延工作坊回饋問卷</title>
+    
+    <!-- 載入 React -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    
+    <!-- 載入 Babel 用於解析 JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- 載入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 設定 Tailwind 自定義顏色與動畫 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'chimei-dark': '#064E3B', // 深綠
+                        'chimei-light': '#D1FAE5', // 淺綠
+                        'chimei-accent': '#059669', // 亮綠
+                        'cream': '#FDFBF7', // 米白背景
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                        'fade-in-up': 'fadeInUp 0.8s ease-out',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* 自定義背景紋理 */
+        .bg-pattern {
+            background-color: #064e3b;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2310b981' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        /* 隱藏捲軸但保持功能 */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-pattern min-h-screen text-gray-800 font-sans antialiased selection:bg-green-200 selection:text-green-900">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // ==========================================
+        // 設定區
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyOmNPZoMINGkoZwFJLP6LT0kM7ZwS3Lbt9B_nEuYO2tUH74MTWjBZQAMpS0PSKTQu4/exec"; 
+        // ==========================================
+
+        // 圖標組件 (直接嵌入 SVG 以避免依賴)
+        const Icons = {
+            Leaf: ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.77 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>,
+            BookOpen: ({ className, size=24 }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>,
+            UserCheck: ({ className, size=24 }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg>,
+            MessageCircle: ({ className, size=24 }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>,
+            Heart: ({ className, size=24 }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>,
+            Send: ({ className, size=24 }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>,
+            CheckCircle: ({ className, size=24 }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>,
+            Info: ({ className, size=24 }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>,
+            AlertCircle: ({ className, size=24 }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>,
+            Loader2: ({ className, size=24 }) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+        };
+
+        const SpQuestionnaire = () => {
+            const [submitted, setSubmitted] = useState(false);
+            const [isSubmitting, setIsSubmitting] = useState(false);
+            const [submitError, setSubmitError] = useState(null);
+            const [formData, setFormData] = useState({});
+
+            const handleScoreChange = (qId, score) => {
+                setFormData(prev => ({ ...prev, [qId]: score }));
+            };
+
+            const handleTextChange = (qId, text) => {
+                setFormData(prev => ({ ...prev, [qId]: text }));
+            };
+
+            const handleSubmit = async (e) => {
+                e.preventDefault();
+                setIsSubmitting(true);
+                setSubmitError(null);
+
+                // 驗證
+                if (!formData.q1) {
+                    setSubmitError("請至少完成部分問題再送出喔！");
+                    setIsSubmitting(false);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    return;
+                }
+
+                try {
+                    await fetch(GOOGLE_SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(formData)
+                    });
+
+                    setTimeout(() => {
+                        setSubmitted(true);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                        setIsSubmitting(false);
+                    }, 1000);
+
+                } catch (error) {
+                    console.error("Submission Error:", error);
+                    setSubmitError("傳送失敗，請檢查網路連線後再試一次，或聯繫主辦單位。");
+                    setIsSubmitting(false);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            };
+
+            const LikertScale = ({ id, question, description }) => (
+                <div className="mb-8 p-6 bg-cream border border-green-100 rounded-xl hover:bg-white hover:shadow-lg transition-all duration-300 shadow-sm relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-green-50 rounded-bl-full -mr-12 -mt-12 transition-transform group-hover:scale-110 opacity-50"></div>
+                    <div className="relative z-10 mb-4">
+                        <h4 className="text-xl font-bold text-gray-900 mb-2">{question}</h4>
+                        {description && <p className="text-base text-gray-600 italic">{description}</p>}
+                    </div>
+                    <div className="relative z-10 flex justify-between items-center max-w-md mx-auto sm:mx-0 mt-6 px-1">
+                        <span className="text-sm font-bold text-gray-400">非常<br/>不同意</span>
+                        <div className="flex gap-2 sm:gap-4">
+                            {[1, 2, 3, 4, 5].map((score) => (
+                                <button
+                                    key={score}
+                                    type="button"
+                                    onClick={() => handleScoreChange(id, score)}
+                                    className={`
+                                        w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center text-lg font-bold transition-all transform hover:scale-110 shadow-sm border-2
+                                        ${formData[id] === score 
+                                            ? 'bg-green-700 border-green-700 text-white shadow-green-200/50 shadow-lg scale-110' 
+                                            : 'bg-white border-green-100 text-green-800 hover:border-green-300 hover:bg-green-50'}
+                                    `}
+                                    disabled={isSubmitting}
+                                >
+                                    {score}
+                                </button>
+                            ))}
+                        </div>
+                        <span className="text-sm font-bold text-gray-500 text-right">非常<br/>同意</span>
+                    </div>
+                </div>
+            );
+
+            const SectionHeader = ({ icon: Icon, title, subtitle }) => (
+                <div className="flex items-start gap-4 mb-8 border-b-2 border-green-800/10 pb-4 mt-12 first:mt-4">
+                    <div className="p-3 bg-gradient-to-br from-green-700 to-green-900 rounded-xl text-white mt-1 shadow-md transform -rotate-3">
+                        <Icon size={28} />
+                    </div>
+                    <div>
+                        <h3 className="text-2xl font-bold text-green-900">{title}</h3>
+                        <p className="text-base text-green-700 font-medium">{subtitle}</p>
+                    </div>
+                </div>
+            );
+
+            if (submitted) {
+                return (
+                    <div className="min-h-screen bg-pattern flex items-center justify-center p-4">
+                        <div className="bg-cream max-w-lg w-full rounded-2xl shadow-2xl p-12 text-center border-t-8 border-green-700 animate-fade-in-up">
+                            <div className="mb-6 flex justify-center">
+                                <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center text-green-700 shadow-inner">
+                                    <Icons.CheckCircle size={48} />
+                                </div>
+                            </div>
+                            <h2 className="text-3xl font-bold text-green-900 mb-4">回饋已送出！</h2>
+                            <p className="text-gray-700 mb-8 leading-relaxed text-lg font-medium">
+                                親愛的 SP 夥伴，感謝您的寶貴意見。<br/>
+                                您的資料已成功存入系統。<br/>
+                                <span className="text-green-700 block mt-2">您的專業與投入，是奇美醫院醫學教育最溫暖的力量。</span>
+                            </p>
+                            <button 
+                                onClick={() => window.location.reload()}
+                                className="px-10 py-4 bg-gradient-to-r from-green-700 to-green-800 text-white rounded-full hover:from-green-800 hover:to-green-900 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1 font-bold text-lg"
+                            >
+                                填寫下一份 (重新載入)
+                            </button>
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="min-h-screen font-sans">
+                    {/* 背景裝飾光暈 */}
+                    <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+                        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-green-500 rounded-full blur-[120px] opacity-20 animate-float"></div>
+                        <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-green-900 rounded-full blur-[150px] opacity-40"></div>
+                    </div>
+
+                    {/* Hero Section */}
+                    <div className="relative z-10 pt-16 pb-32 px-4 text-center">
+                        <div className="max-w-4xl mx-auto">
+                            <div className="inline-flex items-center gap-2 bg-green-800/40 px-5 py-2 rounded-full text-green-100 text-sm font-bold mb-6 backdrop-blur-sm border border-green-400/30 shadow-lg">
+                                <Icons.Leaf size={16} />
+                                <span className="tracking-wide">專業認證展延計畫</span>
+                            </div>
+                            <h1 className="text-3xl md:text-5xl font-extrabold mb-6 tracking-tight leading-tight text-white drop-shadow-md">
+                                奇美醫院標準化病人<br/>
+                                <span className="text-green-200">展延工作坊</span>回饋問卷
+                            </h1>
+                            <p className="text-green-100/90 text-xl max-w-2xl mx-auto leading-relaxed font-medium drop-shadow-sm">
+                                感謝您參與本次進階訓練。這份問卷結合了 Barrows 模擬理論與教學回饋架構，旨在協助我們優化「標準化」與「回饋」的品質。
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* Main Content Card */}
+                    <div className="max-w-3xl mx-auto px-4 -mt-24 pb-20 relative z-20">
+                        <div className="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl shadow-black/20 overflow-hidden border border-white/20">
+                            
+                            <div className="p-6 md:p-12">
+                                <form onSubmit={handleSubmit} className="animate-fade-in space-y-2">
+                                    
+                                    {/* Error Message */}
+                                    {submitError && (
+                                        <div className="mb-8 p-5 bg-red-50 border-l-4 border-red-500 rounded-r-lg flex items-center gap-4 text-red-800 shadow-sm">
+                                            <Icons.AlertCircle className="shrink-0" />
+                                            <span className="font-bold text-lg">{submitError}</span>
+                                        </div>
+                                    )}
+
+                                    {/* Section 1 */}
+                                    <SectionHeader 
+                                        icon={Icons.BookOpen} 
+                                        title="一、 課程行政與教學" 
+                                        subtitle="基礎構面滿意度"
+                                    />
+                                    <LikertScale id="q1" question="1. 課程目標明確" description="本次工作坊的目標清晰，能讓我了解展延認證的要求與標準。" />
+                                    <LikertScale id="q2" question="2. 講師專業度" description="講師具備引導資深 SP 進行討論與修正演出的能力。" />
+                                    <LikertScale id="q3" question="3. 行政安排" description="課程的時間安排、場地與行政流程順暢，有助於學習。" />
+
+                                    {/* Section 2 */}
+                                    <SectionHeader 
+                                        icon={Icons.UserCheck} 
+                                        title="二、 角色扮演與標準化職能" 
+                                        subtitle="理論核心：Barrows & Reliability"
+                                    />
+                                    <div className="bg-yellow-50 border-l-4 border-yellow-400 rounded-r-lg p-5 mb-10 flex gap-4 text-base text-yellow-900 font-medium shadow-sm">
+                                        <Icons.Info className="shrink-0 mt-1 text-yellow-600" size={24} />
+                                        <span>此區塊重點在於檢核您對「測驗工具精準度」的再校準。</span>
+                                    </div>
+                                    <LikertScale id="q4" question="4. 劇本準確度校準" description="透過訓練，發現過去演出特定案例時可能存在的誤差或細節。" />
+                                    <LikertScale id="q5" question="5. 標準化的一致性" description="理解「去除個人演繹特色」的重要性，願意配合團隊修正。" />
+                                    <LikertScale id="q6" question="6. 身心狀態調適" description="學習到如何在重複演出中，維持穩定的身心狀態。" />
+
+                                    {/* Section 3 */}
+                                    <SectionHeader 
+                                        icon={Icons.MessageCircle} 
+                                        title="三、 回饋與教學能力" 
+                                        subtitle="理論核心：Feedback Scaffolding"
+                                    />
+                                    <LikertScale id="q7" question="7. 回饋的客觀性" description="能清楚區分「我看見的行為」與「我覺得」的差異。" />
+                                    <LikertScale id="q8" question="8. 回饋的時機與重點" description="有信心在有限時間內（如 2 分鐘），精準給予 1-2 點建議。" />
+                                    <LikertScale id="q9" question="9. 接受指導的彈性" description="當訓練師糾正回饋或演出時，視為專業精進的機會。" />
+
+                                    {/* Section 4 */}
+                                    <SectionHeader 
+                                        icon={Icons.Heart} 
+                                        title="四、 專業認同與自我成長" 
+                                        subtitle="理論核心：Reflective Practice"
+                                    />
+                                    <LikertScale id="q10" question="10. 專業角色認同" description="再次確認 SP 在醫學教育中的價值，而不僅僅是兼職。" />
+                                    <LikertScale id="q11" question="11. 持續學習動力" description="清楚知道未來三年認證期間需加強的能力。" />
+                                    <LikertScale id="q12" question="12. 整體推薦度" description="認為課程內容扎實，值得推薦給其他 SP 夥伴。" />
+
+                                    {/* Section 5: Open Ended */}
+                                    <SectionHeader 
+                                        icon={Icons.Leaf} 
+                                        title="五、 開放式回饋" 
+                                        subtitle="Qualitative Feedback"
+                                    />
+                                    
+                                    <div className="space-y-10">
+                                        <div>
+                                            <label className="block text-green-900 text-xl font-bold mb-4 flex items-center gap-2">
+                                                <span className="bg-green-100 text-green-800 w-8 h-8 rounded-full flex items-center justify-center text-sm">13</span>
+                                                在本次「校準/複習」的過程中，您覺得哪一個部分對您幫助最大？
+                                            </label>
+                                            <textarea 
+                                                className="w-full p-5 bg-gray-50 border-2 border-gray-100 rounded-2xl focus:ring-4 focus:ring-green-500/20 focus:border-green-600 outline-none transition-all resize-y min-h-[140px] text-lg text-gray-800 disabled:bg-gray-100 disabled:text-gray-400"
+                                                placeholder="例如：劇本重新解讀、回饋技巧演練、同儕交流等..."
+                                                onChange={(e) => handleTextChange('q13', e.target.value)}
+                                                disabled={isSubmitting}
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-green-900 text-xl font-bold mb-4 flex items-center gap-2">
+                                                <span className="bg-green-100 text-green-800 w-8 h-8 rounded-full flex items-center justify-center text-sm">14</span>
+                                                針對未來的展延課程，您希望增加什麼樣的主題？
+                                            </label>
+                                            <textarea 
+                                                className="w-full p-5 bg-gray-50 border-2 border-gray-100 rounded-2xl focus:ring-4 focus:ring-green-500/20 focus:border-green-600 outline-none transition-all resize-y min-h-[140px] text-lg text-gray-800 disabled:bg-gray-100 disabled:text-gray-400"
+                                                placeholder="例如：特殊疾病演出、情緒張力處理、困難考生的應對等..."
+                                                onChange={(e) => handleTextChange('q14', e.target.value)}
+                                                disabled={isSubmitting}
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-green-900 text-xl font-bold mb-4 flex items-center gap-2">
+                                                <span className="bg-green-100 text-green-800 w-8 h-8 rounded-full flex items-center justify-center text-sm">15</span>
+                                                其他建議或想對主辦單位說的話：
+                                            </label>
+                                            <textarea 
+                                                className="w-full p-5 bg-gray-50 border-2 border-gray-100 rounded-2xl focus:ring-4 focus:ring-green-500/20 focus:border-green-600 outline-none transition-all resize-y min-h-[140px] text-lg text-gray-800 disabled:bg-gray-100 disabled:text-gray-400"
+                                                placeholder="您的回饋是我們進步的動力..."
+                                                onChange={(e) => handleTextChange('q15', e.target.value)}
+                                                disabled={isSubmitting}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {/* Submit Button */}
+                                    <div className="mt-20 text-center pb-6">
+                                        <button 
+                                            type="submit"
+                                            className={`
+                                                group relative inline-flex items-center justify-center gap-3 px-12 py-6 rounded-full text-2xl font-bold shadow-xl transition-all duration-300 w-full sm:w-auto overflow-hidden
+                                                ${isSubmitting 
+                                                    ? 'bg-gray-400 cursor-not-allowed shadow-none' 
+                                                    : 'bg-gradient-to-r from-green-700 to-green-800 text-white shadow-green-900/30 hover:shadow-2xl hover:-translate-y-1 hover:scale-105'}
+                                            `}
+                                            disabled={isSubmitting}
+                                        >
+                                            {/* 按鈕光澤動畫 */}
+                                            <div className="absolute top-0 -left-full w-full h-full bg-white/20 skew-x-[-20deg] group-hover:animate-[shine_1.5s_infinite]"></div>
+                                            
+                                            {isSubmitting ? (
+                                                <>
+                                                    <Icons.Loader2 className="animate-spin" size={28} />
+                                                    資料傳送中...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Icons.Send size={28} className="group-hover:translate-x-1 transition-transform" />
+                                                    送出回饋問卷
+                                                </>
+                                            )}
+                                        </button>
+                                        <p className="mt-6 text-base text-gray-500 font-medium">本問卷採不記名方式，請安心填答</p>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                        
+                        <footer className="text-center mt-12 text-green-200/80 text-base font-medium">
+                            <p>&copy; 奇美醫院 臨床技能中心 | Professional SP Training Program</p>
+                        </footer>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<SpQuestionnaire />);
+    </script>
+</body>
+</html>
