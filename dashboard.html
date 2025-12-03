@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>奇美醫院 SP 展延培訓成果儀表板</title>
+    
+    <!-- 1. 載入 Tailwind CSS (樣式) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 2. 載入字型 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <!-- 3. React 和 ReactDOM (核心) -->
+    <script crossorigin src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+    
+    <!-- 4. Babel (編譯器) -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- 5. Recharts (圖表庫) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prop-types/15.8.1/prop-types.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/classnames/2.3.2/index.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/recharts/2.10.3/Recharts.min.js"></script>
+
+    <style>
+        body { font-family: 'Noto Sans TC', sans-serif; }
+        .font-handwriting { font-family: 'Caveat', 'Noto Sans TC', cursive; font-weight: 500; }
+        .text-shadow-lg { text-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
+        
+        /* 照片輪播動畫 */
+        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .animate-scroll { animation: scroll 40s linear infinite; }
+        .animate-scroll:hover { animation-play-state: paused; }
+        
+        /* 燈箱樣式 */
+        .lightbox-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.95); z-index: 9999;
+            display: flex; align-items: center; justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .lightbox-image { max-width: 90vw; max-height: 90vh; object-fit: contain; border-radius: 8px; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useMemo, useEffect } = React;
+        
+        // --- Recharts 安全載入 ---
+        const RechartsObj = window.Recharts || {};
+        const { 
+            LineChart = () => null, Line = () => null, 
+            XAxis = () => null, YAxis = () => null, 
+            CartesianGrid = () => null, Tooltip = () => null, 
+            Legend = () => null, ResponsiveContainer = ({children}) => <div>{children}</div>, 
+            RadarChart = () => null, PolarGrid = () => null, 
+            PolarAngleAxis = () => null, PolarRadiusAxis = () => null, Radar = () => null,
+            BarChart = () => null, Bar = () => null, Cell = () => null
+        } = RechartsObj; 
+        const isRechartsLoaded = !!window.Recharts;
+
+        // --- 圖示組件 ---
+        const Icon = ({ children, className, size = 24, ...props }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} {...props}>{children}</svg>
+        );
+        const BookOpen = (props) => <Icon {...props}><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></Icon>;
+        const Heart = (props) => <Icon {...props}><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></Icon>;
+        const Users = (props) => <Icon {...props}><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></Icon>;
+        const Star = (props) => <Icon {...props}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></Icon>;
+        const Target = (props) => <Icon {...props}><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></Icon>;
+        const TrendingUp = (props) => <Icon {...props}><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></Icon>;
+        const ArrowRight = (props) => <Icon {...props}><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></Icon>;
+        const BrainCircuit = (props) => <Icon {...props}><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"/><path d="M9 13a4.5 4.5 0 0 0 3-4"/><path d="M6.003 5.125A3 3 0 0 0 13.933 5"/><path d="M12 18a6 6 0 0 0-9-5"/><path d="M20 10a3 3 0 1 1-5.997-.125 4 4 0 0 1 2.526-5.77 4 4 0 0 1-.556-6.588A4 4 0 1 1 12 2Z"/><path d="M15 11a4.5 4.5 0 0 1-3 4"/><path d="M17.997 18.875A3 3 0 0 1 10.067 19"/><path d="M12 6a6 6 0 0 1 9 5"/></Icon>;
+        const Sparkles = (props) => <Icon {...props}><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M9 5H5"/><path d="M19 19H15"/><path d="M19 15v4"/></Icon>;
+        const Quote = (props) => <Icon {...props}><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"/></Icon>;
+        const Loader2 = (props) => <Icon {...props}><path d="M21 12a9 9 0 1 1-6.219-8.56"/></Icon>;
+        // 新增 Activity 圖示用於生理表現
+        const Activity = (props) => <Icon {...props}><polyline points="22 12 18 12 15 21 9 3 6 12 2 12" /></Icon>;
+
+        // --- 組件 ---
+        
+        const Header = ({ count }) => {
+            const totalParticipants = 20; // 總參與人數 (固定)
+            const responseRate = Math.round((count / totalParticipants) * 100);
+
+            return (
+                <header className="relative bg-slate-900 text-white overflow-hidden pb-24 pt-16 px-6 min-h-[680px]">
+                    {/* 背景與遮罩 */}
+                    <div className="absolute inset-0 z-0 bg-cover bg-center opacity-40" style={{backgroundImage: "url('https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80')", filter: "grayscale(30%)"}}></div>
+                    <div className="absolute inset-0 z-0 bg-gradient-to-b from-slate-900/80 via-slate-900/70 to-slate-900"></div>
+
+                    <div className="max-w-6xl mx-auto relative z-10">
+                        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12">
+                            <div>
+                                <div className="flex items-center gap-3 mb-6">
+                                    <span className="bg-green-600 text-white px-4 py-2 rounded-full text-sm font-bold tracking-wider shadow-lg shadow-green-500/30">奇美醫院</span>
+                                    <span className="text-green-300 font-bold text-base tracking-wide">臨床技能中心</span>
+                                </div>
+                                <h1 className="text-4xl md:text-6xl font-black text-white mb-6 tracking-tight text-shadow-lg leading-tight">
+                                    標準化病人<span className="text-green-400">展延</span>培訓工作坊
+                                </h1>
+                                
+                                <div className="flex flex-wrap gap-6 text-sm md:text-base text-gray-300 mb-8">
+                                    <div className="flex items-center gap-2">
+                                        <div className="p-1 bg-white/10 rounded"><Users size={16} /></div>
+                                        <span>師資陣容：馬偕紀念醫院 王明淑技術主任、王郁雯管理師</span>
+                                    </div>
+                                    {/* 訓練師部分已移除 */}
+                                </div>
+
+                                <div className="flex flex-wrap gap-4 text-xl md:text-2xl font-bold text-green-200/90 tracking-widest mt-2">
+                                    <span>精準校準</span>
+                                    <span className="text-white/40">x</span>
+                                    <span>困境應對</span>
+                                    <span className="text-white/40">x</span>
+                                    <span>即興演練</span>
+                                </div>
+                            </div>
+
+                            {/* 數據卡片 */}
+                            <div className="mt-8 md:mt-0 flex gap-4">
+                                <div className="bg-white/10 backdrop-blur-md p-5 rounded-2xl border border-white/10 text-center min-w-[120px]">
+                                    <div className="text-4xl font-black text-white">{count}</div>
+                                    <div className="text-white/70 text-sm mt-1 font-bold">問卷回收</div>
+                                </div>
+                                <div className="bg-green-600/20 backdrop-blur-md p-5 rounded-2xl border border-green-500/30 text-center min-w-[120px] relative overflow-hidden">
+                                    <div className="absolute top-0 left-0 w-1 h-full bg-green-500"></div>
+                                    <div className="text-4xl font-black text-green-400">{responseRate}%</div>
+                                    <div className="text-green-200/70 text-sm mt-1 font-bold">回收率 (N={totalParticipants})</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* 理論架構 - 針對 11/29 課程表內容重新設計 */}
+                        <div className="grid md:grid-cols-3 gap-6 mt-16 border-t border-white/10 pt-10">
+                            {/* Card 1: 痛苦辨識 (09:35-10:35) */}
+                            <div className="bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-white/5 hover:bg-white/10 transition-colors">
+                                <div className="flex items-center gap-3 mb-3">
+                                    <div className="p-2 bg-yellow-500/20 rounded-lg text-yellow-400"><Activity size={22} /></div>
+                                    <h3 className="font-bold text-lg text-yellow-100">痛苦特徵辨識</h3>
+                                </div>
+                                <p className="text-sm text-gray-400 leading-relaxed">
+                                    針對<span className="text-yellow-400 font-bold">呼吸困難、腹痛、骨折</span>等特定情境，精準解析病患的生理特徵與肢體語言。
+                                </p>
+                            </div>
+                            
+                            {/* Card 2: 困境討論 (09:05) */}
+                            <div className="bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-white/5 hover:bg-white/10 transition-colors">
+                                <div className="flex items-center gap-3 mb-3">
+                                    <div className="p-2 bg-blue-500/20 rounded-lg text-blue-400"><BrainCircuit size={22} /></div>
+                                    <h3 className="font-bold text-lg text-blue-100">困境經驗復盤</h3>
+                                </div>
+                                <p className="text-sm text-gray-400 leading-relaxed">
+                                    透過小組討論回顧過往演出挑戰，將<span className="text-blue-400 font-bold">印象深刻的困難經驗</span>轉化為具體的應對策略。
+                                </p>
+                            </div>
+
+                            {/* Card 3: 即興演出 (10:55) */}
+                            <div className="bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-white/5 hover:bg-white/10 transition-colors">
+                                <div className="flex items-center gap-3 mb-3">
+                                    <div className="p-2 bg-green-500/20 rounded-lg text-green-400"><Sparkles size={22} /></div>
+                                    <h3 className="font-bold text-lg text-green-100">即興引導演練</h3>
+                                </div>
+                                <p className="text-sm text-gray-400 leading-relaxed">
+                                    運用<span className="text-green-400 font-bold">即興演出 (Improv)</span> 模擬真實情境，訓練在展現情緒的同時引導學員關注感受。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+            );
+        };
+
+        const InsightsSection = ({ avgData }) => {
+            if (!avgData) return null;
+
+            // 根據展延問卷題目定義核心能力
+            const competencies = [
+                { name: '劇本準確度', score: Number(avgData.q4), icon: '📖', desc: '劇本校準' },
+                { name: '演出標準化', score: Number(avgData.q5), icon: '🎭', desc: '一致性' },
+                { name: '身心調適', score: Number(avgData.q6), icon: '🧘', desc: '狀態維持' },
+                { name: '回饋客觀性', score: Number(avgData.q7), icon: '⚖️', desc: '客觀事實' },
+                { name: '回饋重點', score: Number(avgData.q8), icon: '🎯', desc: '時機掌握' },
+            ];
+            const topCompetency = competencies.reduce((prev, current) => (prev.score > current.score) ? prev : current);
+            const avgCompetency = (competencies.reduce((sum, c) => sum + c.score, 0) / competencies.length).toFixed(2);
+
+            return (
+                <div className="bg-white py-12 px-6 border-b border-gray-100">
+                    <div className="max-w-7xl mx-auto">
+                        <h2 className="text-4xl font-black text-gray-800 mb-10 flex items-center">
+                            <span className="w-3 h-12 bg-green-600 mr-4 rounded-full"></span>
+                            展延成效深度洞察
+                            <span className="ml-4 text-base font-bold text-gray-500 bg-gray-100 px-4 py-2 rounded-full border border-gray-200 flex items-center gap-2">
+                                <Sparkles size={14} className="text-green-600"/> 數據分析
+                            </span>
+                        </h2>
+
+                        <div className="grid md:grid-cols-3 gap-6 mb-8">
+                            {/* 專業認同分析 (Q10) */}
+                            <div className="bg-gradient-to-br from-indigo-50 to-white p-7 rounded-3xl border-2 border-indigo-100 shadow-sm hover:shadow-md transition-shadow">
+                                <div className="flex items-center gap-3 mb-5">
+                                    <div className="p-3 bg-indigo-100 text-indigo-600 rounded-xl"><Heart size={24} /></div>
+                                    <h3 className="text-xl font-black text-gray-800">專業價值認同</h3>
+                                </div>
+                                <div className="mb-5 flex items-baseline gap-2">
+                                    <div className="text-4xl font-black text-indigo-600">{avgData.q10}</div>
+                                    <div className="text-gray-600 text-base font-bold">/ 5.0</div>
+                                </div>
+                                <div className="space-y-3">
+                                    <div className="flex gap-2 items-start">
+                                        <div className="mt-1"><ArrowRight size={16} className="text-indigo-400" /></div>
+                                        <p className="text-gray-700 leading-relaxed text-sm font-medium">
+                                            學員高度認同 SP 角色價值，從「兼職」心態轉化為「教育夥伴」。
+                                        </p>
+                                    </div>
+                                    <div className="flex gap-2 items-start">
+                                        <div className="mt-1"><ArrowRight size={16} className="text-indigo-400" /></div>
+                                        <p className="text-gray-700 leading-relaxed text-sm font-medium">
+                                            Q11 持續學習動力達 <span className="font-black">{avgData.q11}</span> 分，展現對未來三年的承諾。
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* 核心能力分析 */}
+                            <div className="bg-gradient-to-br from-green-50 to-white p-7 rounded-3xl border-2 border-green-100 shadow-sm hover:shadow-md transition-shadow">
+                                <div className="flex items-center gap-3 mb-5">
+                                    <div className="p-3 bg-green-100 text-green-600 rounded-xl"><BrainCircuit size={24} /></div>
+                                    <h3 className="text-xl font-black text-gray-800">展延核心指標</h3>
+                                </div>
+                                <div className="mb-5">
+                                    <div className="text-xs font-black text-gray-500 mb-2 uppercase tracking-wider">最強能力</div>
+                                    <div className="text-xl font-black text-green-600 flex items-center gap-2">
+                                        <span className="text-2xl">{topCompetency.icon}</span> 
+                                        <span>{topCompetency.name}</span>
+                                        <span className="text-lg bg-green-100 px-3 py-1 rounded-full">{topCompetency.score.toFixed(1)}</span>
+                                    </div>
+                                </div>
+                                <div className="space-y-3">
+                                    <div className="flex gap-2 items-start">
+                                        <div className="mt-1"><ArrowRight size={16} className="text-green-400" /></div>
+                                        <p className="text-gray-700 leading-relaxed text-sm font-medium">
+                                            五大進階指標平均達 <span className="font-black text-green-600 text-base">{avgCompetency}</span> 分，顯示校準訓練成功。
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* 詞雲分析 */}
+                            <div className="bg-gradient-to-br from-amber-50 to-white p-7 rounded-3xl border-2 border-amber-100 shadow-sm hover:shadow-md transition-shadow">
+                                <div className="flex items-center gap-3 mb-5">
+                                    <div className="p-3 bg-amber-100 text-amber-600 rounded-xl"><Sparkles size={24} /></div>
+                                    <h3 className="text-xl font-black text-gray-800">關鍵詞頻</h3>
+                                </div>
+                                <div className="flex flex-wrap gap-3 justify-center items-center h-36 content-center">
+                                    <span className="bg-amber-100 text-amber-800 px-4 py-2 rounded-full text-base font-black">客觀回饋</span>
+                                    <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-bold">標準化</span>
+                                    <span className="bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-lg font-black">重新校準</span>
+                                    <span className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-sm font-bold">劇本細節</span>
+                                    <span className="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-bold">不帶情緒</span>
+                                </div>
+                                <div className="mt-5 pt-4 border-t-2 border-amber-100">
+                                    <p className="text-sm text-gray-700 leading-relaxed text-center font-medium">
+                                        學員回饋集中於「客觀性」與「細節校準」，符合展延課程目標。
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* 行政與推薦度區塊 */}
+                        <div className="grid md:grid-cols-2 gap-6">
+                            <div className="bg-white border-2 border-gray-100 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+                                <div className="flex justify-between items-center mb-4">
+                                    <div>
+                                        <h4 className="font-bold text-gray-600 mb-1">行政與教學滿意度</h4>
+                                        <p className="text-xs text-gray-400">Q1-Q3 平均</p>
+                                    </div>
+                                    <div className="text-3xl font-black text-gray-800">
+                                        {((Number(avgData.q1) + Number(avgData.q2) + Number(avgData.q3))/3).toFixed(1)}
+                                    </div>
+                                </div>
+                                <div className="pt-4 border-t border-gray-100">
+                                    <p className="text-sm text-gray-600 leading-relaxed font-medium">
+                                        <span className="text-green-600 font-bold">💡 數據洞察：</span><br/>
+                                        高分反映出行政流程的順暢與師資安排的專業性，學員對於課程節奏與後勤支援給予高度肯定，顯示教學設計成功兼顧了效率與品質。
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div className="bg-white border-2 border-gray-100 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+                                <div className="flex justify-between items-center mb-4">
+                                    <div>
+                                        <h4 className="font-bold text-gray-600 mb-1">整體課程推薦度</h4>
+                                        <p className="text-xs text-gray-400">Q12 淨推薦值</p>
+                                    </div>
+                                    <div className="text-3xl font-black text-green-600">
+                                        {avgData.q12}
+                                    </div>
+                                </div>
+                                <div className="pt-4 border-t border-gray-100">
+                                    <p className="text-sm text-gray-600 leading-relaxed font-medium">
+                                        <span className="text-green-600 font-bold">🚀 數據洞察：</span><br/>
+                                        極高的推薦值顯示課程內容切中資深 SP 需求，不僅鞏固既有技能，更成功激發持續精進的動力，建立了強大的社群認同感。
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const ChartSection = ({ data }) => {
+            if (!isRechartsLoaded) return <div className="text-center p-10">圖表載入中...</div>;
+
+            const avgData = useMemo(() => {
+                if (!data || data.length === 0) return null;
+                const keys = ['q1','q2','q3','q4','q5','q6','q7','q8','q9','q10','q11','q12'];
+                const sums = data.reduce((acc, curr) => {
+                    keys.forEach(k => acc[k] = (acc[k] || 0) + (Number(curr[k]) || 0));
+                    return acc;
+                }, {});
+                const result = {};
+                keys.forEach(k => result[k] = (sums[k] / data.length).toFixed(1));
+                return result;
+            }, [data]);
+
+            if (!avgData) return null;
+
+            // 雷達圖數據 (Q4-Q8)
+            const radarData = [
+                { subject: '劇本校準(Q4)', A: parseFloat(avgData.q4), fullMark: 5 },
+                { subject: '標準一致(Q5)', A: parseFloat(avgData.q5), fullMark: 5 },
+                { subject: '身心調適(Q6)', A: parseFloat(avgData.q6), fullMark: 5 },
+                { subject: '回饋客觀(Q7)', A: parseFloat(avgData.q7), fullMark: 5 },
+                { subject: '回饋重點(Q8)', A: parseFloat(avgData.q8), fullMark: 5 },
+            ];
+
+            // 滿意度長條圖 (Admin vs Growth)
+            const barData = [
+                { name: '行政安排', value: parseFloat(avgData.q3) },
+                { name: '講師專業', value: parseFloat(avgData.q2) },
+                { name: '指導彈性', value: parseFloat(avgData.q9) },
+                { name: '持續動力', value: parseFloat(avgData.q11) },
+                { name: '推薦程度', value: parseFloat(avgData.q12) },
+            ];
+
+            return (
+                <div className="py-12 bg-gray-50 px-6">
+                    <div className="max-w-7xl mx-auto">
+                        <h2 className="text-3xl font-bold text-gray-800 mb-8 flex items-center">
+                            <span className="w-2 h-10 bg-green-600 mr-4 rounded-full"></span>
+                            量化指標分析
+                        </h2>
+
+                        <div className="grid md:grid-cols-2 gap-8">
+                            {/* 雷達圖 */}
+                            <div className="bg-white p-6 rounded-3xl shadow-lg border border-gray-100 relative overflow-hidden">
+                                <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none"><Target size={120} /></div>
+                                <h3 className="text-lg font-bold text-gray-700 mb-2">展延核心能力分佈</h3>
+                                <p className="text-sm text-gray-400 mb-6">檢視各項專業指標的達成狀況 (滿分5分)</p>
+                                <div className="h-80">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radarData}>
+                                            <PolarGrid stroke="#e5e7eb" />
+                                            <PolarAngleAxis dataKey="subject" tick={{ fill: '#4b5563', fontSize: 13, fontWeight: 500 }} />
+                                            <PolarRadiusAxis angle={30} domain={[0, 5]} tick={false} axisLine={false} />
+                                            <Radar name="平均得分" dataKey="A" stroke="#059669" strokeWidth={3} fill="#059669" fillOpacity={0.2} />
+                                            <Tooltip contentStyle={{borderRadius: '12px', border:'none', boxShadow:'0 4px 12px rgba(0,0,0,0.1)'}} />
+                                        </RadarChart>
+                                    </ResponsiveContainer>
+                                </div>
+                            </div>
+
+                            {/* 長條圖 */}
+                            <div className="bg-white p-6 rounded-3xl shadow-lg border border-gray-100 relative overflow-hidden">
+                                <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none"><TrendingUp size={120} /></div>
+                                <h3 className="text-lg font-bold text-gray-700 mb-2">各構面滿意度排行</h3>
+                                <p className="text-sm text-gray-400 mb-6">行政支援與學習成效對比</p>
+                                <div className="h-80">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <BarChart data={barData} layout="vertical" margin={{ left: 40, right: 30, top: 10, bottom: 10 }}>
+                                            <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f3f4f6" />
+                                            <XAxis type="number" domain={[0, 5]} hide />
+                                            <YAxis dataKey="name" type="category" width={80} tick={{fontSize: 14, fontWeight: 'bold', fill: '#374151'}} axisLine={false} tickLine={false} />
+                                            <Tooltip cursor={{fill: 'transparent'}} contentStyle={{borderRadius: '12px'}} />
+                                            <Bar dataKey="value" radius={[0, 20, 20, 0]} barSize={32}>
+                                                {barData.map((entry, index) => (
+                                                    <Cell key={`cell-${index}`} fill={index > 2 ? '#4F46E5' : '#F97316'} />
+                                                ))}
+                                            </Bar>
+                                        </BarChart>
+                                    </ResponsiveContainer>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const PhotoCarousel = () => {
+             // 模擬照片數據 (使用 Unsplash 替代)
+            const photos = [
+                "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=500&q=60",
+                "https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&w=500&q=60",
+                "https://images.unsplash.com/photo-1581056771107-24ca5f033842?auto=format&fit=crop&w=500&q=60",
+                "https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=500&q=60",
+                "https://images.unsplash.com/photo-1516574187841-693083f69802?auto=format&fit=crop&w=500&q=60",
+            ];
+            const [lightboxImage, setLightboxImage] = useState(null);
+
+            return (
+                <div className="py-16 px-6 bg-gradient-to-b from-white to-slate-50 overflow-hidden">
+                    <div className="max-w-6xl mx-auto mb-8">
+                        <h2 className="text-3xl font-bold text-gray-800 flex items-center mb-4">
+                            <span className="w-2 h-8 bg-blue-500 mr-3 rounded-full"></span>
+                            培訓精彩側寫
+                        </h2>
+                    </div>
+                    <div className="relative">
+                        <div className="flex gap-4 animate-scroll">
+                            {[...photos, ...photos, ...photos].map((src, i) => (
+                                <div key={i} className="flex-shrink-0 w-72 h-48 rounded-2xl overflow-hidden shadow-lg border-4 border-white cursor-pointer hover:scale-105 transition-transform"
+                                     onClick={() => setLightboxImage(src)}>
+                                    <img src={src} className="w-full h-full object-cover" alt="Workshop" />
+                                </div>
+                            ))}
+                        </div>
+                        <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-white to-transparent pointer-events-none"></div>
+                        <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-slate-50 to-transparent pointer-events-none"></div>
+                    </div>
+                    {lightboxImage && (
+                        <div className="lightbox-overlay" onClick={() => setLightboxImage(null)}>
+                            <img src={lightboxImage} className="lightbox-image" />
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const WallSection = ({ data }) => {
+            const [tab, setTab] = useState('helpful'); // helpful (Q13) or future (Q14)
+            
+            // 隨機樣式產生器
+            const getNoteStyle = (index) => {
+                const rotations = ['rotate-1', '-rotate-2', 'rotate-3', '-rotate-1', 'rotate-2'];
+                const colors = [
+                    'bg-yellow-100 text-yellow-900 border-yellow-200', 
+                    'bg-green-100 text-green-900 border-green-200',
+                    'bg-blue-100 text-blue-900 border-blue-200',
+                    'bg-pink-100 text-pink-900 border-pink-200'
+                ];
+                return { rotation: rotations[index % 5], color: colors[index % 4] };
+            };
+
+            return (
+                <div className="py-16 px-6 relative overflow-hidden" style={{backgroundColor: '#1e293b'}}>
+                    <div className="max-w-6xl mx-auto relative z-10">
+                        <div className="flex flex-col md:flex-row justify-between items-center mb-12">
+                            <h2 className="text-3xl font-bold text-white flex items-center mb-4 md:mb-0">
+                                <Quote className="mr-3 text-green-400" />
+                                學員心聲回饋牆
+                            </h2>
+                            <div className="bg-white/10 p-1 rounded-full backdrop-blur-sm border border-white/20">
+                                <button onClick={() => setTab('helpful')} className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${tab === 'helpful' ? 'bg-green-500 text-white shadow-lg' : 'text-green-100 hover:text-white'}`}>
+                                    收穫最多 (Q13)
+                                </button>
+                                <button onClick={() => setTab('future')} className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${tab === 'future' ? 'bg-green-500 text-white shadow-lg' : 'text-green-100 hover:text-white'}`}>
+                                    期望主題 (Q14)
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                            {data.map((item, index) => {
+                                const content = tab === 'helpful' ? item.q13 : item.q14;
+                                if (!content || content.length < 2) return null;
+                                const style = getNoteStyle(index);
+                                return (
+                                    <div key={index} className={`transform ${style.rotation} hover:scale-105 hover:rotate-0 transition-all duration-300`}>
+                                        <div className={`${style.color} p-6 h-60 shadow-xl flex flex-col relative rounded-sm`}>
+                                            <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-12 h-6 bg-white/30 backdrop-blur-sm rotate-1 shadow-sm"></div>
+                                            <p className="font-handwriting text-xl leading-relaxed flex-grow overflow-y-auto custom-scrollbar">
+                                                {content}
+                                            </p>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const Dashboard = () => {
+            const [data, setData] = useState([]);
+            const [loading, setLoading] = useState(true);
+
+            // === 模擬數據產生器 (若無真實 API 可用此測試) ===
+            const generateMockData = () => {
+                return Array.from({ length: 16 }, (_, i) => ({
+                    id: i + 1,
+                    q1: (4 + Math.random()).toFixed(0), // 目標明確
+                    q2: 5, // 講師專業
+                    q3: (4 + Math.random()).toFixed(0), // 行政
+                    q4: (3.8 + Math.random() * 1.2).toFixed(1), // 劇本校準
+                    q5: (4 + Math.random()).toFixed(1), // 標準化
+                    q6: (4.2 + Math.random() * 0.8).toFixed(1), // 身心調適
+                    q7: (3.5 + Math.random() * 1.5).toFixed(1), // 回饋客觀
+                    q8: (3.8 + Math.random() * 1.2).toFixed(1), // 回饋重點
+                    q9: 5, // 接受指導
+                    q10: 5, // 角色認同
+                    q11: (4.5 + Math.random() * 0.5).toFixed(1), // 學習動力
+                    q12: 5, // 推薦度
+                    q13: ["重新檢視劇本細節，發現很多以前沒注意的盲點。", "回饋技巧的演練很有幫助，特別是區分事實與觀點。", "講師的引導很溫暖，讓我更願意接受修正。", "能跟資深夥伴一起交流是最棒的。"][i % 4],
+                    q14: ["希望增加困難考生的應對課程。", "關於情緒張力的拿捏可以再多一點練習。", "想了解更多不同科別的劇本。", "沒有建議，很棒的課程！"][i % 4],
+                    q15: "謝謝主辦單位的用心！"
+                }));
+            };
+
+            // 設定為 true 使用模擬數據，false 則嘗試連線 GAS
+            const useMockData = false; 
+            const GAS_URL = 'https://script.google.com/macros/s/AKfycbyOmNPZoMINGkoZwFJLP6LT0kM7ZwS3Lbt9B_nEuYO2tUH74MTWjBZQAMpS0PSKTQu4/exec'; 
+
+            useEffect(() => {
+                if (useMockData) {
+                    setTimeout(() => {
+                        setData(generateMockData());
+                        setLoading(false);
+                    }, 800);
+                } else {
+                    fetch(GAS_URL)
+                        .then(res => res.json())
+                        .then(json => { setData(json); setLoading(false); })
+                        .catch(err => console.error("Fetch error:", err));
+                }
+            }, []);
+
+            if (loading) return (
+                <div className="min-h-screen flex flex-col items-center justify-center bg-slate-900 text-green-400">
+                    <Loader2 className="w-12 h-12 animate-spin mb-4" />
+                    <p className="text-lg font-medium tracking-widest">數據分析中...</p>
+                </div>
+            );
+
+            // 計算平均值供 Insight 使用
+            const avgData = {
+                q1: (data.reduce((s, c) => s + Number(c.q1), 0) / data.length).toFixed(1),
+                q2: (data.reduce((s, c) => s + Number(c.q2), 0) / data.length).toFixed(1),
+                q3: (data.reduce((s, c) => s + Number(c.q3), 0) / data.length).toFixed(1),
+                q4: (data.reduce((s, c) => s + Number(c.q4), 0) / data.length).toFixed(1),
+                q5: (data.reduce((s, c) => s + Number(c.q5), 0) / data.length).toFixed(1),
+                q6: (data.reduce((s, c) => s + Number(c.q6), 0) / data.length).toFixed(1),
+                q7: (data.reduce((s, c) => s + Number(c.q7), 0) / data.length).toFixed(1),
+                q8: (data.reduce((s, c) => s + Number(c.q8), 0) / data.length).toFixed(1),
+                q9: (data.reduce((s, c) => s + Number(c.q9), 0) / data.length).toFixed(1),
+                q10: (data.reduce((s, c) => s + Number(c.q10), 0) / data.length).toFixed(1),
+                q11: (data.reduce((s, c) => s + Number(c.q11), 0) / data.length).toFixed(1),
+                q12: (data.reduce((s, c) => s + Number(c.q12), 0) / data.length).toFixed(1),
+            };
+
+            return (
+                <div className="min-h-screen bg-white font-sans selection:bg-green-200">
+                    <Header count={data.length} />
+                    <InsightsSection avgData={avgData} />
+                    <ChartSection data={data} />
+                    <PhotoCarousel />
+                    <WallSection data={data} />
+                    <footer className="bg-slate-900 text-gray-500 py-8 text-center text-sm border-t border-white/5">
+                        <p>© 2025 | 奇美醫院 標準化病人展延培訓工作坊</p>
+                        <p className="text-xs mt-1 text-gray-600">數據來源：Google Sheet 即時連動</p>
+                    </footer>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<Dashboard />);
+    </script>
+</body>
+</html>
+```
