@@ -71,23 +71,23 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
         
-        /* 照片牆樣式 - 取代輪播動畫 */
+        /* 照片牆樣式 - 減少留白，增加密度 */
         .photo-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1rem;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 0.75rem;
         }
         .photo-item {
             aspect-ratio: 4/3;
-            border-radius: 0.75rem;
+            border-radius: 0.5rem;
             overflow: hidden;
             cursor: pointer;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         .photo-item:hover {
             transform: translateY(-4px);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
         }
         .photo-item img {
             width: 100%;
@@ -472,8 +472,8 @@
             };
 
             return (
-                <div className="py-16 px-6 bg-gradient-to-b from-white to-slate-50">
-                    <div className="max-w-7xl mx-auto mb-8">
+                <div className="py-12 px-4 md:px-6 bg-gradient-to-b from-white to-slate-50">
+                    <div className="max-w-[1600px] mx-auto mb-6">
                         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                             <div>
                                 <h2 className="text-3xl font-bold text-gray-800 flex items-center mb-2">
@@ -502,8 +502,8 @@
                         </div>
                     </div>
                     
-                    {/* 照片牆 - 取代三行輪播 */}
-                    <div className="max-w-7xl mx-auto">
+                    {/* 照片牆 - 減少留白 */}
+                    <div className="max-w-[1600px] mx-auto">
                         <div className="photo-grid">
                             {allPhotos.map((src, i) => (
                                 <div 
@@ -563,20 +563,20 @@
             
             return (
                 <>
-                    <div className="py-16 px-6 bg-gradient-to-b from-slate-50 to-white">
-                        <div className="max-w-5xl mx-auto">
-                            <div className="text-center mb-8">
-                                <h2 className="text-4xl font-black text-gray-800 mb-3 flex items-center justify-center">
-                                    <Sparkles className="mr-3 text-yellow-500" size={36} />
+                    <div className="py-20 px-4 md:px-6 bg-gradient-to-b from-slate-50 via-amber-50/30 to-white">
+                        <div className="max-w-[1400px] mx-auto">
+                            <div className="text-center mb-10">
+                                <h2 className="text-5xl md:text-6xl font-black text-gray-800 mb-4 flex items-center justify-center">
+                                    <Sparkles className="mr-4 text-yellow-500" size={48} />
                                     課後能量充電站
                                 </h2>
-                                <p className="text-xl font-bold text-green-600 tracking-wide">
+                                <p className="text-2xl md:text-3xl font-bold text-green-600 tracking-wide">
                                     奇美 SP 讚到爆，電火貼滿力量到 ⚡
                                 </p>
                             </div>
                             
                             <div 
-                                className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-yellow-400 cursor-pointer hover:scale-[1.02] transition-transform duration-300"
+                                className="relative rounded-3xl overflow-hidden shadow-2xl border-8 border-yellow-400 cursor-pointer hover:scale-[1.01] transition-all duration-300 hover:shadow-3xl"
                                 onClick={() => setLightboxImage('./last.png')}
                             >
                                 <img 
@@ -585,14 +585,29 @@
                                     className="w-full h-auto"
                                     loading="lazy"
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>
-                                <div className="absolute bottom-6 right-6 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-bold text-gray-700 flex items-center gap-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none"></div>
+                                
+                                {/* 放大提示 - 更醒目 */}
+                                <div className="absolute bottom-8 right-8 bg-white/95 backdrop-blur-md px-6 py-3 rounded-full text-base font-bold text-gray-700 flex items-center gap-3 shadow-xl border-2 border-yellow-400 hover:bg-yellow-50 transition-all">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                         <circle cx="11" cy="11" r="8"/>
                                         <path d="m21 21-4.3-4.3"/>
                                     </svg>
-                                    點擊放大
+                                    <span>點擊放大查看</span>
                                 </div>
+                                
+                                {/* 裝飾性光暈效果 */}
+                                <div className="absolute top-10 left-10 w-32 h-32 bg-yellow-300/20 rounded-full blur-3xl pointer-events-none"></div>
+                                <div className="absolute bottom-10 right-10 w-40 h-40 bg-green-300/20 rounded-full blur-3xl pointer-events-none"></div>
+                            </div>
+                            
+                            {/* 補充說明文字 */}
+                            <div className="text-center mt-8 max-w-3xl mx-auto">
+                                <p className="text-gray-600 text-lg leading-relaxed">
+                                    學員們在課程結束後，將自己的收穫、感動與期許化為一張張能量便利貼，
+                                    <span className="font-bold text-green-600">點亮彼此的學習之路</span>，
+                                    成為持續前進的動力來源 💪
+                                </p>
                             </div>
                         </div>
                     </div>
