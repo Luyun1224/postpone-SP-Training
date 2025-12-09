@@ -507,7 +507,7 @@
                 { id: 'tcTnw86BA5Q', title: '即興演練 - 情境四' },
                 { id: 'abhevPchu58', title: '即興演練 - 情境五' },
                 { id: 'gM2AYFJK78Y', title: '即興演練 - 情境六' },
-                { id: '3zG_j6K0du4', title: '即興演練 - 情境七' },
+                { id: '3zG_j6K0du4', title: '即興演練 - 情境七', needsLink: true }, // 標記需要外部連結
                 { id: 'ivviMx-M6nw', title: '即興演練 - 情境八' },
             ];
 
@@ -542,10 +542,10 @@
                                             LIVE
                                         </div>
                                         <iframe
-                                            src={`https://www.youtube.com/embed/${video.id}`}
+                                            src={`https://www.youtube.com/embed/${video.id}?enablejsapi=1`}
                                             title={video.title}
                                             frameBorder="0"
-                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                             allowFullScreen
                                             loading="lazy"
                                         ></iframe>
@@ -562,32 +562,83 @@
 
                         {/* 下排 4 部影片 */}
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                            {videos.slice(4, 8).map((video, index) => (
-                                <div key={video.id} className="video-card group">
-                                    <div className="video-thumbnail">
-                                        <div className="video-badge">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                                                <circle cx="12" cy="12" r="10"/>
-                                            </svg>
-                                            LIVE
+                            {videos.slice(4, 8).map((video, index) => {
+                                // 影片7特殊處理
+                                if (video.needsLink) {
+                                    return (
+                                        <a 
+                                            key={video.id}
+                                            href={`https://youtu.be/${video.id}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="video-card group block"
+                                        >
+                                            <div className="video-thumbnail">
+                                                <div className="video-badge bg-blue-600">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                                                        <circle cx="12" cy="12" r="10"/>
+                                                    </svg>
+                                                    LIVE
+                                                </div>
+                                                <img 
+                                                    src={`https://img.youtube.com/vi/${video.id}/maxresdefault.jpg`}
+                                                    alt={video.title}
+                                                    className="absolute inset-0 w-full h-full object-cover"
+                                                    onError={(e) => {
+                                                        e.target.src = `https://img.youtube.com/vi/${video.id}/hqdefault.jpg`;
+                                                    }}
+                                                />
+                                                <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/50 transition-all">
+                                                    <div className="w-20 h-20 bg-red-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-2xl">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="white">
+                                                            <polygon points="5 3 19 12 5 21 5 3"/>
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                                <div className="absolute bottom-4 left-4 right-4 text-center">
+                                                    <div className="bg-white/95 backdrop-blur-sm px-4 py-2 rounded-lg text-sm font-bold text-gray-800 shadow-xl">
+                                                        點擊在 YouTube 觀看
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="p-4">
+                                                <h3 className="font-bold text-gray-800 text-sm group-hover:text-purple-600 transition-colors flex items-center gap-2">
+                                                    <span className="text-purple-500 text-lg">#{index + 5}</span>
+                                                    {video.title}
+                                                </h3>
+                                            </div>
+                                        </a>
+                                    );
+                                }
+
+                                // 一般影片
+                                return (
+                                    <div key={video.id} className="video-card group">
+                                        <div className="video-thumbnail">
+                                            <div className="video-badge">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                                                    <circle cx="12" cy="12" r="10"/>
+                                                </svg>
+                                                LIVE
+                                            </div>
+                                            <iframe
+                                                src={`https://www.youtube.com/embed/${video.id}?enablejsapi=1`}
+                                                title={video.title}
+                                                frameBorder="0"
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                                allowFullScreen
+                                                loading="lazy"
+                                            ></iframe>
                                         </div>
-                                        <iframe
-                                            src={`https://www.youtube.com/embed/${video.id}`}
-                                            title={video.title}
-                                            frameBorder="0"
-                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                            allowFullScreen
-                                            loading="lazy"
-                                        ></iframe>
+                                        <div className="p-4">
+                                            <h3 className="font-bold text-gray-800 text-sm group-hover:text-purple-600 transition-colors flex items-center gap-2">
+                                                <span className="text-purple-500 text-lg">#{index + 5}</span>
+                                                {video.title}
+                                            </h3>
+                                        </div>
                                     </div>
-                                    <div className="p-4">
-                                        <h3 className="font-bold text-gray-800 text-sm group-hover:text-purple-600 transition-colors flex items-center gap-2">
-                                            <span className="text-purple-500 text-lg">#{index + 5}</span>
-                                            {video.title}
-                                        </h3>
-                                    </div>
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
 
                         {/* 底部提示 */}
