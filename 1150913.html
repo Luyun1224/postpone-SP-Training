@@ -354,6 +354,28 @@
       font-size:.82rem;
     }
 
+
+    .reflection-note{
+      margin:12px 0 0;
+      padding:12px 14px;
+      border-radius:12px;
+      background:#F7FAFC;
+      border-left:4px solid var(--teal);
+      color:var(--muted);
+      font-size:.88rem;
+    }
+    .support-note{
+      display:none;
+      margin-top:12px;
+      padding:14px 15px;
+      border-radius:14px;
+      background:#FFF7E8;
+      border:1px solid #F1C56C;
+      color:#714D08;
+      font-weight:700;
+    }
+    .support-note.show{display:block}
+
     @media (min-width:700px){
       .shell{padding-top:28px}
       .hero{padding:38px 38px 32px}
@@ -400,8 +422,9 @@
       <h1>標準化病人進階課程</h1>
       <div class="subtitle">課後學習回饋問卷</div>
       <p class="intro">
-        感謝您參與今天的課程！邀請您花約 2～3 分鐘分享學習感受。
-        您的回饋將作為未來標準化病人課程規劃與教學改善的重要參考。
+        親愛的標準化病人（SP）夥伴，您好：<br><br>
+        衷心感謝您參與今天的進階課程！請花幾分鐘靜心回想今日的課堂演練與交流感受，寫下您最真實的發現。
+        這份問卷不僅是您個人的學習沉澱紀錄，更是我們持續優化教學與支持 SP 團隊的重要參考。
       </p>
       <div class="meta">
         <span class="pill">📅 115 年 9 月 13 日</span>
@@ -419,6 +442,7 @@
         <span>必填題完成後即可送出</span>
       </div>
     </div>
+
 
     <form id="surveyForm" novalidate>
       <input type="hidden" name="course_id" value="CMH_SP_ADVANCED_1150913">
@@ -448,14 +472,16 @@
       <section class="question" data-required-group="overall_satisfaction">
         <div class="qtop">
           <div class="qnum">2</div>
-          <div><h2 class="qtitle">整體而言，您對今天的課程滿意嗎？<span class="required">＊</span></h2></div>
+          <div>
+            <h2 class="qtitle">您對今天整體課程安排（內容設計、引導方式與互動體驗）的滿意度如何？<span class="required">＊</span></h2>
+          </div>
         </div>
         <div class="options five">
           <label class="choice"><input type="radio" name="overall_satisfaction" value="5"><span class="emoji">😍</span><span class="label-text">非常滿意</span></label>
           <label class="choice"><input type="radio" name="overall_satisfaction" value="4"><span class="emoji">😊</span><span class="label-text">滿意</span></label>
-          <label class="choice"><input type="radio" name="overall_satisfaction" value="3"><span class="emoji">🙂</span><span class="label-text">尚可</span></label>
-          <label class="choice"><input type="radio" name="overall_satisfaction" value="2"><span class="emoji">😐</span><span class="label-text">不太滿意</span></label>
-          <label class="choice"><input type="radio" name="overall_satisfaction" value="1"><span class="emoji">🙁</span><span class="label-text">不滿意</span></label>
+          <label class="choice"><input type="radio" name="overall_satisfaction" value="3"><span class="emoji">🙂</span><span class="label-text">普通</span></label>
+          <label class="choice"><input type="radio" name="overall_satisfaction" value="2"><span class="emoji">😐</span><span class="label-text">不滿意</span></label>
+          <label class="choice"><input type="radio" name="overall_satisfaction" value="1"><span class="emoji">🙁</span><span class="label-text">非常不滿意</span></label>
         </div>
         <div class="error">請選擇一個答案。</div>
       </section>
@@ -477,7 +503,6 @@
 
       <div class="section-label"><span class="dot"></span>學習成效</div>
 
-      <!-- 共用 5 分量表：5 非常同意 / 4 同意 / 3 普通 / 2 不同意 / 1 非常不同意 -->
       <section class="question" data-required-group="self_awareness">
         <div class="qtop"><div class="qnum">4</div><div><h2 class="qtitle">經過今天的課程，我更能察覺自己的表情、語氣、動作與情緒反應。<span class="required">＊</span></h2></div></div>
         <div class="options five">
@@ -565,10 +590,36 @@
         <div class="error">請選擇一個答案。</div>
       </section>
 
+      <div class="section-label"><span class="dot"></span>學習覺察與實務轉化</div>
+
+      <section class="question">
+        <div class="qtop">
+          <div class="qnum">11</div>
+          <div>
+            <h2 class="qtitle">經過今天的課程演練與交流，我重新看見／發現了：</h2>
+            <p class="hint">可分享對自己演出或角色型塑的新發現，例如如何從具體客觀線索理解角色內在。</p>
+          </div>
+        </div>
+        <textarea class="textarea" name="reflection_discovery" id="reflection_discovery" maxlength="300" placeholder="簡短寫下您的新發現即可……"></textarea>
+        <div class="counter"><span data-count-for="reflection_discovery">0</span> / 300</div>
+      </section>
+
+      <section class="question">
+        <div class="qtop">
+          <div class="qnum">12</div>
+          <div>
+            <h2 class="qtitle">離開這間教室後，我最想帶回實務現場（演練或回饋）的是：</h2>
+            <p class="hint">可以是一個關鍵觀念、一種維持演出一致性的具體作法、一句鼓勵自己的話或一份感受。</p>
+          </div>
+        </div>
+        <textarea class="textarea" name="practice_transfer" id="practice_transfer" maxlength="300" placeholder="例如：下一次演出時，我想特別做到……"></textarea>
+        <div class="counter"><span data-count-for="practice_transfer">0</span> / 300</div>
+      </section>
+
       <div class="section-label"><span class="dot"></span>課程設計</div>
 
       <section class="question" data-required-group="course_difficulty">
-        <div class="qtop"><div class="qnum">11</div><div><h2 class="qtitle">今天的課程難度對您來說如何？<span class="required">＊</span></h2></div></div>
+        <div class="qtop"><div class="qnum">13</div><div><h2 class="qtitle">今天的課程難度對您來說如何？<span class="required">＊</span></h2></div></div>
         <div class="options three">
           <label class="choice"><input type="radio" name="course_difficulty" value="too_easy"><span class="emoji">🟦</span><span class="label-text">太簡單</span></label>
           <label class="choice"><input type="radio" name="course_difficulty" value="just_right"><span class="emoji">🟢</span><span class="label-text">剛剛好</span></label>
@@ -578,7 +629,7 @@
       </section>
 
       <section class="question" data-required-group="course_pace">
-        <div class="qtop"><div class="qnum">12</div><div><h2 class="qtitle">今天的課程節奏如何？<span class="required">＊</span></h2></div></div>
+        <div class="qtop"><div class="qnum">14</div><div><h2 class="qtitle">今天的課程節奏如何？<span class="required">＊</span></h2></div></div>
         <div class="options three">
           <label class="choice"><input type="radio" name="course_pace" value="too_slow"><span class="emoji">🐢</span><span class="label-text">有點太慢</span></label>
           <label class="choice"><input type="radio" name="course_pace" value="just_right"><span class="emoji">👌</span><span class="label-text">剛剛好</span></label>
@@ -588,7 +639,7 @@
       </section>
 
       <section class="question" data-required-group="practice_time">
-        <div class="qtop"><div class="qnum">13</div><div><h2 class="qtitle">今天「實際練習與互動」的時間足夠嗎？<span class="required">＊</span></h2></div></div>
+        <div class="qtop"><div class="qnum">15</div><div><h2 class="qtitle">今天「實際練習與互動」的時間足夠嗎？<span class="required">＊</span></h2></div></div>
         <div class="options three">
           <label class="choice"><input type="radio" name="practice_time" value="enough"><span class="emoji">👍</span><span class="label-text">足夠</span></label>
           <label class="choice"><input type="radio" name="practice_time" value="okay"><span class="emoji">🙂</span><span class="label-text">還可以</span></label>
@@ -597,65 +648,81 @@
         <div class="error">請選擇一個答案。</div>
       </section>
 
-      <div class="section-label"><span class="dot"></span>最有感的學習活動</div>
-
-      <section class="question" data-required-group="most_helpful_activity">
-        <div class="qtop"><div class="qnum">14</div><div><h2 class="qtitle">今天哪一個部分對您最有幫助？<span class="required">＊</span></h2><p class="hint">可複選，不限選擇數量。</p></div></div>
-        <div class="options two">
-          <label class="choice"><input type="checkbox" name="most_helpful_activity" value="self_awareness"><span class="emoji">🔍</span><span class="label-text">自我覺察</span></label>
-          <label class="choice"><input type="checkbox" name="most_helpful_activity" value="consistency"><span class="emoji">⚖️</span><span class="label-text">一致性</span></label>
-          <label class="choice"><input type="checkbox" name="most_helpful_activity" value="role_building"><span class="emoji">🎭</span><span class="label-text">角色型塑</span></label>
-          <label class="choice"><input type="checkbox" name="most_helpful_activity" value="vts"><span class="emoji">👁️</span><span class="label-text">VTS 視覺思考</span></label>
-          <label class="choice"><input type="checkbox" name="most_helpful_activity" value="integrated_practice"><span class="emoji">🤝</span><span class="label-text">整合演練</span></label>
-          <label class="choice"><input type="checkbox" name="most_helpful_activity" value="discussion"><span class="emoji">💬</span><span class="label-text">分享與討論</span></label>
-        </div>
-        <div class="error">請至少選擇一個答案。</div>
-      </section>
-
-      <section class="question">
-        <div class="qtop">
-          <div class="qnum">15</div>
-          <div>
-            <h2 class="qtitle">今天哪一些部分最讓您印象深刻？</h2>
-            <p class="hint">可複選，不限選擇數量。</p>
-          </div>
-        </div>
-        <div class="options two">
-          <label class="choice"><input type="checkbox" name="impressive_activity" value="self_awareness"><span class="emoji">🔍</span><span class="label-text">自我覺察</span></label>
-          <label class="choice"><input type="checkbox" name="impressive_activity" value="consistency"><span class="emoji">⚖️</span><span class="label-text">一致性</span></label>
-          <label class="choice"><input type="checkbox" name="impressive_activity" value="role_building"><span class="emoji">🎭</span><span class="label-text">角色型塑</span></label>
-          <label class="choice"><input type="checkbox" name="impressive_activity" value="vts"><span class="emoji">👁️</span><span class="label-text">VTS 視覺思考</span></label>
-          <label class="choice"><input type="checkbox" name="impressive_activity" value="integrated_practice"><span class="emoji">🤝</span><span class="label-text">整合演練</span></label>
-          <label class="choice"><input type="checkbox" name="impressive_activity" value="discussion"><span class="emoji">💬</span><span class="label-text">分享與討論</span></label>
-        </div>
-      </section>
-
-      <div class="section-label"><span class="dot"></span>未來學習需求</div>
+      <div class="section-label"><span class="dot"></span>課程體驗與核心觸動</div>
 
       <section class="question">
         <div class="qtop">
           <div class="qnum">16</div>
           <div>
-            <h2 class="qtitle">如果未來再辦 SP 進階課程，您最想學什麼？</h2>
-            <p class="hint">可複選，最多選 3 項。</p>
+            <h2 class="qtitle">今天哪些課程單元與演練環節最觸動您？</h2>
+            <p class="hint">可複選。</p>
           </div>
         </div>
-        <div class="options two" data-max-check="3" data-max-name="future_topic">
-          <label class="choice"><input type="checkbox" name="future_topic" value="difficult_roles"><span class="emoji">🎭</span><span class="label-text">困難角色與情緒演出</span></label>
-          <label class="choice"><input type="checkbox" name="future_topic" value="emotion_expression"><span class="emoji">😡</span><span class="label-text">生氣、焦慮或哭泣等情緒表現</span></label>
-          <label class="choice"><input type="checkbox" name="future_topic" value="nonverbal"><span class="emoji">🗣️</span><span class="label-text">語氣、表情與肢體動作</span></label>
-          <label class="choice"><input type="checkbox" name="future_topic" value="consistency"><span class="emoji">⚖️</span><span class="label-text">如何維持不同場次演出一致</span></label>
-          <label class="choice"><input type="checkbox" name="future_topic" value="peer_feedback"><span class="emoji">👀</span><span class="label-text">如何觀察其他 SP 並給予回饋</span></label>
-          <label class="choice"><input type="checkbox" name="future_topic" value="collaboration"><span class="emoji">🧑‍⚕️</span><span class="label-text">如何與考官／教師合作</span></label>
-          <label class="choice"><input type="checkbox" name="future_topic" value="script_reading"><span class="emoji">📝</span><span class="label-text">如何快速掌握 SP 劇本</span></label>
-          <label class="choice"><input type="checkbox" name="future_topic" value="case_practice"><span class="emoji">🎬</span><span class="label-text">實際案例演練</span></label>
+        <div class="options two">
+          <label class="choice"><input type="checkbox" name="impressive_activity" value="self_awareness_role_connection"><span class="emoji">🔍</span><span class="label-text">自我覺察與角色連結（內在狀態掃描）</span></label>
+          <label class="choice"><input type="checkbox" name="impressive_activity" value="consistency_message_release"><span class="emoji">⚖️</span><span class="label-text">演出一致性與訊息釋放原則（口語／非口語協調）</span></label>
+          <label class="choice"><input type="checkbox" name="impressive_activity" value="role_iceberg"><span class="emoji">🎭</span><span class="label-text">角色深度型塑（角色冰山與情緒深度轉譯）</span></label>
+          <label class="choice"><input type="checkbox" name="impressive_activity" value="vts"><span class="emoji">👁️</span><span class="label-text">VTS 視覺思考策略運用（區分客觀觀察與主觀推論）</span></label>
+          <label class="choice"><input type="checkbox" name="impressive_activity" value="integrated_practice"><span class="emoji">🤝</span><span class="label-text">現場綜合演出演練與小組討論</span></label>
+          <label class="choice"><input type="checkbox" name="impressive_activity" value="derole"><span class="emoji">🌿</span><span class="label-text">課末情緒歸位與角色離場（De-role）</span></label>
+          <label class="choice"><input type="checkbox" name="impressive_activity" value="other"><span class="emoji">💡</span><span class="label-text">其他</span></label>
+        </div>
+      </section>
+
+      <section class="question">
+        <div class="qtop">
+          <div class="qnum">17</div>
+          <div>
+            <h2 class="qtitle">上述環節中，最觸動您的原因或感想是：</h2>
+            <p class="hint">簡短寫下一句也可以。</p>
+          </div>
+        </div>
+        <textarea class="textarea" name="touch_reason" id="touch_reason" maxlength="300" placeholder="例如：哪一個瞬間讓您重新看見自己的演出方式……"></textarea>
+        <div class="counter"><span data-count-for="touch_reason">0</span> / 300</div>
+      </section>
+
+      <div class="section-label"><span class="dot"></span>角色離場與身心狀態確認</div>
+
+      <section class="question" data-required-group="derole_status">
+        <div class="qtop">
+          <div class="qnum">18</div>
+          <div>
+            <h2 class="qtitle">經過課末的角色離場（De-role）與情緒歸位引導後，您目前的感受狀態為：<span class="required">＊</span></h2>
+          </div>
+        </div>
+        <div class="options two">
+          <label class="choice"><input type="radio" name="derole_status" value="fully_deroled"><span class="emoji">🌿</span><span class="label-text">我已完全卸下 SP 角色，感到身心輕鬆，順利回歸自我平靜狀態。</span></label>
+          <label class="choice"><input type="radio" name="derole_status" value="needs_support"><span class="emoji">🤝</span><span class="label-text">我仍有些沉浸在角色情緒或緊張感中，希望講師／訓練師進一步協助情緒歸位。</span></label>
+        </div>
+        <div class="support-note" id="deroleHelp">若您仍感到受角色情緒影響，請在離場前主動告知講師或訓練師，我們會協助您完成情緒歸位。</div>
+        <div class="error">請選擇目前最符合您的狀態。</div>
+      </section>
+
+      <div class="section-label"><span class="dot"></span>未來進階學習與需求</div>
+
+      <section class="question">
+        <div class="qtop">
+          <div class="qnum">19</div>
+          <div>
+            <h2 class="qtitle">展望未來的 SP 專業發展，您最希望進一步學習或實作演練的主題為：</h2>
+            <p class="hint">可複選。</p>
+          </div>
+        </div>
+        <div class="options two">
+          <label class="choice"><input type="checkbox" name="future_topic" value="role_depth"><span class="emoji">🎭</span><span class="label-text">SP 角色深度型塑與背景動機剖析</span></label>
+          <label class="choice"><input type="checkbox" name="future_topic" value="evidence_feedback"><span class="emoji">🧾</span><span class="label-text">證據導向（Evidence-based）SP 回饋技巧</span></label>
+          <label class="choice"><input type="checkbox" name="future_topic" value="consistency_control"><span class="emoji">⚖️</span><span class="label-text">演出一致性、臨場應變與情境掌控</span></label>
+          <label class="choice"><input type="checkbox" name="future_topic" value="spt_facilitation"><span class="emoji">🧭</span><span class="label-text">SPT（訓練師）觀察、提問與帶領技巧</span></label>
+          <label class="choice"><input type="checkbox" name="future_topic" value="emotional_derole"><span class="emoji">🌿</span><span class="label-text">情緒深度投入與快速角色卸除（De-role）</span></label>
+          <label class="choice"><input type="checkbox" name="future_topic" value="vts_advanced"><span class="emoji">👁️</span><span class="label-text">VTS（視覺思考）在 SP 訓練的進階延伸</span></label>
+          <label class="choice"><input type="checkbox" name="future_topic" value="difficult_interactions"><span class="emoji">🧩</span><span class="label-text">困難情境回應與特殊學員之互動應對</span></label>
+          <label class="choice"><input type="checkbox" name="future_topic" value="script_translation"><span class="emoji">📝</span><span class="label-text">教案腳本結構拆解與角色行為轉譯</span></label>
           <label class="choice"><input type="checkbox" name="future_topic" value="other"><span class="emoji">💡</span><span class="label-text">其他</span></label>
         </div>
-        <div class="error" id="futureError">最多只能選 3 項。</div>
       </section>
 
       <section class="question" data-required-group="future_participation">
-        <div class="qtop"><div class="qnum">17</div><div><h2 class="qtitle">如果未來還有類似的進階課程，您願意再參加嗎？<span class="required">＊</span></h2></div></div>
+        <div class="qtop"><div class="qnum">20</div><div><h2 class="qtitle">如果未來還有類似的進階課程，您願意再參加嗎？<span class="required">＊</span></h2></div></div>
         <div class="options two">
           <label class="choice"><input type="radio" name="future_participation" value="4"><span class="emoji">🌟</span><span class="label-text">非常願意</span></label>
           <label class="choice"><input type="radio" name="future_participation" value="3"><span class="emoji">😊</span><span class="label-text">願意</span></label>
@@ -665,25 +732,26 @@
         <div class="error">請選擇一個答案。</div>
       </section>
 
-      <div class="section-label"><span class="dot"></span>最後想聽聽您的話</div>
+      <div class="section-label"><span class="dot"></span>整體建議</div>
 
       <section class="question">
         <div class="qtop">
-          <div class="qnum">18</div>
+          <div class="qnum">21</div>
           <div>
-            <h2 class="qtitle">今天最大的收穫，或想給我們的建議是什麼？</h2>
+            <h2 class="qtitle">對於本次課程或未來的教學安排，您有任何寶貴建議，或想對講師團隊說的話嗎？</h2>
             <p class="hint">一句話也可以 😊</p>
           </div>
         </div>
-        <textarea class="textarea" name="comment" id="comment" maxlength="300" placeholder="例如：今天最有收穫的地方、希望增加的內容，或任何建議……"></textarea>
-        <div class="counter"><span id="commentCount">0</span> / 300</div>
+        <textarea class="textarea" name="comment" id="comment" maxlength="500" placeholder="歡迎留下任何建議、鼓勵或想法……"></textarea>
+        <div class="counter"><span data-count-for="comment">0</span> / 500</div>
       </section>
 
       <div class="action-panel">
         <button class="submit-btn" id="submitBtn" type="submit">送出回饋</button>
-        <p class="privacy">本問卷不蒐集姓名；資料僅供課程成效分析與後續教學改善使用。</p>
+        <p class="privacy">本問卷不蒐集姓名；資料僅供課程成效分析、反思紀錄與後續教學改善使用。</p>
       </div>
     </form>
+
 
     <section class="success" id="successPanel" aria-live="polite">
       <div class="success-icon">🎉</div>
@@ -699,14 +767,6 @@
   </main>
 
   <script>
-    /*
-      ===========================
-      後端串接設定
-      ===========================
-      1) 若已有 API / Google Apps Script Web App，將 SUBMIT_ENDPOINT 換成網址。
-      2) 空字串時，本範例會先把資料存進瀏覽器 localStorage，方便離線測試。
-      3) 送出的 JSON 欄位名稱已為後續 Dashboard 分析預先標準化。
-    */
     // 已連接至 115/09/13 SP 問卷 GAS Web App
     const SUBMIT_ENDPOINT = "https://script.google.com/macros/s/AKfycbxWQS0nT481QXvRdHs-lhbqZDgI4ICUx0YSMdScVryqUt9myPy954PtOVOEJPqaUasa/exec";
 
@@ -716,8 +776,6 @@
     const progressBar = document.getElementById("progressBar");
     const progressText = document.getElementById("progressText");
     const requiredGroups = [...document.querySelectorAll("[data-required-group]")];
-    const comment = document.getElementById("comment");
-    const commentCount = document.getElementById("commentCount");
 
     function updateChoiceState(input){
       const name = input.name;
@@ -735,31 +793,23 @@
         updateChoiceState(input);
         const q = input.closest(".question");
         if(q) q.classList.remove("invalid");
-        enforceMaxChecks(input);
         updateProgress();
+
+        if(input.name === "derole_status"){
+          const help = document.getElementById("deroleHelp");
+          help.classList.toggle("show", input.value === "needs_support" && input.checked);
+        }
       });
     });
 
-    function enforceMaxChecks(input){
-      if(input.type !== "checkbox") return;
-      const box = input.closest("[data-max-check]");
-      if(!box) return;
-      const max = Number(box.dataset.maxCheck);
-      const checked = [...box.querySelectorAll('input[type="checkbox"]:checked')];
-      const question = box.closest(".question");
-
-      if(checked.length > max){
-        input.checked = false;
-        updateChoiceState(input);
-        question.classList.add("invalid");
-        const error = question.querySelector(".error");
-        if(error) error.style.display = "block";
-        setTimeout(()=>{
-          question.classList.remove("invalid");
-          if(error) error.style.display = "";
-        }, 1800);
-      }
-    }
+    document.querySelectorAll("textarea[maxlength]").forEach(area=>{
+      const counter = document.querySelector(`[data-count-for="${area.id}"]`);
+      const update = ()=>{
+        if(counter) counter.textContent = area.value.length;
+      };
+      area.addEventListener("input", update);
+      update();
+    });
 
     function updateProgress(){
       const done = requiredGroups.filter(q=>{
@@ -771,12 +821,9 @@
       progressText.textContent = `已完成 ${pct}%`;
     }
 
-    comment.addEventListener("input", ()=>{
-      commentCount.textContent = comment.value.length;
-    });
-
     function validateForm(){
       let firstInvalid = null;
+
       requiredGroups.forEach(q=>{
         const name = q.dataset.requiredGroup;
         const valid = !!q.querySelector(`input[name="${name}"]:checked`);
@@ -818,12 +865,16 @@
         vts_evidence: Number(getRadio("vts_evidence")),
         feedback_confidence: Number(getRadio("feedback_confidence")),
 
+        reflection_discovery: form.elements.reflection_discovery.value.trim(),
+        practice_transfer: form.elements.practice_transfer.value.trim(),
+
         course_difficulty: getRadio("course_difficulty"),
         course_pace: getRadio("course_pace"),
         practice_time: getRadio("practice_time"),
-
-        most_helpful_activity: getArray("most_helpful_activity"),
         impressive_activity: getArray("impressive_activity"),
+        touch_reason: form.elements.touch_reason.value.trim(),
+
+        derole_status: getRadio("derole_status"),
 
         future_topic: getArray("future_topic"),
         future_participation: Number(getRadio("future_participation")),
@@ -877,7 +928,8 @@
       form.reset();
       document.querySelectorAll(".choice").forEach(x=>x.classList.remove("selected"));
       document.querySelectorAll(".question").forEach(x=>x.classList.remove("invalid"));
-      commentCount.textContent = "0";
+      document.querySelectorAll("[data-count-for]").forEach(x=>x.textContent = "0");
+      document.getElementById("deroleHelp").classList.remove("show");
       successPanel.classList.remove("show");
       form.style.display = "";
       document.querySelector(".progress-wrap").style.display = "";
