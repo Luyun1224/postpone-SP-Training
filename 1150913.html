@@ -445,14 +445,33 @@
 
 
     <form id="surveyForm" novalidate>
-      <input type="hidden" name="course_id" value="CMH_SP_ADVANCED_1150913">
-      <input type="hidden" name="course_date" value="2026-09-13">
 
       <div class="section-label"><span class="dot"></span>基本資料</div>
 
-      <section class="question" data-required-group="sp_experience">
+      <section class="question" data-required-text="sp_name">
         <div class="qtop">
           <div class="qnum">1</div>
+          <div>
+            <h2 class="qtitle">您的姓名<span class="required">＊</span></h2>
+            <p class="hint">僅供本次課程回饋與後續聯繫使用。</p>
+          </div>
+        </div>
+        <input
+          type="text"
+          name="sp_name"
+          id="sp_name"
+          maxlength="30"
+          autocomplete="name"
+          placeholder="請輸入姓名"
+          style="width:100%;min-height:56px;border:1.5px solid #C9D9E0;border-radius:14px;padding:12px 14px;color:var(--text);background:#fff;"
+        />
+        <div class="error">請輸入姓名。</div>
+      </section>
+
+
+      <section class="question" data-required-group="sp_experience">
+        <div class="qtop">
+          <div class="qnum">2</div>
           <div>
             <h2 class="qtitle">您擔任奇美醫院標準化病人（SP）大約多久？<span class="required">＊</span></h2>
           </div>
@@ -471,7 +490,7 @@
 
       <section class="question" data-required-group="overall_satisfaction">
         <div class="qtop">
-          <div class="qnum">2</div>
+          <div class="qnum">3</div>
           <div>
             <h2 class="qtitle">您對今天整體課程安排（內容設計、引導方式與互動體驗）的滿意度如何？<span class="required">＊</span></h2>
           </div>
@@ -488,7 +507,7 @@
 
       <section class="question" data-required-group="practical_helpfulness">
         <div class="qtop">
-          <div class="qnum">3</div>
+          <div class="qnum">4</div>
           <div><h2 class="qtitle">今天的課程內容，對您擔任標準化病人有幫助嗎？<span class="required">＊</span></h2></div>
         </div>
         <div class="options five">
@@ -504,7 +523,7 @@
       <div class="section-label"><span class="dot"></span>學習成效</div>
 
       <section class="question" data-required-group="self_awareness">
-        <div class="qtop"><div class="qnum">4</div><div><h2 class="qtitle">經過今天的課程，我更能察覺自己的表情、語氣、動作與情緒反應。<span class="required">＊</span></h2></div></div>
+        <div class="qtop"><div class="qnum">5</div><div><h2 class="qtitle">經過今天的課程，我更能察覺自己的表情、語氣、動作與情緒反應。<span class="required">＊</span></h2></div></div>
         <div class="options five">
           <label class="choice"><input type="radio" name="self_awareness" value="5"><span class="emoji">🌟</span><span class="label-text">非常同意</span></label>
           <label class="choice"><input type="radio" name="self_awareness" value="4"><span class="emoji">👍</span><span class="label-text">同意</span></label>
@@ -516,7 +535,7 @@
       </section>
 
       <section class="question" data-required-group="consistency">
-        <div class="qtop"><div class="qnum">5</div><div>
+        <div class="qtop"><div class="qnum">6</div><div>
           <h2 class="qtitle">經過今天的練習，我更了解如何讓每次 SP 演出維持一致。<span class="required">＊</span></h2>
           <p class="hint">例如：症狀呈現、情緒強度、非語言表現與資訊提供方式。</p>
         </div></div>
@@ -531,7 +550,7 @@
       </section>
 
       <section class="question" data-required-group="role_building">
-        <div class="qtop"><div class="qnum">6</div><div><h2 class="qtitle">我更知道如何依照角色的背景、需求與情境，呈現角色。<span class="required">＊</span></h2></div></div>
+        <div class="qtop"><div class="qnum">7</div><div><h2 class="qtitle">我更知道如何依照角色的背景、需求與情境，呈現角色。<span class="required">＊</span></h2></div></div>
         <div class="options five">
           <label class="choice"><input type="radio" name="role_building" value="5"><span class="emoji">🌟</span><span class="label-text">非常同意</span></label>
           <label class="choice"><input type="radio" name="role_building" value="4"><span class="emoji">👍</span><span class="label-text">同意</span></label>
@@ -543,7 +562,7 @@
       </section>
 
       <section class="question" data-required-group="role_motivation">
-        <div class="qtop"><div class="qnum">7</div><div><h2 class="qtitle">經過今天的課程，我更能理解角色的「動機」與行為背後的原因。<span class="required">＊</span></h2></div></div>
+        <div class="qtop"><div class="qnum">8</div><div><h2 class="qtitle">經過今天的課程，我更能理解角色的「動機」與行為背後的原因。<span class="required">＊</span></h2></div></div>
         <div class="options five">
           <label class="choice"><input type="radio" name="role_motivation" value="5"><span class="emoji">🌟</span><span class="label-text">非常同意</span></label>
           <label class="choice"><input type="radio" name="role_motivation" value="4"><span class="emoji">👍</span><span class="label-text">同意</span></label>
@@ -555,7 +574,7 @@
       </section>
 
       <section class="question" data-required-group="vts_observation">
-        <div class="qtop"><div class="qnum">8</div><div><h2 class="qtitle">透過 VTS 的練習，我更能「先觀察、再描述」，而不是直接下判斷。<span class="required">＊</span></h2></div></div>
+        <div class="qtop"><div class="qnum">9</div><div><h2 class="qtitle">透過 VTS 的練習，我更能「先觀察、再描述」，而不是直接下判斷。<span class="required">＊</span></h2></div></div>
         <div class="options five">
           <label class="choice"><input type="radio" name="vts_observation" value="5"><span class="emoji">🌟</span><span class="label-text">非常同意</span></label>
           <label class="choice"><input type="radio" name="vts_observation" value="4"><span class="emoji">👍</span><span class="label-text">同意</span></label>
@@ -567,7 +586,7 @@
       </section>
 
       <section class="question" data-required-group="vts_evidence">
-        <div class="qtop"><div class="qnum">9</div><div><h2 class="qtitle">透過今天的練習，我更能用具體「證據」說明自己的觀察。<span class="required">＊</span></h2></div></div>
+        <div class="qtop"><div class="qnum">10</div><div><h2 class="qtitle">透過今天的練習，我更能用具體「證據」說明自己的觀察。<span class="required">＊</span></h2></div></div>
         <div class="options five">
           <label class="choice"><input type="radio" name="vts_evidence" value="5"><span class="emoji">🌟</span><span class="label-text">非常同意</span></label>
           <label class="choice"><input type="radio" name="vts_evidence" value="4"><span class="emoji">👍</span><span class="label-text">同意</span></label>
@@ -579,7 +598,7 @@
       </section>
 
       <section class="question" data-required-group="feedback_confidence">
-        <div class="qtop"><div class="qnum">10</div><div><h2 class="qtitle">經過今天的課程，我更有信心觀察其他 SP 的演出並提供回饋。<span class="required">＊</span></h2></div></div>
+        <div class="qtop"><div class="qnum">11</div><div><h2 class="qtitle">經過今天的課程，我更有信心觀察其他 SP 的演出並提供回饋。<span class="required">＊</span></h2></div></div>
         <div class="options five">
           <label class="choice"><input type="radio" name="feedback_confidence" value="5"><span class="emoji">🌟</span><span class="label-text">非常同意</span></label>
           <label class="choice"><input type="radio" name="feedback_confidence" value="4"><span class="emoji">👍</span><span class="label-text">同意</span></label>
@@ -594,7 +613,7 @@
 
       <section class="question">
         <div class="qtop">
-          <div class="qnum">11</div>
+          <div class="qnum">12</div>
           <div>
             <h2 class="qtitle">經過今天的課程演練與交流，我重新看見／發現了：</h2>
             <p class="hint">可分享對自己演出或角色型塑的新發現，例如如何從具體客觀線索理解角色內在。</p>
@@ -606,7 +625,7 @@
 
       <section class="question">
         <div class="qtop">
-          <div class="qnum">12</div>
+          <div class="qnum">13</div>
           <div>
             <h2 class="qtitle">離開這間教室後，我最想帶回實務現場（演練或回饋）的是：</h2>
             <p class="hint">可以是一個關鍵觀念、一種維持演出一致性的具體作法、一句鼓勵自己的話或一份感受。</p>
@@ -619,7 +638,7 @@
       <div class="section-label"><span class="dot"></span>課程設計</div>
 
       <section class="question" data-required-group="course_difficulty">
-        <div class="qtop"><div class="qnum">13</div><div><h2 class="qtitle">今天的課程難度對您來說如何？<span class="required">＊</span></h2></div></div>
+        <div class="qtop"><div class="qnum">14</div><div><h2 class="qtitle">今天的課程難度對您來說如何？<span class="required">＊</span></h2></div></div>
         <div class="options three">
           <label class="choice"><input type="radio" name="course_difficulty" value="too_easy"><span class="emoji">🟦</span><span class="label-text">太簡單</span></label>
           <label class="choice"><input type="radio" name="course_difficulty" value="just_right"><span class="emoji">🟢</span><span class="label-text">剛剛好</span></label>
@@ -629,7 +648,7 @@
       </section>
 
       <section class="question" data-required-group="course_pace">
-        <div class="qtop"><div class="qnum">14</div><div><h2 class="qtitle">今天的課程節奏如何？<span class="required">＊</span></h2></div></div>
+        <div class="qtop"><div class="qnum">15</div><div><h2 class="qtitle">今天的課程節奏如何？<span class="required">＊</span></h2></div></div>
         <div class="options three">
           <label class="choice"><input type="radio" name="course_pace" value="too_slow"><span class="emoji">🐢</span><span class="label-text">有點太慢</span></label>
           <label class="choice"><input type="radio" name="course_pace" value="just_right"><span class="emoji">👌</span><span class="label-text">剛剛好</span></label>
@@ -639,7 +658,7 @@
       </section>
 
       <section class="question" data-required-group="practice_time">
-        <div class="qtop"><div class="qnum">15</div><div><h2 class="qtitle">今天「實際練習與互動」的時間足夠嗎？<span class="required">＊</span></h2></div></div>
+        <div class="qtop"><div class="qnum">16</div><div><h2 class="qtitle">今天「實際練習與互動」的時間足夠嗎？<span class="required">＊</span></h2></div></div>
         <div class="options three">
           <label class="choice"><input type="radio" name="practice_time" value="enough"><span class="emoji">👍</span><span class="label-text">足夠</span></label>
           <label class="choice"><input type="radio" name="practice_time" value="okay"><span class="emoji">🙂</span><span class="label-text">還可以</span></label>
@@ -652,7 +671,7 @@
 
       <section class="question">
         <div class="qtop">
-          <div class="qnum">16</div>
+          <div class="qnum">17</div>
           <div>
             <h2 class="qtitle">今天哪些課程單元與演練環節最觸動您？</h2>
             <p class="hint">可複選。</p>
@@ -671,7 +690,7 @@
 
       <section class="question">
         <div class="qtop">
-          <div class="qnum">17</div>
+          <div class="qnum">18</div>
           <div>
             <h2 class="qtitle">上述環節中，最觸動您的原因或感想是：</h2>
             <p class="hint">簡短寫下一句也可以。</p>
@@ -685,7 +704,7 @@
 
       <section class="question" data-required-group="derole_status">
         <div class="qtop">
-          <div class="qnum">18</div>
+          <div class="qnum">19</div>
           <div>
             <h2 class="qtitle">經過課末的角色離場（De-role）與情緒歸位引導後，您目前的感受狀態為：<span class="required">＊</span></h2>
           </div>
@@ -702,7 +721,7 @@
 
       <section class="question">
         <div class="qtop">
-          <div class="qnum">19</div>
+          <div class="qnum">20</div>
           <div>
             <h2 class="qtitle">展望未來的 SP 專業發展，您最希望進一步學習或實作演練的主題為：</h2>
             <p class="hint">可複選。</p>
@@ -722,7 +741,7 @@
       </section>
 
       <section class="question" data-required-group="future_participation">
-        <div class="qtop"><div class="qnum">20</div><div><h2 class="qtitle">如果未來還有類似的進階課程，您願意再參加嗎？<span class="required">＊</span></h2></div></div>
+        <div class="qtop"><div class="qnum">21</div><div><h2 class="qtitle">如果未來還有類似的進階課程，您願意再參加嗎？<span class="required">＊</span></h2></div></div>
         <div class="options two">
           <label class="choice"><input type="radio" name="future_participation" value="4"><span class="emoji">🌟</span><span class="label-text">非常願意</span></label>
           <label class="choice"><input type="radio" name="future_participation" value="3"><span class="emoji">😊</span><span class="label-text">願意</span></label>
@@ -736,7 +755,7 @@
 
       <section class="question">
         <div class="qtop">
-          <div class="qnum">21</div>
+          <div class="qnum">22</div>
           <div>
             <h2 class="qtitle">對於本次課程或未來的教學安排，您有任何寶貴建議，或想對講師團隊說的話嗎？</h2>
             <p class="hint">一句話也可以 😊</p>
@@ -748,7 +767,7 @@
 
       <div class="action-panel">
         <button class="submit-btn" id="submitBtn" type="submit">送出回饋</button>
-        <p class="privacy">本問卷不蒐集姓名；資料僅供課程成效分析、反思紀錄與後續教學改善使用。</p>
+        <p class="privacy">本問卷資料僅供本次課程成效分析、反思紀錄與後續教學改善使用。</p>
       </div>
     </form>
 
@@ -776,6 +795,7 @@
     const progressBar = document.getElementById("progressBar");
     const progressText = document.getElementById("progressText");
     const requiredGroups = [...document.querySelectorAll("[data-required-group]")];
+    const requiredTexts = [...document.querySelectorAll("[data-required-text]")];
 
     function updateChoiceState(input){
       const name = input.name;
@@ -802,6 +822,14 @@
       });
     });
 
+    document.querySelectorAll('[data-required-text] input').forEach(input=>{
+      input.addEventListener("input", ()=>{
+        const q = input.closest(".question");
+        if(input.value.trim()) q?.classList.remove("invalid");
+        updateProgress();
+      });
+    });
+
     document.querySelectorAll("textarea[maxlength]").forEach(area=>{
       const counter = document.querySelector(`[data-count-for="${area.id}"]`);
       const update = ()=>{
@@ -812,17 +840,35 @@
     });
 
     function updateProgress(){
-      const done = requiredGroups.filter(q=>{
+      const radioDone = requiredGroups.filter(q=>{
         const name = q.dataset.requiredGroup;
         return q.querySelector(`input[name="${name}"]:checked`);
       }).length;
-      const pct = Math.round((done / requiredGroups.length) * 100);
+
+      const textDone = requiredTexts.filter(q=>{
+        const name = q.dataset.requiredText;
+        const field = q.querySelector(`[name="${name}"]`);
+        return field && field.value.trim().length > 0;
+      }).length;
+
+      const total = requiredGroups.length + requiredTexts.length;
+      const done = radioDone + textDone;
+      const pct = total ? Math.round((done / total) * 100) : 100;
+
       progressBar.style.width = pct + "%";
       progressText.textContent = `已完成 ${pct}%`;
     }
 
     function validateForm(){
       let firstInvalid = null;
+
+      requiredTexts.forEach(q=>{
+        const name = q.dataset.requiredText;
+        const field = q.querySelector(`[name="${name}"]`);
+        const valid = !!field && field.value.trim().length > 0;
+        q.classList.toggle("invalid", !valid);
+        if(!valid && !firstInvalid) firstInvalid = q;
+      });
 
       requiredGroups.forEach(q=>{
         const name = q.dataset.requiredGroup;
@@ -848,10 +894,8 @@
 
     function buildPayload(){
       return {
-        course_id: form.elements.course_id.value,
-        course_date: form.elements.course_date.value,
-        submitted_at: new Date().toISOString(),
 
+        sp_name: form.elements.sp_name.value.trim(),
         sp_experience: getRadio("sp_experience"),
 
         overall_satisfaction: Number(getRadio("overall_satisfaction")),
