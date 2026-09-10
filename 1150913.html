@@ -600,16 +600,16 @@
       <div class="section-label"><span class="dot"></span>最有感的學習活動</div>
 
       <section class="question" data-required-group="most_helpful_activity">
-        <div class="qtop"><div class="qnum">14</div><div><h2 class="qtitle">今天哪一個部分對您最有幫助？<span class="required">＊</span></h2></div></div>
+        <div class="qtop"><div class="qnum">14</div><div><h2 class="qtitle">今天哪一個部分對您最有幫助？<span class="required">＊</span></h2><p class="hint">可複選，不限選擇數量。</p></div></div>
         <div class="options two">
-          <label class="choice"><input type="radio" name="most_helpful_activity" value="self_awareness"><span class="emoji">🔍</span><span class="label-text">自我覺察</span></label>
-          <label class="choice"><input type="radio" name="most_helpful_activity" value="consistency"><span class="emoji">⚖️</span><span class="label-text">一致性</span></label>
-          <label class="choice"><input type="radio" name="most_helpful_activity" value="role_building"><span class="emoji">🎭</span><span class="label-text">角色型塑</span></label>
-          <label class="choice"><input type="radio" name="most_helpful_activity" value="vts"><span class="emoji">👁️</span><span class="label-text">VTS 視覺思考</span></label>
-          <label class="choice"><input type="radio" name="most_helpful_activity" value="integrated_practice"><span class="emoji">🤝</span><span class="label-text">整合演練</span></label>
-          <label class="choice"><input type="radio" name="most_helpful_activity" value="discussion"><span class="emoji">💬</span><span class="label-text">分享與討論</span></label>
+          <label class="choice"><input type="checkbox" name="most_helpful_activity" value="self_awareness"><span class="emoji">🔍</span><span class="label-text">自我覺察</span></label>
+          <label class="choice"><input type="checkbox" name="most_helpful_activity" value="consistency"><span class="emoji">⚖️</span><span class="label-text">一致性</span></label>
+          <label class="choice"><input type="checkbox" name="most_helpful_activity" value="role_building"><span class="emoji">🎭</span><span class="label-text">角色型塑</span></label>
+          <label class="choice"><input type="checkbox" name="most_helpful_activity" value="vts"><span class="emoji">👁️</span><span class="label-text">VTS 視覺思考</span></label>
+          <label class="choice"><input type="checkbox" name="most_helpful_activity" value="integrated_practice"><span class="emoji">🤝</span><span class="label-text">整合演練</span></label>
+          <label class="choice"><input type="checkbox" name="most_helpful_activity" value="discussion"><span class="emoji">💬</span><span class="label-text">分享與討論</span></label>
         </div>
-        <div class="error">請選擇一個答案。</div>
+        <div class="error">請至少選擇一個答案。</div>
       </section>
 
       <section class="question">
@@ -617,10 +617,10 @@
           <div class="qnum">15</div>
           <div>
             <h2 class="qtitle">今天哪一些部分最讓您印象深刻？</h2>
-            <p class="hint">可複選，最多選 2 項。</p>
+            <p class="hint">可複選，不限選擇數量。</p>
           </div>
         </div>
-        <div class="options two" data-max-check="2" data-max-name="impressive_activity">
+        <div class="options two">
           <label class="choice"><input type="checkbox" name="impressive_activity" value="self_awareness"><span class="emoji">🔍</span><span class="label-text">自我覺察</span></label>
           <label class="choice"><input type="checkbox" name="impressive_activity" value="consistency"><span class="emoji">⚖️</span><span class="label-text">一致性</span></label>
           <label class="choice"><input type="checkbox" name="impressive_activity" value="role_building"><span class="emoji">🎭</span><span class="label-text">角色型塑</span></label>
@@ -628,7 +628,6 @@
           <label class="choice"><input type="checkbox" name="impressive_activity" value="integrated_practice"><span class="emoji">🤝</span><span class="label-text">整合演練</span></label>
           <label class="choice"><input type="checkbox" name="impressive_activity" value="discussion"><span class="emoji">💬</span><span class="label-text">分享與討論</span></label>
         </div>
-        <div class="error" id="impressiveError">最多只能選 2 項。</div>
       </section>
 
       <div class="section-label"><span class="dot"></span>未來學習需求</div>
@@ -823,7 +822,7 @@
         course_pace: getRadio("course_pace"),
         practice_time: getRadio("practice_time"),
 
-        most_helpful_activity: getRadio("most_helpful_activity"),
+        most_helpful_activity: getArray("most_helpful_activity"),
         impressive_activity: getArray("impressive_activity"),
 
         future_topic: getArray("future_topic"),
