@@ -497,7 +497,7 @@
         <span class="pill">⚖️ 一致性</span>
         <span class="pill">🎭 角色型塑</span>
         <span class="pill">👁️ VTS</span>
-        <span class="pill">🔗 Web App 已連線</span>
+        <span class="pill">🔗 GAS 同源即時讀取</span>
         <span class="pill" id="updatedAt">資料讀取中…</span>
       </div>
     </header>
@@ -725,22 +725,23 @@
     });
 
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxWQS0nT481QXvRdHs-lhbqZDgI4ICUx0YSMdScVryqUt9myPy954PtOVOEJPqaUasa/exec";
-    const DASHBOARD_KEY = "CMH-SP-0913-2026";
-    const DASHBOARD_URL = "https://script.google.com/macros/s/AKfycbxWQS0nT481QXvRdHs-lhbqZDgI4ICUx0YSMdScVryqUt9myPy954PtOVOEJPqaUasa/exec?key=CMH-SP-0913-2026";
+    const DASHBOARD_URL = WEB_APP_URL;
 
     let DASHBOARD_DATA = null;
-    let ACCESS_KEY = '';
-
-    function getAccessKey(){
-      const params = new URLSearchParams(window.location.search);
-      return params.get('key') || DASHBOARD_KEY;
-    }
-
     function loadDashboard(){
-      ACCESS_KEY = getAccessKey();
-
       document.getElementById('loadingBox').classList.remove('hidden');
       document.getElementById('errorBox').classList.remove('show');
+
+      if (
+        typeof google === 'undefined' ||
+        !google.script ||
+        !google.script.run
+      ){
+        showError(
+          '目前這個 Dashboard 不是由 Google Apps Script Web App 開啟。請使用正式 /exec 網址開啟儀表板。'
+        );
+        return;
+      }
 
       google.script.run
         .withSuccessHandler(data => {
@@ -750,7 +751,7 @@
         .withFailureHandler(err => {
           showError(err && err.message ? err.message : String(err));
         })
-        .getDashboardData(ACCESS_KEY);
+        .getDashboardData();
     }
 
     function showError(message){
