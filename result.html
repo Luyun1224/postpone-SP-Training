@@ -468,6 +468,455 @@
       details{break-inside:avoid}
       details:not([open]) .detail-content{display:block}
     }
+
+    /* ===== 溫馨成果故事板 v2 ===== */
+    :root{
+      --cream:#FBF7EF;
+      --cream-2:#FFFDF8;
+      --sage:#789C88;
+      --sage-soft:#EAF3EC;
+      --butter:#F2D98B;
+      --butter-soft:#FFF4C9;
+      --peach:#E8A78F;
+      --peach-soft:#FBE5DC;
+      --rose:#D88E9A;
+      --rose-soft:#F8E3E7;
+      --sky:#8FB6C8;
+      --sky-soft:#E7F1F5;
+      --lavender:#A9A2C8;
+      --lavender-soft:#EFECF8;
+      --ink:#294452;
+      --warm-shadow:0 12px 30px rgba(58,79,71,.08);
+    }
+
+    body{
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 8% 4%,rgba(242,217,139,.22),transparent 18rem),
+        radial-gradient(circle at 92% 7%,rgba(143,182,200,.18),transparent 23rem),
+        linear-gradient(180deg,#FCFAF5 0%,#F6F8F4 52%,#FAF7F1 100%);
+    }
+
+    .app{width:min(1480px,calc(100% - 28px));}
+
+    .hero{
+      background:
+        radial-gradient(circle at 92% 22%,rgba(255,255,255,.09),transparent 16rem),
+        linear-gradient(130deg,#244F67 0%,#315F6B 56%,#557C70 100%);
+      box-shadow:0 18px 42px rgba(35,75,89,.14);
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    .hero::before{
+      content:"";
+      position:absolute;
+      width:120px;height:74px;
+      right:255px;bottom:-18px;
+      opacity:.15;
+      background:
+        radial-gradient(ellipse at center,#fff 0 18%,transparent 19% 100%);
+      transform:rotate(-8deg);
+    }
+
+    .hero p{
+      color:#EDF5F1;
+      font-size:1rem;
+      max-width:930px;
+    }
+
+    .pill{
+      background:rgba(255,255,255,.14);
+      border-color:rgba(255,255,255,.18);
+    }
+
+    .loading{
+      background:#FFFDF8;
+      border-color:#E7DFD0;
+    }
+
+    .highlight-wrap{
+      margin-top:18px;
+      padding:18px;
+      border-radius:22px;
+      background:
+        linear-gradient(135deg,rgba(255,255,255,.88),rgba(255,253,247,.95));
+      border:1px solid #E9E1D4;
+      box-shadow:var(--warm-shadow);
+    }
+
+    .highlight-head{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:16px;
+      margin-bottom:13px;
+    }
+
+    .highlight-head h2{
+      margin:0;
+      color:#315A61;
+      font-size:1.18rem;
+    }
+
+    .highlight-head p{
+      margin:3px 0 0;
+      color:#7A887F;
+      font-size:.84rem;
+    }
+
+    .highlight-grid{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:12px;
+    }
+
+    .highlight-card{
+      min-height:132px;
+      padding:17px;
+      border-radius:18px;
+      position:relative;
+      overflow:hidden;
+      border:1px solid rgba(90,112,100,.10);
+      transition:transform .18s ease,box-shadow .18s ease;
+    }
+
+    .highlight-card:hover{
+      transform:translateY(-2px);
+      box-shadow:0 10px 24px rgba(76,97,87,.11);
+    }
+
+    .highlight-card.c1{background:var(--butter-soft)}
+    .highlight-card.c2{background:var(--sage-soft)}
+    .highlight-card.c3{background:var(--sky-soft)}
+    .highlight-card.c4{background:var(--peach-soft)}
+
+    .highlight-icon{
+      font-size:1.45rem;
+      margin-bottom:10px;
+    }
+
+    .highlight-label{
+      color:#6F776F;
+      font-size:.77rem;
+      font-weight:900;
+      letter-spacing:.04em;
+    }
+
+    .highlight-main{
+      margin-top:5px;
+      color:#2E555B;
+      font-size:1.18rem;
+      font-weight:900;
+      line-height:1.35;
+    }
+
+    .highlight-note{
+      margin-top:6px;
+      color:#64766C;
+      font-size:.78rem;
+      line-height:1.45;
+    }
+
+    .kpi-grid{
+      gap:13px;
+      margin-top:16px;
+    }
+
+    .kpi{
+      border:1px solid rgba(95,125,111,.13);
+      box-shadow:0 8px 22px rgba(70,92,82,.06);
+      background:var(--cream-2);
+      padding:17px;
+    }
+
+    .kpi::before{display:none}
+
+    .kpi-icon{
+      width:38px;height:38px;
+      display:grid;place-items:center;
+      border-radius:13px;
+      margin-bottom:10px;
+      font-size:1.15rem;
+      background:#EFF5F1;
+    }
+
+    .kpi.kpi-a .kpi-icon{background:var(--sky-soft)}
+    .kpi.kpi-b .kpi-icon{background:var(--butter-soft)}
+    .kpi.kpi-c .kpi-icon{background:var(--sage-soft)}
+    .kpi.kpi-d .kpi-icon{background:var(--lavender-soft)}
+    .kpi.kpi-e .kpi-icon{background:#E9F3F1}
+    .kpi.kpi-f .kpi-icon{background:var(--peach-soft)}
+
+    .kpi-label{color:#697E78}
+    .kpi-value{color:#315A61}
+    .kpi-sub{color:#83908A}
+
+    .section-title{
+      margin-top:34px;
+      padding:0 4px 9px;
+      border-bottom:1px dashed #D7DDD6;
+      align-items:flex-end;
+    }
+
+    .section-title h2{
+      color:#315A61;
+      font-size:1.27rem;
+    }
+
+    .section-title span{
+      color:#8A938C;
+      max-width:50%;
+      text-align:right;
+    }
+
+    .card{
+      background:rgba(255,253,249,.95);
+      border:1px solid #E4E2DA;
+      box-shadow:var(--warm-shadow);
+      border-radius:21px;
+    }
+
+    .card-title h3{color:#315A61}
+
+    .insight{
+      background:linear-gradient(135deg,#F0F7F1,#F8F5E9);
+      border-color:#D8E6DA;
+    }
+
+    .insight-icon{
+      background:#FFFDF8;
+      box-shadow:0 4px 12px rgba(86,105,94,.08);
+    }
+
+    .insight strong{color:#577B68}
+
+    .story-callout{
+      margin-top:14px;
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      padding:15px 17px;
+      border-radius:16px;
+      background:#FFF8DE;
+      border:1px solid #EEDFAD;
+      color:#665D3E;
+    }
+
+    .story-callout .story-icon{
+      width:38px;height:38px;
+      flex:0 0 38px;
+      display:grid;place-items:center;
+      border-radius:12px;
+      background:#fff;
+      font-size:1.1rem;
+    }
+
+    .story-callout strong{
+      display:block;
+      color:#76602D;
+      margin-bottom:3px;
+    }
+
+    .story-callout p{
+      margin:0;
+      font-size:.87rem;
+    }
+
+    /* 便利貼反思牆 */
+    .reflection-board{
+      position:relative;
+      overflow:hidden;
+      padding:22px;
+      border-radius:24px;
+      border:1px solid #E1D7C7;
+      background:
+        linear-gradient(rgba(255,255,255,.28),rgba(255,255,255,.28)),
+        repeating-linear-gradient(
+          0deg,
+          #EDE4D6 0px,
+          #EDE4D6 1px,
+          #F5EDDF 1px,
+          #F5EDDF 22px
+        );
+      box-shadow:inset 0 0 36px rgba(115,90,60,.035),var(--warm-shadow);
+    }
+
+    .reflection-board::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      opacity:.24;
+      background:
+        radial-gradient(circle at 11% 12%,#B8A88C 0 1px,transparent 1.5px),
+        radial-gradient(circle at 83% 42%,#B8A88C 0 1px,transparent 1.5px);
+      background-size:34px 34px,41px 41px;
+    }
+
+    .reflection-intro{
+      position:relative;
+      z-index:1;
+      max-width:860px;
+      margin:0 0 18px;
+      color:#6F685D;
+      font-size:.9rem;
+      line-height:1.7;
+    }
+
+    .reflection-grid{
+      position:relative;
+      z-index:1;
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:18px;
+    }
+
+    .reflection-group{
+      background:rgba(255,255,255,.42);
+      border:1px solid rgba(133,113,86,.10);
+      border-radius:18px;
+      padding:15px;
+      backdrop-filter:blur(2px);
+    }
+
+    .reflection-group-title{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:center;
+      margin-bottom:13px;
+      color:#4E655C;
+      font-weight:900;
+    }
+
+    .reflection-count{
+      min-width:30px;
+      height:26px;
+      display:inline-grid;
+      place-items:center;
+      padding:0 8px;
+      border-radius:999px;
+      background:rgba(255,255,255,.72);
+      color:#718078;
+      font-size:.75rem;
+    }
+
+    .sticky-wall{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:14px;
+      align-items:start;
+    }
+
+    .sticky-note{
+      --note:#FFF2A8;
+      position:relative;
+      min-height:120px;
+      padding:27px 16px 16px;
+      border-radius:4px 4px 14px 4px;
+      background:
+        linear-gradient(145deg,rgba(255,255,255,.22),transparent 38%),
+        var(--note);
+      box-shadow:
+        0 8px 16px rgba(83,74,52,.11),
+        inset 0 -1px 0 rgba(255,255,255,.45);
+      color:#4F5149;
+      font-size:.88rem;
+      line-height:1.65;
+      transform:rotate(-.7deg);
+      transition:transform .18s ease,box-shadow .18s ease;
+      word-break:break-word;
+    }
+
+    .sticky-note:nth-child(2n){transform:rotate(.8deg)}
+    .sticky-note:nth-child(3n){transform:rotate(-1.2deg)}
+    .sticky-note:nth-child(4n){transform:rotate(.4deg)}
+
+    .sticky-note:hover{
+      transform:rotate(0) translateY(-3px) scale(1.012);
+      box-shadow:0 12px 22px rgba(83,74,52,.15);
+      z-index:3;
+    }
+
+    .sticky-note::before{
+      content:"";
+      position:absolute;
+      width:58px;height:18px;
+      top:-8px;left:50%;
+      transform:translateX(-50%) rotate(-2deg);
+      border-radius:2px;
+      background:rgba(255,255,255,.48);
+      box-shadow:0 1px 2px rgba(50,50,40,.06);
+    }
+
+    .sticky-note.note-yellow{--note:#FFF0A6}
+    .sticky-note.note-green{--note:#DDEFCB}
+    .sticky-note.note-pink{--note:#F7D7D8}
+    .sticky-note.note-blue{--note:#DCECF4}
+
+    .sticky-empty{
+      min-height:110px;
+      display:grid;
+      place-items:center;
+      border:1px dashed rgba(112,103,88,.25);
+      border-radius:12px;
+      color:#8F8A80;
+      background:rgba(255,255,255,.38);
+      text-align:center;
+      padding:15px;
+    }
+
+    .more-notes-btn{
+      grid-column:1/-1;
+      justify-self:center;
+      min-height:38px;
+      border:1px solid rgba(101,120,109,.18);
+      border-radius:999px;
+      padding:0 15px;
+      background:rgba(255,255,255,.78);
+      color:#5F786B;
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    .more-notes-btn:hover{background:#fff}
+
+    .keyword-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:14px;
+    }
+
+    .keyword-chip{
+      padding:7px 11px;
+      border-radius:999px;
+      border:1px solid #DBE5DB;
+      background:#F5FAF5;
+      color:#61786B;
+      font-size:.8rem;
+      font-weight:800;
+    }
+
+    @media (max-width:1100px){
+      .highlight-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+
+    @media (max-width:760px){
+      .highlight-head{display:block}
+      .highlight-grid{grid-template-columns:1fr}
+      .reflection-grid{grid-template-columns:1fr}
+      .sticky-wall{grid-template-columns:1fr}
+      .section-title span{max-width:100%;text-align:left}
+    }
+
+    @media print{
+      .highlight-wrap,.reflection-board{box-shadow:none}
+      .reflection-grid{grid-template-columns:1fr 1fr}
+      .sticky-note{break-inside:avoid}
+      .more-notes-btn{display:none!important}
+    }
+
   </style>
 </head>
 
@@ -479,8 +928,8 @@
           <div class="eyebrow">奇美醫院教學部・臨床技能中心</div>
           <h1>標準化病人進階課程｜問卷成效儀表板</h1>
           <p>
-            即時整合課程滿意度、學習成效、課程設計、核心觸動、
-            De-role 狀態、未來學習需求與質性反思。
+            一起看見學習的成長、感動與下一步。從量化成果到每一段真實反思，
+            讓課程成效不只是數字，也留下 SP 夥伴的學習軌跡。
           </p>
         </div>
 
@@ -504,38 +953,83 @@
     <div class="loading" id="loadingBox">正在讀取 Google Sheet 資料並建立圖表…</div>
     <div class="error-box" id="errorBox"></div>
 
+    <section class="highlight-wrap">
+      <div class="highlight-head">
+        <div>
+          <h2>✨ 本次課程亮點</h2>
+          <p>先看結論，再往下探索每一項學習成果。</p>
+        </div>
+      </div>
+
+      <div class="highlight-grid">
+        <article class="highlight-card c1">
+          <div class="highlight-icon">🌟</div>
+          <div class="highlight-label">整體感受</div>
+          <div class="highlight-main" id="highlightSatisfaction">資料整理中…</div>
+          <div class="highlight-note" id="highlightSatisfactionNote">—</div>
+        </article>
+
+        <article class="highlight-card c2">
+          <div class="highlight-icon">🌱</div>
+          <div class="highlight-label">最突出的學習收穫</div>
+          <div class="highlight-main" id="highlightLearning">資料整理中…</div>
+          <div class="highlight-note" id="highlightLearningNote">—</div>
+        </article>
+
+        <article class="highlight-card c3">
+          <div class="highlight-icon">🧭</div>
+          <div class="highlight-label">下一步最期待</div>
+          <div class="highlight-main" id="highlightFuture">資料整理中…</div>
+          <div class="highlight-note" id="highlightFutureNote">—</div>
+        </article>
+
+        <article class="highlight-card c4">
+          <div class="highlight-icon">🤍</div>
+          <div class="highlight-label">De-role 關懷</div>
+          <div class="highlight-main" id="highlightCare">資料整理中…</div>
+          <div class="highlight-note" id="highlightCareNote">—</div>
+        </article>
+      </div>
+    </section>
+
     <section class="kpi-grid">
-      <article class="kpi">
+      <article class="kpi kpi-a">
+        <div class="kpi-icon">📮</div>
         <div class="kpi-label">有效回覆</div>
         <div class="kpi-value" id="kpiResponses">—</div>
         <div class="kpi-sub">目前累積填答人數</div>
       </article>
 
-      <article class="kpi">
+      <article class="kpi kpi-b">
+        <div class="kpi-icon">⭐</div>
         <div class="kpi-label">整體滿意度</div>
         <div class="kpi-value" id="kpiSatisfaction">—</div>
         <div class="kpi-sub" id="kpiSatisfactionSub">5 分量表</div>
       </article>
 
-      <article class="kpi">
+      <article class="kpi kpi-c">
+        <div class="kpi-icon">🪴</div>
         <div class="kpi-label">課程實務幫助度</div>
         <div class="kpi-value" id="kpiHelpfulness">—</div>
         <div class="kpi-sub" id="kpiHelpfulnessSub">5 分量表</div>
       </article>
 
-      <article class="kpi">
+      <article class="kpi kpi-d">
+        <div class="kpi-icon">🎯</div>
         <div class="kpi-label">整體學習成效</div>
         <div class="kpi-value" id="kpiLearning">—</div>
         <div class="kpi-sub">7 項核心學習指標平均</div>
       </article>
 
-      <article class="kpi">
+      <article class="kpi kpi-e">
+        <div class="kpi-icon">🙌</div>
         <div class="kpi-label">再參與意願</div>
         <div class="kpi-value" id="kpiParticipation">—</div>
         <div class="kpi-sub">非常願意＋願意</div>
       </article>
 
-      <article class="kpi" id="supportKpi">
+      <article class="kpi kpi-f" id="supportKpi">
+        <div class="kpi-icon">🌿</div>
         <div class="kpi-label">De-role 需協助</div>
         <div class="kpi-value" id="kpiSupport">—</div>
         <div class="kpi-sub">仍受角色情緒影響者</div>
@@ -543,7 +1037,7 @@
     </section>
 
     <div class="section-title">
-      <h2>一、核心學習成效</h2>
+      <h2>🌱 一、核心學習成效</h2>
       <span>各指標皆為 1–5 分</span>
     </div>
 
@@ -586,7 +1080,7 @@
     </section>
 
     <div class="section-title">
-      <h2>二、課程設計與學習體驗</h2>
+      <h2>🧩 二、課程設計與學習體驗</h2>
       <span>檢視難度、節奏與互動時間是否適切</span>
     </div>
 
@@ -607,8 +1101,16 @@
       </article>
     </section>
 
+    <div class="story-callout">
+      <div class="story-icon">☕</div>
+      <div>
+        <strong>課程設計小結</strong>
+        <p id="designInsightText">資料讀取後，自動整理難度、節奏與實作時間的整體感受。</p>
+      </div>
+    </div>
+
     <div class="section-title">
-      <h2>三、課程核心觸動</h2>
+      <h2>💛 三、課程核心觸動</h2>
       <span>複選題，以勾選次數統計</span>
     </div>
 
@@ -631,7 +1133,7 @@
     </section>
 
     <div class="section-title">
-      <h2>四、角色離場與後續參與</h2>
+      <h2>🌿 四、角色離場與後續參與</h2>
       <span>De-role 狀態與再參與意願</span>
     </div>
 
@@ -659,7 +1161,7 @@
     </section>
 
     <div class="section-title">
-      <h2>五、未來課程需求</h2>
+      <h2>🧭 五、未來課程需求</h2>
       <span>可直接作為下一年度課程規劃依據</span>
     </div>
 
@@ -679,38 +1181,49 @@
     </section>
 
     <div class="section-title">
-      <h2>六、質性反思與建議</h2>
-      <span>為保護個人資料，儀表板不顯示姓名</span>
+      <h2>📝 六、質性反思便利貼牆</h2>
+      <span>不顯示姓名，讓每一段真實聲音都被好好看見</span>
     </div>
 
-    <section class="card">
-      <details open>
-        <summary>💡 重新看見／發現 <span id="countDiscovery"></span></summary>
-        <div class="detail-content">
-          <div class="quotes" id="quotesDiscovery"></div>
-        </div>
-      </details>
+    <section class="reflection-board">
+      <p class="reflection-intro">
+        這裡不是「文字題附件」，而是本次工作坊留下的學習足跡。
+        每張便利貼都代表一位 SP 夥伴的觀察、帶走的想法、被觸動的片刻或給講師團隊的一句話。
+      </p>
 
-      <details>
-        <summary>🎯 最想帶回實務現場的內容 <span id="countTransfer"></span></summary>
-        <div class="detail-content">
-          <div class="quotes" id="quotesTransfer"></div>
+      <div class="reflection-grid">
+        <div class="reflection-group">
+          <div class="reflection-group-title">
+            <span>💡 重新看見／發現</span>
+            <span class="reflection-count" id="countDiscovery">0</span>
+          </div>
+          <div class="sticky-wall" id="quotesDiscovery"></div>
         </div>
-      </details>
 
-      <details>
-        <summary>❤️ 最觸動的原因或感想 <span id="countTouchReason"></span></summary>
-        <div class="detail-content">
-          <div class="quotes" id="quotesTouchReason"></div>
+        <div class="reflection-group">
+          <div class="reflection-group-title">
+            <span>🎯 最想帶回實務現場</span>
+            <span class="reflection-count" id="countTransfer">0</span>
+          </div>
+          <div class="sticky-wall" id="quotesTransfer"></div>
         </div>
-      </details>
 
-      <details>
-        <summary>💬 整體建議與講師留言 <span id="countComments"></span></summary>
-        <div class="detail-content">
-          <div class="quotes" id="quotesComments"></div>
+        <div class="reflection-group">
+          <div class="reflection-group-title">
+            <span>❤️ 最觸動的原因／感想</span>
+            <span class="reflection-count" id="countTouchReason">0</span>
+          </div>
+          <div class="sticky-wall" id="quotesTouchReason"></div>
         </div>
-      </details>
+
+        <div class="reflection-group">
+          <div class="reflection-group-title">
+            <span>💬 想對講師團隊說的話</span>
+            <span class="reflection-count" id="countComments">0</span>
+          </div>
+          <div class="sticky-wall" id="quotesComments"></div>
+        </div>
+      </div>
     </section>
 
     <footer>
@@ -762,22 +1275,74 @@
     function renderAll(data){
       document.getElementById('loadingBox').classList.add('hidden');
 
+      renderHighlights(data);
       renderKpis(data);
       renderLearning(data);
       renderTenureComparison(data);
-      drawPie('difficultyChart', data.distributions.difficulty, ['#0F6B75','#A8C8C3','#D99B3C']);
-      drawPie('paceChart', data.distributions.pace, ['#7CA3B7','#4F8B6A','#D99B3C']);
-      drawPie('practiceChart', data.distributions.practiceTime, ['#4F8B6A','#7CA3B7','#D99B3C']);
-      drawHorizontalBar('touchedChart', data.touchedActivities, '#0F6B75');
-      drawPie('tenureChart', data.distributions.tenure, ['#123A63','#0F6B75','#4F8B6A','#83A9B8','#C4D5DB']);
-      drawPie('deroleChart', data.distributions.deRole, ['#4F8B6A','#D99B3C']);
-      drawPie('participationChart', data.distributions.participation, ['#123A63','#0F6B75','#D99B3C','#AAB7C0']);
-      drawHorizontalBar('futureNeedsChart', data.futureNeeds, '#4F8B6A');
+      drawPie('difficultyChart', data.distributions.difficulty, ['#789C88','#8FB6C8','#E8B46A']);
+      drawPie('paceChart', data.distributions.pace, ['#8FB6C8','#789C88','#E8B46A']);
+      drawPie('practiceChart', data.distributions.practiceTime, ['#789C88','#8FB6C8','#E8B46A']);
+      drawHorizontalBar('touchedChart', data.touchedActivities, '#789C88');
+      drawPie('tenureChart', data.distributions.tenure, ['#315F6B','#789C88','#8FB6C8','#D5B88F','#A9A2C8']);
+      drawPie('deroleChart', data.distributions.deRole, ['#789C88','#E8A78F']);
+      drawPie('participationChart', data.distributions.participation, ['#315F6B','#789C88','#E8B46A','#B8B6B0']);
+      drawHorizontalBar('futureNeedsChart', data.futureNeeds, '#789C88');
       renderQualitative(data.qualitative);
       renderInsights(data);
 
       document.getElementById('updatedAt').textContent =
         '🕒 更新：' + (data.generatedAt || '—');
+    }
+
+
+    function renderHighlights(data){
+      const k = data.kpi || {};
+      const learning = (data.learningDimensions || [])
+        .filter(x => x.value != null)
+        .sort((a,b) => b.value - a.value);
+      const needs = data.futureNeeds || [];
+
+      setText(
+        'highlightSatisfaction',
+        k.satisfactionAvg == null ? '尚無資料' : `${formatScore(k.satisfactionAvg)} / 5`
+      );
+      setText(
+        'highlightSatisfactionNote',
+        k.satisfactionPositiveRate == null
+          ? '等待更多回覆'
+          : `${formatPct(k.satisfactionPositiveRate)} 的填答者給予「滿意以上」評價`
+      );
+
+      if (learning.length){
+        setText('highlightLearning', learning[0].label);
+        setText(
+          'highlightLearningNote',
+          `平均 ${formatScore(learning[0].value)} 分，是目前最突出的學習收穫`
+        );
+      }else{
+        setText('highlightLearning','尚無資料');
+        setText('highlightLearningNote','等待更多回覆');
+      }
+
+      if (needs.length){
+        setText('highlightFuture', shortenLabel(needs[0].label));
+        setText(
+          'highlightFutureNote',
+          `目前有 ${formatInt(needs[0].count)} 次勾選，可優先納入後續課程`
+        );
+      }else{
+        setText('highlightFuture','尚無資料');
+        setText('highlightFutureNote','等待學員提出進階學習需求');
+      }
+
+      const support = Number(k.needsSupportCount || 0);
+      if (support === 0){
+        setText('highlightCare','全員順利離場');
+        setText('highlightCareNote','目前沒有填答者回報需要額外 De-role 協助');
+      }else{
+        setText('highlightCare',`需關懷 ${support} 位`);
+        setText('highlightCareNote','建議由講師／訓練師主動確認情緒歸位狀態');
+      }
     }
 
     function renderKpis(data){
@@ -841,7 +1406,7 @@
       chart.draw(dt,{
         legend:{position:'none'},
         backgroundColor:'transparent',
-        colors:['#0F6B75'],
+        colors:['#789C88'],
         chartArea:{left:130,top:20,width:'68%',height:'80%'},
         hAxis:{
           minValue:0,
@@ -886,7 +1451,7 @@
       chart.draw(dt,{
         legend:{position:'top'},
         backgroundColor:'transparent',
-        colors:['#123A63','#4F8B6A'],
+        colors:['#315F6B','#789C88'],
         chartArea:{left:55,top:45,width:'78%',height:'68%'},
         vAxis:{
           viewWindow:{min:0,max:5},
@@ -1027,30 +1592,68 @@
       }else{
         futureBox.textContent = '目前尚無未來學習需求資料。';
       }
+
+      const dominant = (items) => {
+        if (!items || !items.length) return null;
+        return [...items].sort((a,b) => b.count - a.count)[0];
+      };
+
+      const diff = dominant(data.distributions.difficulty);
+      const pace = dominant(data.distributions.pace);
+      const practice = dominant(data.distributions.practiceTime);
+      const designText = document.getElementById('designInsightText');
+
+      if (designText){
+        const parts = [];
+        if (diff) parts.push(`難度以「${diff.label}」為主`);
+        if (pace) parts.push(`節奏多數認為「${pace.label}」`);
+        if (practice) parts.push(`練習互動時間以「${practice.label}」回覆最多`);
+
+        designText.textContent = parts.length
+          ? parts.join('；') + '。可作為下一次課程時間配置與活動比例調整的依據。'
+          : '目前尚無足夠資料進行課程設計判讀。';
+      }
     }
 
     function renderQualitative(q){
-      renderQuotes('quotesDiscovery','countDiscovery',q.discovery);
-      renderQuotes('quotesTransfer','countTransfer',q.transfer);
-      renderQuotes('quotesTouchReason','countTouchReason',q.touchReason);
-      renderQuotes('quotesComments','countComments',q.comments);
+      renderStickyNotes('quotesDiscovery','countDiscovery',q.discovery,'note-yellow');
+      renderStickyNotes('quotesTransfer','countTransfer',q.transfer,'note-green');
+      renderStickyNotes('quotesTouchReason','countTouchReason',q.touchReason,'note-pink');
+      renderStickyNotes('quotesComments','countComments',q.comments,'note-blue');
     }
 
-    function renderQuotes(containerId,countId,items){
+    function renderStickyNotes(containerId,countId,items,tone){
       const container = document.getElementById(containerId);
       const count = document.getElementById(countId);
+      const list = items || [];
 
-      count.textContent = `(${(items || []).length})`;
+      count.textContent = String(list.length);
 
-      if (!items || !items.length){
+      if (!list.length){
         container.innerHTML =
-          '<div class="empty">目前尚無文字回饋</div>';
+          '<div class="sticky-empty">目前尚無文字回饋<br>期待第一張便利貼 ✨</div>';
         return;
       }
 
-      container.innerHTML = items
-        .map(text => `<div class="quote">${escapeHtml(text)}</div>`)
-        .join('');
+      const makeNotes = (showAll) => {
+        const visible = showAll ? list : list.slice(0,6);
+        container.innerHTML = visible
+          .map(text => `<div class="sticky-note ${tone}">${escapeHtml(text)}</div>`)
+          .join('');
+
+        if (list.length > 6){
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'more-notes-btn';
+          btn.textContent = showAll
+            ? '收起部分便利貼'
+            : `查看全部 ${list.length} 張便利貼`;
+          btn.onclick = () => makeNotes(!showAll);
+          container.appendChild(btn);
+        }
+      };
+
+      makeNotes(false);
     }
 
     function showEmpty(id,text){
