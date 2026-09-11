@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>奇美醫院標準化病人進階課程｜問卷成效儀表板</title>
+
+  <script src="https://www.gstatic.com/charts/loader.js"></script>
+
+  <style>
+    :root{
+      --navy:#123A63;
+      --navy2:#0D4D72;
+      --teal:#0F6B75;
+      --green:#4F8B6A;
+      --soft-green:#EEF6F2;
+      --soft-blue:#F2F7FA;
+      --soft-teal:#EDF7F7;
+      --amber:#B87912;
+      --soft-amber:#FFF6E4;
+      --red:#B42318;
+      --soft-red:#FFF0EE;
+      --text:#17324D;
+      --muted:#607487;
+      --line:#D9E4E9;
+      --white:#FFFFFF;
+      --bg:#F5F8FA;
+      --shadow:0 8px 24px rgba(18,58,99,.08);
+      --radius:18px;
+    }
+
+    *{box-sizing:border-box}
+
+    html{
+      -webkit-text-size-adjust:100%;
+      scroll-behavior:smooth;
+    }
+
+    body{
+      margin:0;
+      font-family:
+        "Noto Sans TC","PingFang TC","Microsoft JhengHei",
+        system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 90% 0%,rgba(15,107,117,.09),transparent 22rem),
+        var(--bg);
+      line-height:1.55;
+    }
+
+    button{font:inherit}
+
+    .app{
+      width:min(1500px,calc(100% - 28px));
+      margin:0 auto;
+      padding:22px 0 60px;
+    }
+
+    .hero{
+      position:relative;
+      overflow:hidden;
+      padding:28px 30px;
+      border-radius:24px;
+      color:#fff;
+      background:linear-gradient(135deg,var(--navy),var(--navy2) 55%,var(--teal));
+      box-shadow:var(--shadow);
+    }
+
+    .hero::after{
+      content:"";
+      position:absolute;
+      width:240px;height:240px;
+      border:2px solid rgba(255,255,255,.12);
+      border-radius:50%;
+      top:-120px;right:-70px;
+      box-shadow:
+        0 0 0 34px rgba(255,255,255,.035),
+        0 0 0 72px rgba(255,255,255,.025);
+    }
+
+    .hero-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:20px;
+      position:relative;
+      z-index:2;
+    }
+
+    .eyebrow{
+      font-size:.86rem;
+      font-weight:800;
+      opacity:.9;
+      letter-spacing:.04em;
+      margin-bottom:8px;
+    }
+
+    h1{
+      margin:0;
+      font-size:clamp(1.55rem,3vw,2.35rem);
+      line-height:1.25;
+      letter-spacing:.03em;
+    }
+
+    .hero p{
+      margin:10px 0 0;
+      color:#DDEEF3;
+      max-width:880px;
+      font-size:.96rem;
+    }
+
+    .toolbar{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      justify-content:flex-end;
+      position:relative;
+      z-index:3;
+    }
+
+    .btn{
+      min-height:42px;
+      border:1px solid rgba(255,255,255,.25);
+      background:rgba(255,255,255,.12);
+      color:#fff;
+      border-radius:12px;
+      padding:0 14px;
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    .btn:hover{background:rgba(255,255,255,.19)}
+
+    .meta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:9px;
+      margin-top:17px;
+      position:relative;
+      z-index:2;
+    }
+
+    .pill{
+      padding:7px 11px;
+      border-radius:999px;
+      background:rgba(255,255,255,.13);
+      border:1px solid rgba(255,255,255,.15);
+      color:#F2FBFD;
+      font-size:.84rem;
+      font-weight:700;
+    }
+
+    .loading{
+      margin:18px 0;
+      padding:18px;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:16px;
+      color:var(--muted);
+      box-shadow:var(--shadow);
+    }
+
+    .loading.hidden{display:none}
+
+    .error-box{
+      display:none;
+      margin:18px 0;
+      padding:16px 18px;
+      border-radius:14px;
+      border:1px solid #F2B6AF;
+      background:var(--soft-red);
+      color:#84271D;
+      font-weight:700;
+    }
+
+    .error-box.show{display:block}
+
+    .kpi-grid{
+      display:grid;
+      grid-template-columns:repeat(6,minmax(0,1fr));
+      gap:12px;
+      margin-top:16px;
+    }
+
+    .kpi{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:17px;
+      padding:18px 17px;
+      min-height:124px;
+      box-shadow:0 5px 16px rgba(18,58,99,.045);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .kpi::before{
+      content:"";
+      position:absolute;
+      left:0;top:0;bottom:0;
+      width:5px;
+      background:var(--teal);
+    }
+
+    .kpi.warn::before{background:var(--amber)}
+    .kpi.alert::before{background:var(--red)}
+
+    .kpi-label{
+      color:var(--muted);
+      font-size:.82rem;
+      font-weight:800;
+    }
+
+    .kpi-value{
+      margin-top:8px;
+      font-weight:900;
+      color:var(--navy);
+      font-size:clamp(1.55rem,3vw,2.25rem);
+      line-height:1;
+    }
+
+    .kpi-sub{
+      margin-top:9px;
+      color:#748798;
+      font-size:.76rem;
+      font-weight:700;
+    }
+
+    .section-title{
+      margin:28px 2px 11px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .section-title h2{
+      margin:0;
+      color:var(--navy);
+      font-size:1.22rem;
+    }
+
+    .section-title span{
+      color:var(--muted);
+      font-size:.82rem;
+    }
+
+    .grid-2{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:14px;
+    }
+
+    .grid-3{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:14px;
+    }
+
+    .card{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:0 5px 17px rgba(18,58,99,.045);
+      padding:18px;
+      min-width:0;
+    }
+
+    .card-title{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:8px;
+    }
+
+    .card-title h3{
+      margin:0;
+      font-size:1rem;
+      color:var(--navy);
+    }
+
+    .card-title .small{
+      color:var(--muted);
+      font-size:.76rem;
+      font-weight:700;
+    }
+
+    .chart{
+      width:100%;
+      height:330px;
+    }
+
+    .chart.tall{height:420px}
+    .chart.compact{height:270px}
+
+    .insight{
+      display:grid;
+      grid-template-columns:auto 1fr;
+      gap:11px;
+      align-items:flex-start;
+      padding:14px;
+      border-radius:14px;
+      background:var(--soft-teal);
+      border:1px solid #CFE4E4;
+      margin-top:12px;
+    }
+
+    .insight-icon{
+      width:38px;height:38px;
+      border-radius:12px;
+      display:grid;
+      place-items:center;
+      background:#fff;
+      font-size:1.15rem;
+    }
+
+    .insight strong{
+      display:block;
+      color:var(--teal);
+      margin-bottom:3px;
+    }
+
+    .insight p{
+      margin:0;
+      color:#526D7C;
+      font-size:.88rem;
+    }
+
+    .table-wrap{
+      overflow:auto;
+      border:1px solid var(--line);
+      border-radius:14px;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      min-width:620px;
+      background:#fff;
+    }
+
+    th,td{
+      padding:11px 12px;
+      border-bottom:1px solid #E6EDF0;
+      text-align:left;
+      font-size:.86rem;
+    }
+
+    th{
+      background:#F3F8FA;
+      color:var(--navy);
+      font-weight:900;
+      position:sticky;
+      top:0;
+    }
+
+    td.num{text-align:right;font-variant-numeric:tabular-nums}
+
+    .quotes{
+      display:grid;
+      gap:10px;
+    }
+
+    .quote{
+      position:relative;
+      border:1px solid #DCE7EB;
+      background:#FCFEFF;
+      border-radius:14px;
+      padding:14px 15px 14px 42px;
+      color:#395466;
+      font-size:.9rem;
+      line-height:1.65;
+    }
+
+    .quote::before{
+      content:"“";
+      position:absolute;
+      left:13px;
+      top:3px;
+      color:#9AB7C0;
+      font-size:2rem;
+      font-family:Georgia,serif;
+    }
+
+    details{
+      border:1px solid var(--line);
+      border-radius:15px;
+      background:#fff;
+      overflow:hidden;
+    }
+
+    details + details{margin-top:10px}
+
+    summary{
+      cursor:pointer;
+      padding:15px 17px;
+      color:var(--navy);
+      font-weight:900;
+      list-style:none;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:center;
+    }
+
+    summary::-webkit-details-marker{display:none}
+
+    summary::after{
+      content:"＋";
+      color:var(--teal);
+      font-size:1.15rem;
+    }
+
+    details[open] summary::after{content:"−"}
+
+    .detail-content{
+      padding:0 16px 16px;
+    }
+
+    .empty{
+      min-height:160px;
+      display:grid;
+      place-items:center;
+      text-align:center;
+      color:#8294A3;
+      background:#FAFCFD;
+      border-radius:12px;
+      border:1px dashed #CCD9DE;
+      padding:20px;
+    }
+
+    footer{
+      text-align:center;
+      color:#768998;
+      font-size:.78rem;
+      margin-top:26px;
+    }
+
+    @media (max-width:1180px){
+      .kpi-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+      .grid-3{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+
+    @media (max-width:760px){
+      .app{width:min(100% - 16px,1500px);padding-top:10px}
+      .hero{padding:22px 18px;border-radius:18px}
+      .hero-top{display:block}
+      .toolbar{justify-content:flex-start;margin-top:16px}
+      .kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .grid-2,.grid-3{grid-template-columns:1fr}
+      .card{padding:14px}
+      .chart{height:300px}
+      .chart.tall{height:380px}
+    }
+
+    @media (max-width:440px){
+      .kpi-grid{grid-template-columns:1fr 1fr}
+      .kpi{padding:15px 13px;min-height:112px}
+      .kpi-sub{font-size:.72rem}
+    }
+
+    @media print{
+      body{background:#fff}
+      .app{width:100%;padding:0}
+      .toolbar{display:none}
+      .hero{box-shadow:none}
+      .card,.kpi{box-shadow:none;break-inside:avoid}
+      details{break-inside:avoid}
+      details:not([open]) .detail-content{display:block}
+    }
+  </style>
+</head>
+
+<body>
+  <main class="app">
+    <header class="hero">
+      <div class="hero-top">
+        <div>
+          <div class="eyebrow">奇美醫院教學部・臨床技能中心</div>
+          <h1>標準化病人進階課程｜問卷成效儀表板</h1>
+          <p>
+            即時整合課程滿意度、學習成效、課程設計、核心觸動、
+            De-role 狀態、未來學習需求與質性反思。
+          </p>
+        </div>
+
+        <div class="toolbar">
+          <button class="btn" type="button" onclick="loadDashboard()">↻ 重新整理</button>
+          <button class="btn" type="button" onclick="window.open(DASHBOARD_URL, '_blank')">↗ 開啟正式儀表板</button>
+          <button class="btn" type="button" onclick="window.print()">🖨 列印 / PDF</button>
+        </div>
+      </div>
+
+      <div class="meta">
+        <span class="pill">📅 115 年 9 月 13 日</span>
+        <span class="pill">🔍 自我覺察</span>
+        <span class="pill">⚖️ 一致性</span>
+        <span class="pill">🎭 角色型塑</span>
+        <span class="pill">👁️ VTS</span>
+        <span class="pill">🔗 Web App 已連線</span>
+        <span class="pill" id="updatedAt">資料讀取中…</span>
+      </div>
+    </header>
+
+    <div class="loading" id="loadingBox">正在讀取 Google Sheet 資料並建立圖表…</div>
+    <div class="error-box" id="errorBox"></div>
+
+    <section class="kpi-grid">
+      <article class="kpi">
+        <div class="kpi-label">有效回覆</div>
+        <div class="kpi-value" id="kpiResponses">—</div>
+        <div class="kpi-sub">目前累積填答人數</div>
+      </article>
+
+      <article class="kpi">
+        <div class="kpi-label">整體滿意度</div>
+        <div class="kpi-value" id="kpiSatisfaction">—</div>
+        <div class="kpi-sub" id="kpiSatisfactionSub">5 分量表</div>
+      </article>
+
+      <article class="kpi">
+        <div class="kpi-label">課程實務幫助度</div>
+        <div class="kpi-value" id="kpiHelpfulness">—</div>
+        <div class="kpi-sub" id="kpiHelpfulnessSub">5 分量表</div>
+      </article>
+
+      <article class="kpi">
+        <div class="kpi-label">整體學習成效</div>
+        <div class="kpi-value" id="kpiLearning">—</div>
+        <div class="kpi-sub">7 項核心學習指標平均</div>
+      </article>
+
+      <article class="kpi">
+        <div class="kpi-label">再參與意願</div>
+        <div class="kpi-value" id="kpiParticipation">—</div>
+        <div class="kpi-sub">非常願意＋願意</div>
+      </article>
+
+      <article class="kpi" id="supportKpi">
+        <div class="kpi-label">De-role 需協助</div>
+        <div class="kpi-value" id="kpiSupport">—</div>
+        <div class="kpi-sub">仍受角色情緒影響者</div>
+      </article>
+    </section>
+
+    <div class="section-title">
+      <h2>一、核心學習成效</h2>
+      <span>各指標皆為 1–5 分</span>
+    </div>
+
+    <section class="grid-2">
+      <article class="card">
+        <div class="card-title">
+          <h3>七項學習成效平均分數</h3>
+          <span class="small">越接近 5 分越佳</span>
+        </div>
+        <div id="learningChart" class="chart tall"></div>
+        <div class="insight" id="learningInsight">
+          <div class="insight-icon">📈</div>
+          <div>
+            <strong>學習成效判讀</strong>
+            <p>資料讀取後自動產生。</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-title">
+          <h3>不同 SP 年資的成效比較</h3>
+          <span class="small">滿意度 vs. 學習成效</span>
+        </div>
+        <div id="tenureComboChart" class="chart tall"></div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>SP 年資</th>
+                <th>人數</th>
+                <th>滿意度</th>
+                <th>學習成效</th>
+              </tr>
+            </thead>
+            <tbody id="tenureTableBody"></tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+
+    <div class="section-title">
+      <h2>二、課程設計與學習體驗</h2>
+      <span>檢視難度、節奏與互動時間是否適切</span>
+    </div>
+
+    <section class="grid-3">
+      <article class="card">
+        <div class="card-title"><h3>課程難度</h3></div>
+        <div id="difficultyChart" class="chart compact"></div>
+      </article>
+
+      <article class="card">
+        <div class="card-title"><h3>課程節奏</h3></div>
+        <div id="paceChart" class="chart compact"></div>
+      </article>
+
+      <article class="card">
+        <div class="card-title"><h3>練習與互動時間</h3></div>
+        <div id="practiceChart" class="chart compact"></div>
+      </article>
+    </section>
+
+    <div class="section-title">
+      <h2>三、課程核心觸動</h2>
+      <span>複選題，以勾選次數統計</span>
+    </div>
+
+    <section class="grid-2">
+      <article class="card">
+        <div class="card-title">
+          <h3>最觸動的課程活動</h3>
+          <span class="small">可複選</span>
+        </div>
+        <div id="touchedChart" class="chart tall"></div>
+      </article>
+
+      <article class="card">
+        <div class="card-title">
+          <h3>SP 年資分布</h3>
+          <span class="small">了解學員組成</span>
+        </div>
+        <div id="tenureChart" class="chart"></div>
+      </article>
+    </section>
+
+    <div class="section-title">
+      <h2>四、角色離場與後續參與</h2>
+      <span>De-role 狀態與再參與意願</span>
+    </div>
+
+    <section class="grid-2">
+      <article class="card">
+        <div class="card-title">
+          <h3>De-role 身心狀態</h3>
+        </div>
+        <div id="deroleChart" class="chart"></div>
+        <div class="insight" id="deroleInsight">
+          <div class="insight-icon">🌿</div>
+          <div>
+            <strong>角色離場確認</strong>
+            <p>資料讀取後自動產生。</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-title">
+          <h3>未來再參與意願</h3>
+        </div>
+        <div id="participationChart" class="chart"></div>
+      </article>
+    </section>
+
+    <div class="section-title">
+      <h2>五、未來課程需求</h2>
+      <span>可直接作為下一年度課程規劃依據</span>
+    </div>
+
+    <section class="card">
+      <div class="card-title">
+        <h3>進階學習需求排行</h3>
+        <span class="small">複選題，以勾選次數排序</span>
+      </div>
+      <div id="futureNeedsChart" class="chart tall"></div>
+      <div class="insight" id="futureInsight">
+        <div class="insight-icon">🧭</div>
+        <div>
+          <strong>課程規劃提示</strong>
+          <p>資料讀取後自動整理前三大需求。</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-title">
+      <h2>六、質性反思與建議</h2>
+      <span>為保護個人資料，儀表板不顯示姓名</span>
+    </div>
+
+    <section class="card">
+      <details open>
+        <summary>💡 重新看見／發現 <span id="countDiscovery"></span></summary>
+        <div class="detail-content">
+          <div class="quotes" id="quotesDiscovery"></div>
+        </div>
+      </details>
+
+      <details>
+        <summary>🎯 最想帶回實務現場的內容 <span id="countTransfer"></span></summary>
+        <div class="detail-content">
+          <div class="quotes" id="quotesTransfer"></div>
+        </div>
+      </details>
+
+      <details>
+        <summary>❤️ 最觸動的原因或感想 <span id="countTouchReason"></span></summary>
+        <div class="detail-content">
+          <div class="quotes" id="quotesTouchReason"></div>
+        </div>
+      </details>
+
+      <details>
+        <summary>💬 整體建議與講師留言 <span id="countComments"></span></summary>
+        <div class="detail-content">
+          <div class="quotes" id="quotesComments"></div>
+        </div>
+      </details>
+    </section>
+
+    <footer>
+      奇美醫院教學部・臨床技能中心｜資料來源：115/09/13 標準化病人進階課程課後回饋
+    </footer>
+  </main>
+
+  <script>
+    google.charts.load('current', {
+      packages:['corechart','bar']
+    });
+
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxWQS0nT481QXvRdHs-lhbqZDgI4ICUx0YSMdScVryqUt9myPy954PtOVOEJPqaUasa/exec";
+    const DASHBOARD_KEY = "CMH-SP-0913-2026";
+    const DASHBOARD_URL = "https://script.google.com/macros/s/AKfycbxWQS0nT481QXvRdHs-lhbqZDgI4ICUx0YSMdScVryqUt9myPy954PtOVOEJPqaUasa/exec?key=CMH-SP-0913-2026";
+
+    let DASHBOARD_DATA = null;
+    let ACCESS_KEY = '';
+
+    function getAccessKey(){
+      const params = new URLSearchParams(window.location.search);
+      return params.get('key') || DASHBOARD_KEY;
+    }
+
+    function loadDashboard(){
+      ACCESS_KEY = getAccessKey();
+
+      document.getElementById('loadingBox').classList.remove('hidden');
+      document.getElementById('errorBox').classList.remove('show');
+
+      google.script.run
+        .withSuccessHandler(data => {
+          DASHBOARD_DATA = data;
+          google.charts.setOnLoadCallback(() => renderAll(data));
+        })
+        .withFailureHandler(err => {
+          showError(err && err.message ? err.message : String(err));
+        })
+        .getDashboardData(ACCESS_KEY);
+    }
+
+    function showError(message){
+      document.getElementById('loadingBox').classList.add('hidden');
+      const box = document.getElementById('errorBox');
+      box.textContent = '讀取資料失敗：' + message;
+      box.classList.add('show');
+    }
+
+    function renderAll(data){
+      document.getElementById('loadingBox').classList.add('hidden');
+
+      renderKpis(data);
+      renderLearning(data);
+      renderTenureComparison(data);
+      drawPie('difficultyChart', data.distributions.difficulty, ['#0F6B75','#A8C8C3','#D99B3C']);
+      drawPie('paceChart', data.distributions.pace, ['#7CA3B7','#4F8B6A','#D99B3C']);
+      drawPie('practiceChart', data.distributions.practiceTime, ['#4F8B6A','#7CA3B7','#D99B3C']);
+      drawHorizontalBar('touchedChart', data.touchedActivities, '#0F6B75');
+      drawPie('tenureChart', data.distributions.tenure, ['#123A63','#0F6B75','#4F8B6A','#83A9B8','#C4D5DB']);
+      drawPie('deroleChart', data.distributions.deRole, ['#4F8B6A','#D99B3C']);
+      drawPie('participationChart', data.distributions.participation, ['#123A63','#0F6B75','#D99B3C','#AAB7C0']);
+      drawHorizontalBar('futureNeedsChart', data.futureNeeds, '#4F8B6A');
+      renderQualitative(data.qualitative);
+      renderInsights(data);
+
+      document.getElementById('updatedAt').textContent =
+        '🕒 更新：' + (data.generatedAt || '—');
+    }
+
+    function renderKpis(data){
+      const k = data.kpi || {};
+
+      setText('kpiResponses', formatInt(k.responses));
+      setText('kpiSatisfaction', formatScore(k.satisfactionAvg));
+      setText(
+        'kpiSatisfactionSub',
+        k.satisfactionPositiveRate == null
+          ? '5 分量表'
+          : `滿意＋非常滿意 ${formatPct(k.satisfactionPositiveRate)}`
+      );
+
+      setText('kpiHelpfulness', formatScore(k.helpfulnessAvg));
+      setText(
+        'kpiHelpfulnessSub',
+        k.helpfulnessPositiveRate == null
+          ? '5 分量表'
+          : `有幫助以上 ${formatPct(k.helpfulnessPositiveRate)}`
+      );
+
+      setText('kpiLearning', formatScore(k.learningAvg));
+      setText(
+        'kpiParticipation',
+        k.participationPositiveRate == null
+          ? '—'
+          : formatPct(k.participationPositiveRate)
+      );
+
+      setText('kpiSupport', formatInt(k.needsSupportCount));
+
+      const supportCard = document.getElementById('supportKpi');
+      supportCard.classList.remove('warn','alert');
+
+      if ((k.needsSupportCount || 0) > 0){
+        supportCard.classList.add('warn');
+      }
+    }
+
+    function renderLearning(data){
+      const items = data.learningDimensions || [];
+
+      if (!items.length){
+        showEmpty('learningChart','尚無學習成效資料');
+        return;
+      }
+
+      const rows = [['指標','平均分數']];
+
+      items.forEach(item => {
+        rows.push([item.label, Number(item.value || 0)]);
+      });
+
+      const dt = google.visualization.arrayToDataTable(rows);
+
+      const chart = new google.visualization.BarChart(
+        document.getElementById('learningChart')
+      );
+
+      chart.draw(dt,{
+        legend:{position:'none'},
+        backgroundColor:'transparent',
+        colors:['#0F6B75'],
+        chartArea:{left:130,top:20,width:'68%',height:'80%'},
+        hAxis:{
+          minValue:0,
+          maxValue:5,
+          viewWindow:{min:0,max:5},
+          gridlines:{color:'#E4ECEF'},
+          textStyle:{color:'#607487'}
+        },
+        vAxis:{
+          textStyle:{color:'#17324D',fontSize:12}
+        },
+        annotations:{alwaysOutside:true},
+        bar:{groupWidth:'58%'}
+      });
+    }
+
+    function renderTenureComparison(data){
+      const rowsData = data.tenureComparison || [];
+
+      if (!rowsData.length){
+        showEmpty('tenureComboChart','尚無年資比較資料');
+        document.getElementById('tenureTableBody').innerHTML = '';
+        return;
+      }
+
+      const rows = [['SP年資','整體滿意度','學習成效']];
+
+      rowsData.forEach(x => {
+        rows.push([
+          x.label,
+          Number(x.satisfaction || 0),
+          Number(x.learning || 0)
+        ]);
+      });
+
+      const dt = google.visualization.arrayToDataTable(rows);
+
+      const chart = new google.visualization.ColumnChart(
+        document.getElementById('tenureComboChart')
+      );
+
+      chart.draw(dt,{
+        legend:{position:'top'},
+        backgroundColor:'transparent',
+        colors:['#123A63','#4F8B6A'],
+        chartArea:{left:55,top:45,width:'78%',height:'68%'},
+        vAxis:{
+          viewWindow:{min:0,max:5},
+          gridlines:{color:'#E4ECEF'}
+        },
+        hAxis:{
+          textStyle:{fontSize:11,color:'#607487'}
+        }
+      });
+
+      document.getElementById('tenureTableBody').innerHTML =
+        rowsData.map(x => `
+          <tr>
+            <td>${escapeHtml(x.label)}</td>
+            <td class="num">${x.n}</td>
+            <td class="num">${formatScore(x.satisfaction)}</td>
+            <td class="num">${formatScore(x.learning)}</td>
+          </tr>
+        `).join('');
+    }
+
+    function drawPie(id, items, colors){
+      const el = document.getElementById(id);
+
+      if (!items || !items.length){
+        showEmpty(id,'尚無資料');
+        return;
+      }
+
+      const rows = [['項目','人數']];
+
+      items.forEach(x => rows.push([
+        x.label,
+        Number(x.count || 0)
+      ]));
+
+      const dt = google.visualization.arrayToDataTable(rows);
+
+      const chart = new google.visualization.PieChart(el);
+
+      chart.draw(dt,{
+        backgroundColor:'transparent',
+        pieHole:.55,
+        colors:colors,
+        legend:{
+          position:'bottom',
+          alignment:'center',
+          textStyle:{fontSize:11,color:'#526D7C'}
+        },
+        chartArea:{
+          left:10,top:10,width:'95%',height:'72%'
+        },
+        pieSliceText:'value',
+        tooltip:{text:'both'}
+      });
+    }
+
+    function drawHorizontalBar(id, items, color){
+      const el = document.getElementById(id);
+
+      if (!items || !items.length){
+        showEmpty(id,'尚無資料');
+        return;
+      }
+
+      const rows = [['項目','勾選次數']];
+
+      items.forEach(x => rows.push([
+        shortenLabel(x.label),
+        Number(x.count || 0)
+      ]));
+
+      const dt = google.visualization.arrayToDataTable(rows);
+
+      const chart = new google.visualization.BarChart(el);
+
+      chart.draw(dt,{
+        legend:{position:'none'},
+        backgroundColor:'transparent',
+        colors:[color],
+        chartArea:{
+          left:210,
+          top:20,
+          width:'62%',
+          height:'80%'
+        },
+        hAxis:{
+          minValue:0,
+          format:'0',
+          gridlines:{color:'#E4ECEF'},
+          textStyle:{color:'#607487'}
+        },
+        vAxis:{
+          textStyle:{fontSize:11,color:'#17324D'}
+        },
+        bar:{groupWidth:'60%'}
+      });
+    }
+
+    function renderInsights(data){
+      const learning = (data.learningDimensions || [])
+        .filter(x => x.value != null)
+        .sort((a,b) => b.value - a.value);
+
+      const learningBox = document.querySelector('#learningInsight p');
+
+      if (learning.length){
+        const top = learning[0];
+        const low = learning[learning.length - 1];
+
+        learningBox.textContent =
+          `目前最高為「${top.label}」${formatScore(top.value)}；`
+          + `相對較低為「${low.label}」${formatScore(low.value)}。`
+          + `可將較低指標作為下一次課程強化重點。`;
+      }else{
+        learningBox.textContent = '目前尚無足夠資料進行判讀。';
+      }
+
+      const support = data.kpi.needsSupportCount || 0;
+      const deRoleBox = document.querySelector('#deroleInsight p');
+
+      if (support === 0){
+        deRoleBox.textContent =
+          '目前填答者皆未回報需要進一步協助情緒歸位。';
+      }else{
+        deRoleBox.textContent =
+          `目前有 ${support} 位填答者回報仍受角色情緒或緊張感影響，`
+          + `建議課後由講師／訓練師主動確認。`;
+      }
+
+      const needs = data.futureNeeds || [];
+      const futureBox = document.querySelector('#futureInsight p');
+
+      if (needs.length){
+        const top3 = needs.slice(0,3).map(x => `「${shortenLabel(x.label)}」`).join('、');
+        futureBox.textContent =
+          `目前前三項學習需求為 ${top3}，可優先納入下一梯次進階課程規劃。`;
+      }else{
+        futureBox.textContent = '目前尚無未來學習需求資料。';
+      }
+    }
+
+    function renderQualitative(q){
+      renderQuotes('quotesDiscovery','countDiscovery',q.discovery);
+      renderQuotes('quotesTransfer','countTransfer',q.transfer);
+      renderQuotes('quotesTouchReason','countTouchReason',q.touchReason);
+      renderQuotes('quotesComments','countComments',q.comments);
+    }
+
+    function renderQuotes(containerId,countId,items){
+      const container = document.getElementById(containerId);
+      const count = document.getElementById(countId);
+
+      count.textContent = `(${(items || []).length})`;
+
+      if (!items || !items.length){
+        container.innerHTML =
+          '<div class="empty">目前尚無文字回饋</div>';
+        return;
+      }
+
+      container.innerHTML = items
+        .map(text => `<div class="quote">${escapeHtml(text)}</div>`)
+        .join('');
+    }
+
+    function showEmpty(id,text){
+      document.getElementById(id).innerHTML =
+        `<div class="empty">${escapeHtml(text)}</div>`;
+    }
+
+    function shortenLabel(text){
+      if (!text) return '';
+      return text
+        .replace('（內在狀態掃描）','')
+        .replace('（口語／非口語協調）','')
+        .replace('（角色冰山與情緒深度轉譯）','')
+        .replace('（區分客觀觀察與主觀推論）','')
+        .replace('（Evidence-based）','')
+        .replace('（De-role）','')
+        .replace('（視覺思考）','')
+        .replace('（訓練師）','');
+    }
+
+    function formatScore(value){
+      if (value === null || value === undefined || value === '') return '—';
+      const n = Number(value);
+      return Number.isFinite(n) ? n.toFixed(2) : '—';
+    }
+
+    function formatPct(value){
+      if (value === null || value === undefined || value === '') return '—';
+      const n = Number(value);
+      return Number.isFinite(n) ? `${n.toFixed(1)}%` : '—';
+    }
+
+    function formatInt(value){
+      const n = Number(value);
+      return Number.isFinite(n) ? String(Math.round(n)) : '0';
+    }
+
+    function setText(id,text){
+      document.getElementById(id).textContent = text;
+    }
+
+    function escapeHtml(value){
+      return String(value ?? '')
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;')
+        .replace(/'/g,'&#039;');
+    }
+
+    window.addEventListener('resize',()=>{
+      if (!DASHBOARD_DATA) return;
+
+      clearTimeout(window.__resizeTimer);
+      window.__resizeTimer = setTimeout(
+        ()=>renderAll(DASHBOARD_DATA),
+        220
+      );
+    });
+
+    loadDashboard();
+  </script>
+</body>
+</html>
