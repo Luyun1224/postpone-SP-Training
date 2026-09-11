@@ -486,7 +486,6 @@
 
         <div class="toolbar">
           <button class="btn" type="button" onclick="loadDashboard()">↻ 重新整理</button>
-          <button class="btn" type="button" onclick="window.open(DASHBOARD_URL, '_blank')">↗ 開啟正式儀表板</button>
           <button class="btn" type="button" onclick="window.print()">🖨 列印 / PDF</button>
         </div>
       </div>
@@ -497,7 +496,7 @@
         <span class="pill">⚖️ 一致性</span>
         <span class="pill">🎭 角色型塑</span>
         <span class="pill">👁️ VTS</span>
-        <span class="pill">🔗 GAS 同源即時讀取</span>
+        <span class="pill">🔗 即時連線 Google Sheet</span>
         <span class="pill" id="updatedAt">資料讀取中…</span>
       </div>
     </header>
@@ -725,21 +724,20 @@
     });
 
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxWQS0nT481QXvRdHs-lhbqZDgI4ICUx0YSMdScVryqUt9myPy954PtOVOEJPqaUasa/exec";
-    const DASHBOARD_URL = WEB_APP_URL;
 
     let DASHBOARD_DATA = null;
     function loadDashboard(){
       document.getElementById('loadingBox').classList.remove('hidden');
       document.getElementById('errorBox').classList.remove('show');
 
-      if (
-        typeof google === 'undefined' ||
-        !google.script ||
-        !google.script.run
-      ){
-        showError(
-          '目前這個 Dashboard 不是由 Google Apps Script Web App 開啟。請使用正式 /exec 網址開啟儀表板。'
-        );
+      const hasGasRuntime =
+        typeof google !== 'undefined' &&
+        google.script &&
+        google.script.run;
+
+      // 如果不是從 Apps Script Web App 開啟，直接導向正式儀表板。
+      if (!hasGasRuntime){
+        window.location.replace(WEB_APP_URL);
         return;
       }
 
