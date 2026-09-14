@@ -89,12 +89,43 @@
     }
 
     .hero-top{
-      display:flex;
-      justify-content:space-between;
+      display:grid;
+      grid-template-columns:minmax(0,1fr) minmax(320px,520px);
       align-items:flex-start;
-      gap:20px;
+      gap:28px;
       position:relative;
       z-index:2;
+    }
+
+    .hero-side{
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+    }
+
+    .hero-photo{
+      margin:0;
+      overflow:hidden;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.28);
+      background:rgba(255,255,255,.1);
+      box-shadow:0 14px 30px rgba(14,38,47,.24);
+    }
+
+    .hero-photo img{
+      display:block;
+      width:100%;
+      aspect-ratio:16/8.4;
+      object-fit:cover;
+      object-position:center 58%;
+    }
+
+    .hero-photo figcaption{
+      padding:8px 12px;
+      color:#F4FBF8;
+      font-size:.78rem;
+      font-weight:700;
+      background:rgba(14,49,58,.38);
     }
 
     .eyebrow{
@@ -282,7 +313,7 @@
 
     .kpi-grid{
       display:grid;
-      grid-template-columns:repeat(6,minmax(0,1fr));
+      grid-template-columns:repeat(5,minmax(0,1fr));
       gap:13px;
       margin-top:16px;
     }
@@ -696,8 +727,9 @@
         border-radius:18px;
       }
 
-      .hero-top{display:block}
+      .hero-top{grid-template-columns:1fr}
       .toolbar{justify-content:flex-start;margin-top:16px}
+      .hero-photo img{aspect-ratio:16/9}
       .kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
       .grid-2,.grid-3{grid-template-columns:1fr}
       .highlight-grid{grid-template-columns:1fr}
@@ -734,9 +766,15 @@
           </p>
         </div>
 
-        <div class="toolbar">
-          <button class="btn" type="button" onclick="loadDashboard()">↻ 重新整理</button>
-          <button class="btn" type="button" onclick="window.print()">🖨 列印 / PDF</button>
+        <div class="hero-side">
+          <div class="toolbar">
+            <button class="btn" type="button" onclick="loadDashboard()">↻ 重新整理</button>
+            <button class="btn" type="button" onclick="window.print()">🖨 列印 / PDF</button>
+          </div>
+          <figure class="hero-photo">
+            <img src="IMG_2520.JPG" alt="115 年 9 月 13 日標準化病人進階課程全體學員與講師合照">
+            <figcaption>115 年 9 月 13 日｜課程全體學員與講師合影</figcaption>
+          </figure>
         </div>
       </div>
 
@@ -799,13 +837,6 @@
         <div class="kpi-sub">目前累積填答人數</div>
       </article>
 
-      <article class="kpi kpi-b">
-        <div class="kpi-icon">⭐</div>
-        <div class="kpi-label">整體滿意度</div>
-        <div class="kpi-value" id="kpiSatisfaction">—</div>
-        <div class="kpi-sub" id="kpiSatisfactionSub">5 分量表</div>
-      </article>
-
       <article class="kpi kpi-c">
         <div class="kpi-icon">🪴</div>
         <div class="kpi-label">課程實務幫助度</div>
@@ -859,7 +890,7 @@
       <article class="card">
         <div class="card-title">
           <h3>不同 SP 年資的成效比較</h3>
-          <span class="small">滿意度 vs. 學習成效</span>
+          <span class="small">七項核心學習指標平均</span>
         </div>
         <div id="tenureComboChart" class="chart tall"></div>
         <div class="table-wrap">
@@ -868,7 +899,6 @@
               <tr>
                 <th>SP 年資</th>
                 <th>人數</th>
-                <th>滿意度</th>
                 <th>學習成效</th>
               </tr>
             </thead>
@@ -1249,23 +1279,10 @@
 
     function renderKpis(data){
       const k = data.kpi || {};
-      const satisfaction = resolveSatisfaction(data);
 
       setText(
         'kpiResponses',
         formatInt(k.responses)
-      );
-
-      setText(
-        'kpiSatisfaction',
-        formatScore(satisfaction.average)
-      );
-
-      setText(
-        'kpiSatisfactionSub',
-        satisfaction.positiveRate == null
-          ? '5 分量表'
-          : `滿意＋非常滿意 ${formatPct(satisfaction.positiveRate)}`
       );
 
       setText(
@@ -1402,9 +1419,6 @@
         return;
       }
 
-      const satisfactionValues =
-        rowsData.map(getTenureSatisfaction);
-
       const learningValues =
         rowsData.map(
           x => firstFinite(
@@ -1413,34 +1427,14 @@
           )
         );
 
-      const finiteSatisfaction =
-        satisfactionValues.filter(Number.isFinite);
-
       const finiteLearning =
         learningValues.filter(Number.isFinite);
-
-      const topSatisfaction =
-        finiteSatisfaction.length
-          ? Math.max(...finiteSatisfaction)
-          : null;
 
       const topLearning =
         finiteLearning.length
           ? Math.max(...finiteLearning)
           : null;
 
-      /*
-       * 這裡刻意不用 arrayToDataTable() 自動判斷型別。
-       * 當「整體滿意度」某次全部都是 null 時，
-       * Google Charts 可能把該 series 推斷成 string，
-       * 就會出現：
-       * All series on a given axis must be of the same data type
-       *
-       * 因此明確指定：
-       * SP 年資 = string
-       * 整體滿意度 = number
-       * 學習成效 = number
-       */
       const dt =
         new google.visualization.DataTable();
 
@@ -1448,21 +1442,6 @@
         'string',
         'SP年資'
       );
-
-      dt.addColumn(
-        'number',
-        '整體滿意度'
-      );
-
-      dt.addColumn({
-        type:'string',
-        role:'annotation'
-      });
-
-      dt.addColumn({
-        type:'string',
-        role:'style'
-      });
 
       dt.addColumn(
         'number',
@@ -1480,17 +1459,10 @@
       });
 
       rowsData.forEach((x,index) => {
-        const satisfaction =
-          satisfactionValues[index];
-
         const learning =
           learningValues[index];
 
         const hasTop =
-          (
-            topSatisfaction != null &&
-            satisfaction === topSatisfaction
-          ) ||
           (
             topLearning != null &&
             learning === topLearning
@@ -1498,21 +1470,6 @@
 
         dt.addRow([
           `${hasTop ? '🏆 ' : ''}${x.label}`,
-
-          Number.isFinite(satisfaction)
-            ? satisfaction
-            : null,
-
-          Number.isFinite(satisfaction)
-            ? formatScore(satisfaction)
-            : null,
-
-          (
-            topSatisfaction != null &&
-            satisfaction === topSatisfaction
-          )
-            ? 'color: #D59A24'
-            : 'color: #315F6B',
 
           Number.isFinite(learning)
             ? learning
@@ -1584,9 +1541,6 @@
         'tenureTableBody'
       ).innerHTML =
         rowsData.map((x,index) => {
-          const satisfaction =
-            satisfactionValues[index];
-
           const learning =
             learningValues[index];
 
@@ -1595,9 +1549,6 @@
               <td>${escapeHtml(x.label)}</td>
               <td class="num">
                 ${formatInt(x.n ?? x.count ?? 0)}
-              </td>
-              <td class="num">
-                ${formatScore(satisfaction)}
               </td>
               <td class="num">
                 ${formatScore(learning)}
@@ -2127,137 +2078,6 @@
       }
 
       return null;
-    }
-
-    function getTenureSatisfaction(row){
-      return firstFinite(
-        row && row.satisfaction,
-        row && row.satisfactionAvg,
-        row && row.overallAvg,
-        row && row.avgSatisfaction,
-        row && row.overallSatisfaction,
-        row && row.overallSatisfactionAvg,
-        row && row.overall_satisfaction
-      );
-    }
-
-    function resolveSatisfaction(data){
-      const k =
-        data.kpi || {};
-
-      let average =
-        firstFinite(
-          k.satisfactionAvg,
-          k.overallSatisfactionAvg,
-          k.overallSatisfaction,
-          k.overall_satisfaction,
-          data.satisfactionAvg,
-          data.overallSatisfactionAvg
-        );
-
-      const positiveRate =
-        firstFinite(
-          k.satisfactionPositiveRate,
-          k.overallSatisfactionPositiveRate,
-          k.overall_satisfaction_positive_rate
-        );
-
-      if (average == null){
-        const distribution =
-          (
-            data.distributions &&
-            (
-              data.distributions.satisfaction ||
-              data.distributions.overallSatisfaction ||
-              data.distributions.overall_satisfaction
-            )
-          ) || [];
-
-        const scores =
-          distribution
-            .map(item => ({
-              score:firstFinite(
-                item && item.value,
-                item && item.score,
-                String(
-                  item && item.label
-                    ? item.label
-                    : ''
-                ).match(/[1-5]/)?.[0]
-              ),
-              count:Number(
-                item && item.count
-                  ? item.count
-                  : 0
-              )
-            }))
-            .filter(
-              item =>
-                item.score != null &&
-                item.count > 0
-            );
-
-        const count =
-          scores.reduce(
-            (sum,item) =>
-              sum + item.count,
-            0
-          );
-
-        if (count){
-          average =
-            scores.reduce(
-              (sum,item) =>
-                sum +
-                item.score *
-                item.count,
-              0
-            ) / count;
-        }
-      }
-
-      if (average == null){
-        const groups =
-          (data.tenureComparison || [])
-            .map(row => ({
-              value:getTenureSatisfaction(row),
-              n:Number(
-                row && (
-                  row.n ??
-                  row.count ??
-                  0
-                )
-              )
-            }))
-            .filter(
-              row =>
-                row.value != null &&
-                row.n > 0
-            );
-
-        const total =
-          groups.reduce(
-            (sum,row) =>
-              sum + row.n,
-            0
-          );
-
-        if (total){
-          average =
-            groups.reduce(
-              (sum,row) =>
-                sum +
-                row.value *
-                row.n,
-              0
-            ) / total;
-        }
-      }
-
-      return {
-        average,
-        positiveRate
-      };
     }
 
     function setText(id,text){
