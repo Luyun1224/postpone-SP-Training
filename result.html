@@ -188,16 +188,6 @@
 
     .error-box.show{display:block}
 
-    .gas-embed{
-      position:fixed;
-      inset:0;
-      z-index:9999;
-      width:100%;
-      height:100%;
-      border:0;
-      background:var(--bg);
-    }
-
     .kpi-grid{
       display:grid;
       grid-template-columns:repeat(6,minmax(0,1fr));
@@ -1257,6 +1247,7 @@
     });
 
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxWQS0nT481QXvRdHs-lhbqZDgI4ICUx0YSMdScVryqUt9myPy954PtOVOEJPqaUasa/exec";
+    const DASHBOARD_API_URL = `${WEB_APP_URL}?action=getDashboardData&format=json`;
 
     let DASHBOARD_DATA = null;
     function loadDashboard(){
@@ -1268,10 +1259,8 @@
         google.script &&
         google.script.run;
 
-      // 靜態網站沒有 google.script.run，因此以內嵌方式載入 GAS；
-      // 不再導向 GAS，讓瀏覽器網址保留在原本的 result.html。
       if (!hasGasRuntime){
-        embedGasDashboard();
+        fetchDashboardData();
         return;
       }
 
@@ -1286,16 +1275,31 @@
         .getDashboardData();
     }
 
-    function embedGasDashboard(){
-      if (document.getElementById('gasDashboardFrame')) return;
+    async function fetchDashboardData(){
+      try{
+        const url = `${DASHBOARD_API_URL}&_=${Date.now()}`;
+        const response = await fetch(url,{cache:'no-store'});
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-      const frame = document.createElement('iframe');
-      frame.id = 'gasDashboardFrame';
-      frame.className = 'gas-embed';
-      frame.title = '標準化病人進階課程問卷成效儀表板';
-      frame.src = WEB_APP_URL;
-      frame.setAttribute('allow', 'clipboard-write');
-      document.body.appendChild(frame);
+        const contentType = response.headers.get('content-type') || '';
+        if (!contentType.includes('application/json')){
+          throw new Error('資料服務未回傳 JSON，請確認 GAS 已部署資料 API');
+        }
+
+        const payload = await response.json();
+        const data = payload.data || payload;
+        if (!data || typeof data !== 'object' || !data.kpi){
+          throw new Error('資料格式不正確');
+        }
+
+        DASHBOARD_DATA = data;
+        google.charts.setOnLoadCallback(() => renderAll(data));
+      }catch(err){
+        showError(
+          `${err && err.message ? err.message : String(err)}。`
+          + '儀表板已停留在新版畫面，不會再切換成舊版。'
+        );
+      }
     }
 
     function showError(message){
@@ -1461,7 +1465,10 @@
       }
 
       const satisfactionValues = rowsData.map(getTenureSatisfaction);
-      const topSatisfaction = Math.max(...satisfactionValues.filter(Number.isFinite));
+      const finiteSatisfaction = satisfactionValues.filter(Number.isFinite);
+      const topSatisfaction = finiteSatisfaction.length
+        ? Math.max(...finiteSatisfaction)
+        : null;
       const topLearning = Math.max(...rowsData.map(x => Number(x.learning || x.learningAvg || 0)));
       const rows = [['SP年資','整體滿意度',{role:'annotation'},{role:'style'},'學習成效',{role:'annotation'},{role:'style'}]];
 
@@ -1469,10 +1476,12 @@
         const satisfaction = satisfactionValues[index];
         const learning = Number(x.learning || x.learningAvg || 0);
         rows.push([
-          `${(satisfaction === topSatisfaction || learning === topLearning) ? '🏆 ' : ''}${x.label}`,
-          Number.isFinite(satisfaction) ? satisfaction : 0,
+          `${((topSatisfaction != null && satisfaction === topSatisfaction) || learning === topLearning) ? '🏆 ' : ''}${x.label}`,
+          Number.isFinite(satisfaction) ? satisfaction : null,
           Number.isFinite(satisfaction) ? formatScore(satisfaction) : '—',
-          satisfaction === topSatisfaction ? 'color: #D59A24' : 'color: #315F6B',
+          topSatisfaction != null && satisfaction === topSatisfaction
+            ? 'color: #D59A24'
+            : 'color: #315F6B',
           learning,
           formatScore(learning),
           learning === topLearning ? 'color: #E8A78F' : 'color: #789C88'
@@ -1746,6 +1755,8 @@
       return firstFinite(
         row && row.satisfaction,
         row && row.satisfactionAvg,
+        row && row.overallAvg,
+        row && row.avgSatisfaction,
         row && row.overallSatisfaction,
         row && row.overallSatisfactionAvg,
         row && row.overall_satisfaction
@@ -1756,12 +1767,31 @@
       const k = data.kpi || {};
       let average = firstFinite(
         k.satisfactionAvg, k.overallSatisfactionAvg,
-        k.overallSatisfaction, k.overall_satisfaction
+        k.overallSatisfaction, k.overall_satisfaction,
+        data.satisfactionAvg, data.overallSatisfactionAvg
       );
       const positiveRate = firstFinite(
         k.satisfactionPositiveRate, k.overallSatisfactionPositiveRate,
         k.overall_satisfaction_positive_rate
       );
+
+      // 某些後端版本只回傳分布，先由 1–5 分的人數加權還原平均。
+      if (average == null){
+        const distribution =
+          (data.distributions && (
+            data.distributions.satisfaction ||
+            data.distributions.overallSatisfaction ||
+            data.distributions.overall_satisfaction
+          )) || [];
+        const scores = distribution
+          .map(item => ({
+            score:firstFinite(item.value, item.score, String(item.label || '').match(/[1-5]/)?.[0]),
+            count:Number(item.count || 0)
+          }))
+          .filter(item => item.score != null && item.count > 0);
+        const count = scores.reduce((sum,item) => sum + item.count, 0);
+        if (count) average = scores.reduce((sum,item) => sum + item.score * item.count, 0) / count;
+      }
 
       // 舊版後端僅在年資比較提供滿意度時，以人數加權回填總覽 KPI。
       if (average == null){
