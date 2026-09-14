@@ -150,6 +150,19 @@
       font-weight:700;
     }
 
+    .instructors{
+      margin-top:15px;
+      position:relative;
+      z-index:2;
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      color:#F4FBF8;
+      font-size:.9rem;
+    }
+
+    .instructors strong{white-space:nowrap;color:#FFF4C9}
+
     .loading{
       margin:18px 0;
       padding:18px;
@@ -174,6 +187,16 @@
     }
 
     .error-box.show{display:block}
+
+    .gas-embed{
+      position:fixed;
+      inset:0;
+      z-index:9999;
+      width:100%;
+      height:100%;
+      border:0;
+      background:var(--bg);
+    }
 
     .kpi-grid{
       display:grid;
@@ -566,7 +589,7 @@
 
     .highlight-grid{
       display:grid;
-      grid-template-columns:repeat(4,minmax(0,1fr));
+      grid-template-columns:repeat(3,minmax(0,1fr));
       gap:12px;
     }
 
@@ -948,6 +971,10 @@
         <span class="pill">🔗 即時連線 Google Sheet</span>
         <span class="pill" id="updatedAt">資料讀取中…</span>
       </div>
+      <div class="instructors">
+        <strong>🎓 當日講師</strong>
+        <span>馬偕紀念醫院臨床技能中心 王明淑技術主任、醫學教育部 王郁雯管理師</span>
+      </div>
     </header>
 
     <div class="loading" id="loadingBox">正在讀取 Google Sheet 資料並建立圖表…</div>
@@ -962,13 +989,6 @@
       </div>
 
       <div class="highlight-grid">
-        <article class="highlight-card c1">
-          <div class="highlight-icon">🌟</div>
-          <div class="highlight-label">整體感受</div>
-          <div class="highlight-main" id="highlightSatisfaction">資料整理中…</div>
-          <div class="highlight-note" id="highlightSatisfactionNote">—</div>
-        </article>
-
         <article class="highlight-card c2">
           <div class="highlight-icon">🌱</div>
           <div class="highlight-label">最突出的學習收穫</div>
@@ -1248,9 +1268,10 @@
         google.script &&
         google.script.run;
 
-      // 如果不是從 Apps Script Web App 開啟，直接導向正式儀表板。
+      // 靜態網站沒有 google.script.run，因此以內嵌方式載入 GAS；
+      // 不再導向 GAS，讓瀏覽器網址保留在原本的 result.html。
       if (!hasGasRuntime){
-        window.location.replace(WEB_APP_URL);
+        embedGasDashboard();
         return;
       }
 
@@ -1263,6 +1284,18 @@
           showError(err && err.message ? err.message : String(err));
         })
         .getDashboardData();
+    }
+
+    function embedGasDashboard(){
+      if (document.getElementById('gasDashboardFrame')) return;
+
+      const frame = document.createElement('iframe');
+      frame.id = 'gasDashboardFrame';
+      frame.className = 'gas-embed';
+      frame.title = '標準化病人進階課程問卷成效儀表板';
+      frame.src = WEB_APP_URL;
+      frame.setAttribute('allow', 'clipboard-write');
+      document.body.appendChild(frame);
     }
 
     function showError(message){
@@ -1302,17 +1335,6 @@
         .sort((a,b) => b.value - a.value);
       const needs = data.futureNeeds || [];
 
-      setText(
-        'highlightSatisfaction',
-        k.satisfactionAvg == null ? '尚無資料' : `${formatScore(k.satisfactionAvg)} / 5`
-      );
-      setText(
-        'highlightSatisfactionNote',
-        k.satisfactionPositiveRate == null
-          ? '等待更多回覆'
-          : `${formatPct(k.satisfactionPositiveRate)} 的填答者給予「滿意以上」評價`
-      );
-
       if (learning.length){
         setText('highlightLearning', learning[0].label);
         setText(
@@ -1347,14 +1369,15 @@
 
     function renderKpis(data){
       const k = data.kpi || {};
+      const satisfaction = resolveSatisfaction(data);
 
       setText('kpiResponses', formatInt(k.responses));
-      setText('kpiSatisfaction', formatScore(k.satisfactionAvg));
+      setText('kpiSatisfaction', formatScore(satisfaction.average));
       setText(
         'kpiSatisfactionSub',
-        k.satisfactionPositiveRate == null
+        satisfaction.positiveRate == null
           ? '5 分量表'
-          : `滿意＋非常滿意 ${formatPct(k.satisfactionPositiveRate)}`
+          : `滿意＋非常滿意 ${formatPct(satisfaction.positiveRate)}`
       );
 
       setText('kpiHelpfulness', formatScore(k.helpfulnessAvg));
@@ -1391,10 +1414,15 @@
         return;
       }
 
-      const rows = [['指標','平均分數']];
+      const ranked = [...items].sort((a,b) => Number(b.value || 0) - Number(a.value || 0));
+      const topValue = Number(ranked[0].value || 0);
+      const rows = [['指標','平均分數',{role:'style'},{role:'annotation'}]];
 
       items.forEach(item => {
-        rows.push([item.label, Number(item.value || 0)]);
+        const value = Number(item.value || 0);
+        const isTop = value === topValue;
+        rows.push([`${isTop ? '🏆 ' : ''}${item.label}`, value,
+          isTop ? 'color: #D59A24' : 'color: #789C88', formatScore(value)]);
       });
 
       const dt = google.visualization.arrayToDataTable(rows);
@@ -1432,13 +1460,22 @@
         return;
       }
 
-      const rows = [['SP年資','整體滿意度','學習成效']];
+      const satisfactionValues = rowsData.map(getTenureSatisfaction);
+      const topSatisfaction = Math.max(...satisfactionValues.filter(Number.isFinite));
+      const topLearning = Math.max(...rowsData.map(x => Number(x.learning || x.learningAvg || 0)));
+      const rows = [['SP年資','整體滿意度',{role:'annotation'},{role:'style'},'學習成效',{role:'annotation'},{role:'style'}]];
 
-      rowsData.forEach(x => {
+      rowsData.forEach((x,index) => {
+        const satisfaction = satisfactionValues[index];
+        const learning = Number(x.learning || x.learningAvg || 0);
         rows.push([
-          x.label,
-          Number(x.satisfaction || 0),
-          Number(x.learning || 0)
+          `${(satisfaction === topSatisfaction || learning === topLearning) ? '🏆 ' : ''}${x.label}`,
+          Number.isFinite(satisfaction) ? satisfaction : 0,
+          Number.isFinite(satisfaction) ? formatScore(satisfaction) : '—',
+          satisfaction === topSatisfaction ? 'color: #D59A24' : 'color: #315F6B',
+          learning,
+          formatScore(learning),
+          learning === topLearning ? 'color: #E8A78F' : 'color: #789C88'
         ]);
       });
 
@@ -1459,7 +1496,8 @@
         },
         hAxis:{
           textStyle:{fontSize:11,color:'#607487'}
-        }
+        },
+        annotations:{alwaysOutside:true,textStyle:{fontSize:11,bold:true,color:'#294452'}}
       });
 
       document.getElementById('tenureTableBody').innerHTML =
@@ -1467,8 +1505,8 @@
           <tr>
             <td>${escapeHtml(x.label)}</td>
             <td class="num">${x.n}</td>
-            <td class="num">${formatScore(x.satisfaction)}</td>
-            <td class="num">${formatScore(x.learning)}</td>
+            <td class="num">${formatScore(getTenureSatisfaction(x))}</td>
+            <td class="num">${formatScore(x.learning ?? x.learningAvg)}</td>
           </tr>
         `).join('');
     }
@@ -1517,12 +1555,19 @@
         return;
       }
 
-      const rows = [['項目','勾選次數']];
+      const topCount = Math.max(...items.map(x => Number(x.count || 0)));
+      const rows = [['項目','勾選次數',{role:'style'},{role:'annotation'}]];
 
-      items.forEach(x => rows.push([
-        shortenLabel(x.label),
-        Number(x.count || 0)
-      ]));
+      items.forEach(x => {
+        const count = Number(x.count || 0);
+        const isTop = count === topCount;
+        rows.push([
+          `${isTop ? '🏆 ' : ''}${shortenLabel(x.label)}`,
+          count,
+          isTop ? 'color: #D59A24' : `color: ${color}`,
+          formatInt(count)
+        ]);
+      });
 
       const dt = google.visualization.arrayToDataTable(rows);
 
@@ -1547,6 +1592,7 @@
         vAxis:{
           textStyle:{fontSize:11,color:'#17324D'}
         },
+        annotations:{alwaysOutside:true,textStyle:{fontSize:11,bold:true,color:'#294452'}},
         bar:{groupWidth:'60%'}
       });
     }
@@ -1683,7 +1729,49 @@
     function formatPct(value){
       if (value === null || value === undefined || value === '') return '—';
       const n = Number(value);
-      return Number.isFinite(n) ? `${n.toFixed(1)}%` : '—';
+      return Number.isFinite(n) ? `${Math.round(n)}%` : '—';
+    }
+
+    function firstFinite(...values){
+      for (const value of values){
+        if (value !== null && value !== undefined && value !== ''){
+          const number = Number(value);
+          if (Number.isFinite(number)) return number;
+        }
+      }
+      return null;
+    }
+
+    function getTenureSatisfaction(row){
+      return firstFinite(
+        row && row.satisfaction,
+        row && row.satisfactionAvg,
+        row && row.overallSatisfaction,
+        row && row.overallSatisfactionAvg,
+        row && row.overall_satisfaction
+      );
+    }
+
+    function resolveSatisfaction(data){
+      const k = data.kpi || {};
+      let average = firstFinite(
+        k.satisfactionAvg, k.overallSatisfactionAvg,
+        k.overallSatisfaction, k.overall_satisfaction
+      );
+      const positiveRate = firstFinite(
+        k.satisfactionPositiveRate, k.overallSatisfactionPositiveRate,
+        k.overall_satisfaction_positive_rate
+      );
+
+      // 舊版後端僅在年資比較提供滿意度時，以人數加權回填總覽 KPI。
+      if (average == null){
+        const groups = (data.tenureComparison || [])
+          .map(row => ({value:getTenureSatisfaction(row), n:Number(row.n || row.count || 0)}))
+          .filter(row => row.value != null && row.n > 0);
+        const total = groups.reduce((sum,row) => sum + row.n, 0);
+        if (total) average = groups.reduce((sum,row) => sum + row.value * row.n, 0) / total;
+      }
+      return {average, positiveRate};
     }
 
     function formatInt(value){
