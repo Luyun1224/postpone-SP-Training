@@ -180,6 +180,9 @@
     .hero-feature p{margin:0;color:#AEB7C7;font-size:.9rem;line-height:1.75}
     .hero-feature b{color:#F5C51C}.hero-feature:nth-child(2) b{color:#52A8FF}.hero-feature:nth-child(3) b{color:#42E28B}
 
+    .hero-feature .feature-title{color:#fff}
+    .hero-feature:nth-child(1) .feature-icon{background:rgba(242,217,139,.22)}
+
     .toolbar{
       display:flex;
       flex-wrap:wrap;
@@ -547,6 +550,29 @@
       border-radius:14px;
     }
 
+    .tenure-observations{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:10px;
+      margin-top:12px;
+    }
+
+    .tenure-observation{
+      padding:13px 14px;
+      border:1px solid #DCE5E0;
+      border-left:4px solid var(--sage);
+      border-radius:13px;
+      background:#F8FBF9;
+    }
+
+    .tenure-observation.top{
+      border-left-color:var(--peach);
+      background:#FFF8F4;
+    }
+
+    .tenure-observation strong{display:block;color:#315A61;font-size:.88rem}
+    .tenure-observation p{margin:5px 0 0;color:#64777C;font-size:.79rem;line-height:1.55}
+
     table{
       width:100%;
       border-collapse:collapse;
@@ -744,6 +770,7 @@
     @media (max-width:1180px){
       .kpi-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
       .grid-3{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .tenure-observations{grid-template-columns:1fr}
     }
 
     @media (max-width:1100px){
@@ -800,7 +827,7 @@
           <div class="eyebrow"><span class="hospital-badge">奇美醫院</span><span>臨床技能中心</span></div>
           <h1>標準化病人<span class="title-accent">展延</span>培訓工作坊</h1>
           <div class="instructor-line"><span class="instructor-icon">♙</span><span>師資陣容：馬偕紀念醫院 王明淑技術主任、王郁雯管理師</span></div>
-          <div class="principles">精準校準 <i>×</i> 困境應對 <i>×</i> 即興演練</div>
+          <div class="principles">自我覺察 <i>×</i> 一致性校準 <i>×</i> 角色型塑</div>
         </div>
 
         <div class="hero-side">
@@ -814,9 +841,9 @@
       </div>
 
       <div class="hero-features">
-        <article class="hero-feature"><div class="feature-title"><span class="feature-icon">〽</span>痛苦特徵辨識</div><p>針對<b>呼吸困難、腹痛、骨折</b>等特定情境，精準解析病患的生理特徵與肢體語言。</p></article>
-        <article class="hero-feature"><div class="feature-title"><span class="feature-icon">⚙</span>困境經驗復盤</div><p>透過小組討論回顧過往演出挑戰，將<b>印象深刻的困難經驗</b>轉化為具體的應對策略。</p></article>
-        <article class="hero-feature"><div class="feature-title"><span class="feature-icon">♞</span>即興引導演練</div><p>運用<b>即興演出（Improv）</b>模擬真實情境，訓練在展現情緒的同時引導學員關注感受。</p></article>
+        <article class="hero-feature"><div class="feature-title"><span class="feature-icon">◎</span>自我覺察</div><p>從身體、語氣、情緒與慣性反應，看見自己如何進入與呈現角色。</p></article>
+        <article class="hero-feature"><div class="feature-title"><span class="feature-icon">↔</span>一致性校準</div><p>維持角色核心資訊、情緒強度與非語言線索，讓表現穩定、可重現、可校準。</p></article>
+        <article class="hero-feature"><div class="feature-title"><span class="feature-icon">♙</span>角色型塑</div><p>結合角色任務與 VTS 觀察證據，建立更具體、有邏輯且可討論的角色行為。</p></article>
       </div>
       <span id="updatedAt" hidden>資料讀取中…</span>
     </header>
@@ -932,6 +959,7 @@
             <tbody id="tenureTableBody"></tbody>
           </table>
         </div>
+        <div class="tenure-observations" id="tenureObservations" aria-label="各年資觀察註解"></div>
       </article>
     </section>
 
@@ -1452,6 +1480,10 @@
           'tenureTableBody'
         ).innerHTML = '';
 
+        document.getElementById(
+          'tenureObservations'
+        ).innerHTML = '';
+
         return;
       }
 
@@ -1533,16 +1565,16 @@
 
       chart.draw(dt,{
         legend:{
-          position:'top'
+          position:'none'
         },
 
         backgroundColor:'transparent',
 
         chartArea:{
-          left:55,
-          top:45,
-          width:'78%',
-          height:'68%'
+          left:48,
+          top:28,
+          width:'88%',
+          height:'72%'
         },
 
         vAxis:{
@@ -1590,6 +1622,33 @@
                 ${formatScore(learning)}
               </td>
             </tr>
+          `;
+        }).join('');
+
+      document.getElementById(
+        'tenureObservations'
+      ).innerHTML =
+        rowsData.map((x,index) => {
+          const learning = learningValues[index];
+          const count = Number(x.n ?? x.count ?? 0);
+          const isTop = topLearning != null && learning === topLearning;
+          const gap = Number.isFinite(learning) && topLearning != null
+            ? topLearning - learning
+            : null;
+
+          let note = '目前尚無足夠分數可供判讀。';
+          if (Number.isFinite(learning)) {
+            if (isTop) note = '本組平均成效居各年資之首，顯示核心學習指標掌握良好。';
+            else if (gap <= 0.15) note = '本組表現與最高分組相近，整體學習成效維持在相同水準。';
+            else note = `本組較最高分組低 ${gap.toFixed(2)} 分，可持續追蹤不同經驗背景的學習需求。`;
+          }
+          if (count > 0 && count < 3) note += ' 樣本數較少，解讀時宜保留彈性。';
+
+          return `
+            <div class="tenure-observation ${isTop ? 'top' : ''}">
+              <strong>${escapeHtml(x.label)}｜${formatScore(learning)} 分（${formatInt(count)} 人）</strong>
+              <p>${escapeHtml(note)}</p>
+            </div>
           `;
         }).join('');
     }
