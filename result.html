@@ -188,6 +188,16 @@
 
     .error-box.show{display:block}
 
+    .gas-embed{
+      position:fixed;
+      inset:0;
+      z-index:9999;
+      width:100%;
+      height:100%;
+      border:0;
+      background:var(--bg);
+    }
+
     .kpi-grid{
       display:grid;
       grid-template-columns:repeat(6,minmax(0,1fr));
@@ -1258,9 +1268,10 @@
         google.script &&
         google.script.run;
 
-      // 如果不是從 Apps Script Web App 開啟，直接導向正式儀表板。
+      // 靜態網站沒有 google.script.run，因此以內嵌方式載入 GAS；
+      // 不再導向 GAS，讓瀏覽器網址保留在原本的 result.html。
       if (!hasGasRuntime){
-        window.location.replace(WEB_APP_URL);
+        embedGasDashboard();
         return;
       }
 
@@ -1273,6 +1284,18 @@
           showError(err && err.message ? err.message : String(err));
         })
         .getDashboardData();
+    }
+
+    function embedGasDashboard(){
+      if (document.getElementById('gasDashboardFrame')) return;
+
+      const frame = document.createElement('iframe');
+      frame.id = 'gasDashboardFrame';
+      frame.className = 'gas-embed';
+      frame.title = '標準化病人進階課程問卷成效儀表板';
+      frame.src = WEB_APP_URL;
+      frame.setAttribute('allow', 'clipboard-write');
+      document.body.appendChild(frame);
     }
 
     function showError(message){
