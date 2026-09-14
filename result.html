@@ -53,45 +53,54 @@
       line-height:1.55;
     }
 
+    body::before{
+      content:"";
+      position:absolute;
+      inset:0 0 auto;
+      height:min(760px,100vh);
+      background:#071225;
+      z-index:-1;
+    }
+
     button{font:inherit}
 
     .app{
-      width:min(1480px,calc(100% - 28px));
+      width:100%;
       margin:0 auto;
-      padding:22px 0 60px;
+      padding:0 0 60px;
+    }
+
+    .app > :not(.hero){
+      width:min(1480px,calc(100% - 28px));
+      margin-left:auto;
+      margin-right:auto;
     }
 
     .hero{
       position:relative;
       overflow:hidden;
-      padding:28px 30px;
-      border-radius:24px;
+      min-height:min(760px,100vh);
+      padding:72px max(24px,calc((100vw - 1296px)/2)) 54px;
       color:#fff;
       background:
-        radial-gradient(circle at 92% 22%,rgba(255,255,255,.09),transparent 16rem),
-        linear-gradient(130deg,#244F67 0%,#315F6B 56%,#557C70 100%);
-      box-shadow:0 18px 42px rgba(35,75,89,.14);
-      border:1px solid rgba(255,255,255,.08);
+        linear-gradient(90deg,rgba(6,17,35,.93) 0%,rgba(7,18,38,.80) 50%,rgba(7,18,36,.88) 100%),
+        linear-gradient(180deg,rgba(5,13,29,.12) 46%,#071225 100%),
+        url("1150913.jpg") center 45%/cover no-repeat;
+      border-top:1px solid rgba(242,171,148,.55);
     }
 
     .hero::after{
       content:"";
       position:absolute;
-      width:240px;
-      height:240px;
-      border:2px solid rgba(255,255,255,.12);
-      border-radius:50%;
-      top:-120px;
-      right:-70px;
-      box-shadow:
-        0 0 0 34px rgba(255,255,255,.035),
-        0 0 0 72px rgba(255,255,255,.025);
+      inset:0;
+      background:linear-gradient(180deg,transparent 45%,rgba(7,18,37,.45) 72%,#071225 100%);
+      pointer-events:none;
     }
 
     .hero-top{
       display:grid;
-      grid-template-columns:minmax(0,1fr) minmax(320px,520px);
-      align-items:flex-start;
+      grid-template-columns:minmax(0,1fr) auto;
+      align-items:center;
       gap:28px;
       position:relative;
       z-index:2;
@@ -99,17 +108,12 @@
 
     .hero-side{
       display:flex;
-      flex-direction:column;
-      gap:14px;
+      align-items:center;
+      gap:18px;
     }
 
     .hero-photo{
-      margin:0;
-      overflow:hidden;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.28);
-      background:rgba(255,255,255,.1);
-      box-shadow:0 14px 30px rgba(14,38,47,.24);
+      display:none;
     }
 
     .hero-photo img{
@@ -129,7 +133,11 @@
     }
 
     .eyebrow{
-      font-size:.86rem;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      color:#55EA9C;
+      font-size:1rem;
       font-weight:800;
       opacity:.9;
       letter-spacing:.04em;
@@ -138,8 +146,8 @@
 
     h1{
       margin:0;
-      font-size:clamp(1.55rem,3vw,2.35rem);
-      line-height:1.25;
+      font-size:clamp(2.25rem,4.1vw,3.7rem);
+      line-height:1.18;
       letter-spacing:.03em;
     }
 
@@ -149,6 +157,28 @@
       max-width:930px;
       font-size:1rem;
     }
+
+    .hospital-badge{padding:8px 17px;border-radius:999px;background:#10AF5A;color:#fff;box-shadow:0 8px 20px rgba(16,175,90,.32)}
+    .title-accent{color:#39DD7C}
+    .instructor-line{display:flex;align-items:center;gap:10px;margin-top:20px;color:#F2F5FA;font-size:1rem}
+    .instructor-icon{display:grid;place-items:center;width:27px;height:27px;border-radius:6px;background:rgba(255,255,255,.12)}
+    .principles{margin-top:34px;color:#6DE7B1;font-size:1.24rem;font-weight:900;letter-spacing:.13em}
+    .principles i{padding:0 15px;color:#8290A3;font-style:normal;font-size:.9rem}
+
+    .hero-stat{min-width:134px;padding:20px 24px;border:1px solid rgba(255,255,255,.17);border-radius:20px;background:rgba(31,43,64,.82);text-align:center;box-shadow:0 16px 32px rgba(0,0,0,.18);backdrop-filter:blur(8px)}
+    .hero-stat.rate{border-left:4px solid #17C96A;background:rgba(5,63,51,.82)}
+    .hero-stat strong{display:block;font-size:2.65rem;line-height:1;color:#fff}
+    .hero-stat.rate strong{color:#45E991}
+    .hero-stat span{display:block;margin-top:7px;color:#C6CBD5;font-size:.9rem}
+
+    .hero-features{position:relative;z-index:2;display:grid;grid-template-columns:repeat(3,1fr);gap:26px;margin-top:76px;padding-top:44px;border-top:1px solid rgba(255,255,255,.14)}
+    .hero-feature{min-height:162px;padding:27px;border:1px solid rgba(255,255,255,.12);border-radius:19px;background:rgba(26,38,59,.76);backdrop-filter:blur(10px)}
+    .feature-title{display:flex;align-items:center;gap:14px;margin-bottom:12px;font-size:1.08rem;font-weight:900}
+    .feature-icon{display:grid;place-items:center;width:42px;height:42px;border-radius:10px;background:rgba(245,190,20,.24);font-size:1.3rem}
+    .hero-feature:nth-child(2) .feature-icon{background:rgba(54,143,243,.24)}
+    .hero-feature:nth-child(3) .feature-icon{background:rgba(31,205,111,.24)}
+    .hero-feature p{margin:0;color:#AEB7C7;font-size:.9rem;line-height:1.75}
+    .hero-feature b{color:#F5C51C}.hero-feature:nth-child(2) b{color:#52A8FF}.hero-feature:nth-child(3) b{color:#42E28B}
 
     .toolbar{
       display:flex;
@@ -208,6 +238,7 @@
     }
 
     .loading{
+      width:min(1480px,calc(100% - 28px));
       margin:18px 0;
       padding:18px;
       background:#FFFDF8;
@@ -233,6 +264,9 @@
     .error-box.show{display:block}
 
     .highlight-wrap{
+      width:min(1480px,calc(100% - 28px));
+      margin-left:auto;
+      margin-right:auto;
       margin-top:18px;
       padding:18px;
       border-radius:22px;
@@ -723,13 +757,18 @@
       }
 
       .hero{
-        padding:22px 18px;
-        border-radius:18px;
+        min-height:auto;
+        padding:34px 18px 38px;
       }
 
       .hero-top{grid-template-columns:1fr}
-      .toolbar{justify-content:flex-start;margin-top:16px}
+      .hero-side{flex-wrap:wrap}
+      .hero-stat{min-width:calc(50% - 9px);padding:17px 12px}
+      .toolbar{width:100%;justify-content:flex-start;margin-top:4px}
       .hero-photo img{aspect-ratio:16/9}
+      .hero-features{grid-template-columns:1fr;margin-top:38px;padding-top:28px;gap:14px}
+      .principles{font-size:1rem;letter-spacing:.05em}
+      .principles i{padding:0 6px}
       .kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
       .grid-2,.grid-3{grid-template-columns:1fr}
       .highlight-grid{grid-template-columns:1fr}
@@ -758,40 +797,28 @@
     <header class="hero">
       <div class="hero-top">
         <div>
-          <div class="eyebrow">奇美醫院教學部・臨床技能中心</div>
-          <h1>標準化病人進階課程｜問卷成效儀表板</h1>
-          <p>
-            一起看見學習的成長、感動與下一步。從量化成果到每一段真實反思，
-            讓課程成效不只是數字，也留下 SP 夥伴的學習軌跡。
-          </p>
+          <div class="eyebrow"><span class="hospital-badge">奇美醫院</span><span>臨床技能中心</span></div>
+          <h1>標準化病人<span class="title-accent">展延</span>培訓工作坊</h1>
+          <div class="instructor-line"><span class="instructor-icon">♙</span><span>師資陣容：馬偕紀念醫院 王明淑技術主任、王郁雯管理師</span></div>
+          <div class="principles">精準校準 <i>×</i> 困境應對 <i>×</i> 即興演練</div>
         </div>
 
         <div class="hero-side">
+          <div class="hero-stat"><strong id="heroResponses">—</strong><span>問卷回收</span></div>
+          <div class="hero-stat rate"><strong id="heroResponseRate">—</strong><span id="heroResponseRateNote">回收率</span></div>
           <div class="toolbar">
             <button class="btn" type="button" onclick="loadDashboard()">↻ 重新整理</button>
             <button class="btn" type="button" onclick="window.print()">🖨 列印 / PDF</button>
           </div>
-          <figure class="hero-photo">
-            <img src="IMG_2520.JPG" alt="115 年 9 月 13 日標準化病人進階課程全體學員與講師合照">
-            <figcaption>115 年 9 月 13 日｜課程全體學員與講師合影</figcaption>
-          </figure>
         </div>
       </div>
 
-      <div class="meta">
-        <span class="pill">📅 115 年 9 月 13 日</span>
-        <span class="pill">🔍 自我覺察</span>
-        <span class="pill">⚖️ 一致性</span>
-        <span class="pill">🎭 角色型塑</span>
-        <span class="pill">👁️ VTS</span>
-        <span class="pill">🔗 即時連線 Google Sheet</span>
-        <span class="pill" id="updatedAt">資料讀取中…</span>
+      <div class="hero-features">
+        <article class="hero-feature"><div class="feature-title"><span class="feature-icon">〽</span>痛苦特徵辨識</div><p>針對<b>呼吸困難、腹痛、骨折</b>等特定情境，精準解析病患的生理特徵與肢體語言。</p></article>
+        <article class="hero-feature"><div class="feature-title"><span class="feature-icon">⚙</span>困境經驗復盤</div><p>透過小組討論回顧過往演出挑戰，將<b>印象深刻的困難經驗</b>轉化為具體的應對策略。</p></article>
+        <article class="hero-feature"><div class="feature-title"><span class="feature-icon">♞</span>即興引導演練</div><p>運用<b>即興演出（Improv）</b>模擬真實情境，訓練在展現情緒的同時引導學員關注感受。</p></article>
       </div>
-
-      <div class="instructors">
-        <strong>🎓 當日講師</strong>
-        <span>馬偕紀念醫院臨床技能中心 王明淑技術主任、醫學教育部 王郁雯管理師</span>
-      </div>
+      <span id="updatedAt" hidden>資料讀取中…</span>
     </header>
 
     <div class="loading" id="loadingBox">正在讀取 Google Sheet 資料並建立圖表…</div>
@@ -1284,6 +1311,15 @@
         'kpiResponses',
         formatInt(k.responses)
       );
+
+      const responseCount = Number(k.responses) || 0;
+      const invitedCount = 20;
+      setText('heroResponses', formatInt(responseCount));
+      setText(
+        'heroResponseRate',
+        responseCount ? formatPct(responseCount / invitedCount * 100) : '—'
+      );
+      setText('heroResponseRateNote', `回收率 (N=${invitedCount})`);
 
       setText(
         'kpiHelpfulness',
