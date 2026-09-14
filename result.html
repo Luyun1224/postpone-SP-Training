@@ -10,23 +10,27 @@
   <style>
     :root{
       --navy:#123A63;
-      --navy2:#0D4D72;
-      --teal:#0F6B75;
-      --green:#4F8B6A;
-      --soft-green:#EEF6F2;
-      --soft-blue:#F2F7FA;
-      --soft-teal:#EDF7F7;
-      --amber:#B87912;
-      --soft-amber:#FFF6E4;
+      --navy2:#315F6B;
+      --teal:#557C70;
+      --sage:#789C88;
+      --sage-soft:#EAF3EC;
+      --butter:#F2D98B;
+      --butter-soft:#FFF4C9;
+      --peach:#E8A78F;
+      --peach-soft:#FBE5DC;
+      --sky:#8FB6C8;
+      --sky-soft:#E7F1F5;
+      --lavender:#A9A2C8;
+      --lavender-soft:#EFECF8;
+      --cream:#FBF7EF;
+      --cream2:#FFFDF8;
+      --ink:#294452;
+      --muted:#6C7F83;
+      --line:#DCE5E0;
       --red:#B42318;
-      --soft-red:#FFF0EE;
-      --text:#17324D;
-      --muted:#607487;
-      --line:#D9E4E9;
-      --white:#FFFFFF;
-      --bg:#F5F8FA;
-      --shadow:0 8px 24px rgba(18,58,99,.08);
-      --radius:18px;
+      --red-soft:#FFF0EE;
+      --shadow:0 12px 30px rgba(58,79,71,.08);
+      --radius:20px;
     }
 
     *{box-sizing:border-box}
@@ -38,20 +42,21 @@
 
     body{
       margin:0;
+      color:var(--ink);
       font-family:
         "Noto Sans TC","PingFang TC","Microsoft JhengHei",
         system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      color:var(--text);
       background:
-        radial-gradient(circle at 90% 0%,rgba(15,107,117,.09),transparent 22rem),
-        var(--bg);
+        radial-gradient(circle at 8% 4%,rgba(242,217,139,.22),transparent 18rem),
+        radial-gradient(circle at 92% 7%,rgba(143,182,200,.18),transparent 23rem),
+        linear-gradient(180deg,#FCFAF5 0%,#F6F8F4 52%,#FAF7F1 100%);
       line-height:1.55;
     }
 
     button{font:inherit}
 
     .app{
-      width:min(1500px,calc(100% - 28px));
+      width:min(1480px,calc(100% - 28px));
       margin:0 auto;
       padding:22px 0 60px;
     }
@@ -62,17 +67,22 @@
       padding:28px 30px;
       border-radius:24px;
       color:#fff;
-      background:linear-gradient(135deg,var(--navy),var(--navy2) 55%,var(--teal));
-      box-shadow:var(--shadow);
+      background:
+        radial-gradient(circle at 92% 22%,rgba(255,255,255,.09),transparent 16rem),
+        linear-gradient(130deg,#244F67 0%,#315F6B 56%,#557C70 100%);
+      box-shadow:0 18px 42px rgba(35,75,89,.14);
+      border:1px solid rgba(255,255,255,.08);
     }
 
     .hero::after{
       content:"";
       position:absolute;
-      width:240px;height:240px;
+      width:240px;
+      height:240px;
       border:2px solid rgba(255,255,255,.12);
       border-radius:50%;
-      top:-120px;right:-70px;
+      top:-120px;
+      right:-70px;
       box-shadow:
         0 0 0 34px rgba(255,255,255,.035),
         0 0 0 72px rgba(255,255,255,.025);
@@ -104,9 +114,9 @@
 
     .hero p{
       margin:10px 0 0;
-      color:#DDEEF3;
-      max-width:880px;
-      font-size:.96rem;
+      color:#EDF5F1;
+      max-width:930px;
+      font-size:1rem;
     }
 
     .toolbar{
@@ -143,8 +153,8 @@
     .pill{
       padding:7px 11px;
       border-radius:999px;
-      background:rgba(255,255,255,.13);
-      border:1px solid rgba(255,255,255,.15);
+      background:rgba(255,255,255,.14);
+      border:1px solid rgba(255,255,255,.18);
       color:#F2FBFD;
       font-size:.84rem;
       font-weight:700;
@@ -161,13 +171,16 @@
       font-size:.9rem;
     }
 
-    .instructors strong{white-space:nowrap;color:#FFF4C9}
+    .instructors strong{
+      white-space:nowrap;
+      color:#FFF4C9;
+    }
 
     .loading{
       margin:18px 0;
       padding:18px;
-      background:#fff;
-      border:1px solid var(--line);
+      background:#FFFDF8;
+      border:1px solid #E7DFD0;
       border-radius:16px;
       color:var(--muted);
       box-shadow:var(--shadow);
@@ -181,380 +194,20 @@
       padding:16px 18px;
       border-radius:14px;
       border:1px solid #F2B6AF;
-      background:var(--soft-red);
+      background:var(--red-soft);
       color:#84271D;
       font-weight:700;
     }
 
     .error-box.show{display:block}
 
-    .kpi-grid{
-      display:grid;
-      grid-template-columns:repeat(6,minmax(0,1fr));
-      gap:12px;
-      margin-top:16px;
-    }
-
-    .kpi{
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius:17px;
-      padding:18px 17px;
-      min-height:124px;
-      box-shadow:0 5px 16px rgba(18,58,99,.045);
-      position:relative;
-      overflow:hidden;
-    }
-
-    .kpi::before{
-      content:"";
-      position:absolute;
-      left:0;top:0;bottom:0;
-      width:5px;
-      background:var(--teal);
-    }
-
-    .kpi.warn::before{background:var(--amber)}
-    .kpi.alert::before{background:var(--red)}
-
-    .kpi-label{
-      color:var(--muted);
-      font-size:.82rem;
-      font-weight:800;
-    }
-
-    .kpi-value{
-      margin-top:8px;
-      font-weight:900;
-      color:var(--navy);
-      font-size:clamp(1.55rem,3vw,2.25rem);
-      line-height:1;
-    }
-
-    .kpi-sub{
-      margin-top:9px;
-      color:#748798;
-      font-size:.76rem;
-      font-weight:700;
-    }
-
-    .section-title{
-      margin:28px 2px 11px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-    }
-
-    .section-title h2{
-      margin:0;
-      color:var(--navy);
-      font-size:1.22rem;
-    }
-
-    .section-title span{
-      color:var(--muted);
-      font-size:.82rem;
-    }
-
-    .grid-2{
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:14px;
-    }
-
-    .grid-3{
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:14px;
-    }
-
-    .card{
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      box-shadow:0 5px 17px rgba(18,58,99,.045);
-      padding:18px;
-      min-width:0;
-    }
-
-    .card-title{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      margin-bottom:8px;
-    }
-
-    .card-title h3{
-      margin:0;
-      font-size:1rem;
-      color:var(--navy);
-    }
-
-    .card-title .small{
-      color:var(--muted);
-      font-size:.76rem;
-      font-weight:700;
-    }
-
-    .chart{
-      width:100%;
-      height:330px;
-    }
-
-    .chart.tall{height:420px}
-    .chart.compact{height:270px}
-
-    .insight{
-      display:grid;
-      grid-template-columns:auto 1fr;
-      gap:11px;
-      align-items:flex-start;
-      padding:14px;
-      border-radius:14px;
-      background:var(--soft-teal);
-      border:1px solid #CFE4E4;
-      margin-top:12px;
-    }
-
-    .insight-icon{
-      width:38px;height:38px;
-      border-radius:12px;
-      display:grid;
-      place-items:center;
-      background:#fff;
-      font-size:1.15rem;
-    }
-
-    .insight strong{
-      display:block;
-      color:var(--teal);
-      margin-bottom:3px;
-    }
-
-    .insight p{
-      margin:0;
-      color:#526D7C;
-      font-size:.88rem;
-    }
-
-    .table-wrap{
-      overflow:auto;
-      border:1px solid var(--line);
-      border-radius:14px;
-    }
-
-    table{
-      width:100%;
-      border-collapse:collapse;
-      min-width:620px;
-      background:#fff;
-    }
-
-    th,td{
-      padding:11px 12px;
-      border-bottom:1px solid #E6EDF0;
-      text-align:left;
-      font-size:.86rem;
-    }
-
-    th{
-      background:#F3F8FA;
-      color:var(--navy);
-      font-weight:900;
-      position:sticky;
-      top:0;
-    }
-
-    td.num{text-align:right;font-variant-numeric:tabular-nums}
-
-    .quotes{
-      display:grid;
-      gap:10px;
-    }
-
-    .quote{
-      position:relative;
-      border:1px solid #DCE7EB;
-      background:#FCFEFF;
-      border-radius:14px;
-      padding:14px 15px 14px 42px;
-      color:#395466;
-      font-size:.9rem;
-      line-height:1.65;
-    }
-
-    .quote::before{
-      content:"“";
-      position:absolute;
-      left:13px;
-      top:3px;
-      color:#9AB7C0;
-      font-size:2rem;
-      font-family:Georgia,serif;
-    }
-
-    details{
-      border:1px solid var(--line);
-      border-radius:15px;
-      background:#fff;
-      overflow:hidden;
-    }
-
-    details + details{margin-top:10px}
-
-    summary{
-      cursor:pointer;
-      padding:15px 17px;
-      color:var(--navy);
-      font-weight:900;
-      list-style:none;
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      align-items:center;
-    }
-
-    summary::-webkit-details-marker{display:none}
-
-    summary::after{
-      content:"＋";
-      color:var(--teal);
-      font-size:1.15rem;
-    }
-
-    details[open] summary::after{content:"−"}
-
-    .detail-content{
-      padding:0 16px 16px;
-    }
-
-    .empty{
-      min-height:160px;
-      display:grid;
-      place-items:center;
-      text-align:center;
-      color:#8294A3;
-      background:#FAFCFD;
-      border-radius:12px;
-      border:1px dashed #CCD9DE;
-      padding:20px;
-    }
-
-    footer{
-      text-align:center;
-      color:#768998;
-      font-size:.78rem;
-      margin-top:26px;
-    }
-
-    @media (max-width:1180px){
-      .kpi-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
-      .grid-3{grid-template-columns:repeat(2,minmax(0,1fr))}
-    }
-
-    @media (max-width:760px){
-      .app{width:min(100% - 16px,1500px);padding-top:10px}
-      .hero{padding:22px 18px;border-radius:18px}
-      .hero-top{display:block}
-      .toolbar{justify-content:flex-start;margin-top:16px}
-      .kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-      .grid-2,.grid-3{grid-template-columns:1fr}
-      .card{padding:14px}
-      .chart{height:300px}
-      .chart.tall{height:380px}
-    }
-
-    @media (max-width:440px){
-      .kpi-grid{grid-template-columns:1fr 1fr}
-      .kpi{padding:15px 13px;min-height:112px}
-      .kpi-sub{font-size:.72rem}
-    }
-
-    @media print{
-      body{background:#fff}
-      .app{width:100%;padding:0}
-      .toolbar{display:none}
-      .hero{box-shadow:none}
-      .card,.kpi{box-shadow:none;break-inside:avoid}
-      details{break-inside:avoid}
-      details:not([open]) .detail-content{display:block}
-    }
-
-    /* ===== 溫馨成果故事板 v2 ===== */
-    :root{
-      --cream:#FBF7EF;
-      --cream-2:#FFFDF8;
-      --sage:#789C88;
-      --sage-soft:#EAF3EC;
-      --butter:#F2D98B;
-      --butter-soft:#FFF4C9;
-      --peach:#E8A78F;
-      --peach-soft:#FBE5DC;
-      --rose:#D88E9A;
-      --rose-soft:#F8E3E7;
-      --sky:#8FB6C8;
-      --sky-soft:#E7F1F5;
-      --lavender:#A9A2C8;
-      --lavender-soft:#EFECF8;
-      --ink:#294452;
-      --warm-shadow:0 12px 30px rgba(58,79,71,.08);
-    }
-
-    body{
-      color:var(--ink);
-      background:
-        radial-gradient(circle at 8% 4%,rgba(242,217,139,.22),transparent 18rem),
-        radial-gradient(circle at 92% 7%,rgba(143,182,200,.18),transparent 23rem),
-        linear-gradient(180deg,#FCFAF5 0%,#F6F8F4 52%,#FAF7F1 100%);
-    }
-
-    .app{width:min(1480px,calc(100% - 28px));}
-
-    .hero{
-      background:
-        radial-gradient(circle at 92% 22%,rgba(255,255,255,.09),transparent 16rem),
-        linear-gradient(130deg,#244F67 0%,#315F6B 56%,#557C70 100%);
-      box-shadow:0 18px 42px rgba(35,75,89,.14);
-      border:1px solid rgba(255,255,255,.08);
-    }
-
-    .hero::before{
-      content:"";
-      position:absolute;
-      width:120px;height:74px;
-      right:255px;bottom:-18px;
-      opacity:.15;
-      background:
-        radial-gradient(ellipse at center,#fff 0 18%,transparent 19% 100%);
-      transform:rotate(-8deg);
-    }
-
-    .hero p{
-      color:#EDF5F1;
-      font-size:1rem;
-      max-width:930px;
-    }
-
-    .pill{
-      background:rgba(255,255,255,.14);
-      border-color:rgba(255,255,255,.18);
-    }
-
-    .loading{
-      background:#FFFDF8;
-      border-color:#E7DFD0;
-    }
-
     .highlight-wrap{
       margin-top:18px;
       padding:18px;
       border-radius:22px;
-      background:
-        linear-gradient(135deg,rgba(255,255,255,.88),rgba(255,253,247,.95));
+      background:linear-gradient(135deg,rgba(255,255,255,.88),rgba(255,253,247,.95));
       border:1px solid #E9E1D4;
-      box-shadow:var(--warm-shadow);
+      box-shadow:var(--shadow);
     }
 
     .highlight-head{
@@ -587,8 +240,6 @@
       min-height:132px;
       padding:17px;
       border-radius:18px;
-      position:relative;
-      overflow:hidden;
       border:1px solid rgba(90,112,100,.10);
       transition:transform .18s ease,box-shadow .18s ease;
     }
@@ -598,7 +249,6 @@
       box-shadow:0 10px 24px rgba(76,97,87,.11);
     }
 
-    .highlight-card.c1{background:var(--butter-soft)}
     .highlight-card.c2{background:var(--sage-soft)}
     .highlight-card.c3{background:var(--sky-soft)}
     .highlight-card.c4{background:var(--peach-soft)}
@@ -631,22 +281,26 @@
     }
 
     .kpi-grid{
+      display:grid;
+      grid-template-columns:repeat(6,minmax(0,1fr));
       gap:13px;
       margin-top:16px;
     }
 
     .kpi{
+      background:var(--cream2);
       border:1px solid rgba(95,125,111,.13);
-      box-shadow:0 8px 22px rgba(70,92,82,.06);
-      background:var(--cream-2);
+      border-radius:17px;
       padding:17px;
+      min-height:124px;
+      box-shadow:0 8px 22px rgba(70,92,82,.06);
     }
 
-    .kpi::before{display:none}
-
     .kpi-icon{
-      width:38px;height:38px;
-      display:grid;place-items:center;
+      width:38px;
+      height:38px;
+      display:grid;
+      place-items:center;
       border-radius:13px;
       margin-bottom:10px;
       font-size:1.15rem;
@@ -660,48 +314,133 @@
     .kpi.kpi-e .kpi-icon{background:#E9F3F1}
     .kpi.kpi-f .kpi-icon{background:var(--peach-soft)}
 
-    .kpi-label{color:#697E78}
-    .kpi-value{color:#315A61}
-    .kpi-sub{color:#83908A}
+    .kpi-label{
+      color:#697E78;
+      font-size:.82rem;
+      font-weight:800;
+    }
+
+    .kpi-value{
+      margin-top:8px;
+      font-weight:900;
+      color:#315A61;
+      font-size:clamp(1.55rem,3vw,2.25rem);
+      line-height:1;
+    }
+
+    .kpi-sub{
+      margin-top:9px;
+      color:#83908A;
+      font-size:.76rem;
+      font-weight:700;
+    }
 
     .section-title{
-      margin-top:34px;
+      margin:34px 4px 11px;
       padding:0 4px 9px;
       border-bottom:1px dashed #D7DDD6;
+      display:flex;
       align-items:flex-end;
+      justify-content:space-between;
+      gap:12px;
     }
 
     .section-title h2{
+      margin:0;
       color:#315A61;
       font-size:1.27rem;
     }
 
     .section-title span{
       color:#8A938C;
+      font-size:.82rem;
       max-width:50%;
       text-align:right;
+    }
+
+    .grid-2{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:14px;
+    }
+
+    .grid-3{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:14px;
     }
 
     .card{
       background:rgba(255,253,249,.95);
       border:1px solid #E4E2DA;
-      box-shadow:var(--warm-shadow);
-      border-radius:21px;
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:18px;
+      min-width:0;
     }
 
-    .card-title h3{color:#315A61}
+    .card-title{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:8px;
+    }
+
+    .card-title h3{
+      margin:0;
+      font-size:1rem;
+      color:#315A61;
+    }
+
+    .card-title .small{
+      color:var(--muted);
+      font-size:.76rem;
+      font-weight:700;
+    }
+
+    .chart{
+      width:100%;
+      height:330px;
+    }
+
+    .chart.tall{height:420px}
+    .chart.compact{height:270px}
 
     .insight{
+      display:grid;
+      grid-template-columns:auto 1fr;
+      gap:11px;
+      align-items:flex-start;
+      padding:14px;
+      border-radius:14px;
       background:linear-gradient(135deg,#F0F7F1,#F8F5E9);
-      border-color:#D8E6DA;
+      border:1px solid #D8E6DA;
+      margin-top:12px;
     }
 
     .insight-icon{
+      width:38px;
+      height:38px;
+      border-radius:12px;
+      display:grid;
+      place-items:center;
       background:#FFFDF8;
       box-shadow:0 4px 12px rgba(86,105,94,.08);
+      font-size:1.15rem;
     }
 
-    .insight strong{color:#577B68}
+    .insight strong{
+      display:block;
+      color:#577B68;
+      margin-bottom:3px;
+    }
+
+    .insight p{
+      margin:0;
+      color:#526D7C;
+      font-size:.88rem;
+    }
 
     .story-callout{
       margin-top:14px;
@@ -715,10 +454,12 @@
       color:#665D3E;
     }
 
-    .story-callout .story-icon{
-      width:38px;height:38px;
+    .story-icon{
+      width:38px;
+      height:38px;
       flex:0 0 38px;
-      display:grid;place-items:center;
+      display:grid;
+      place-items:center;
       border-radius:12px;
       background:#fff;
       font-size:1.1rem;
@@ -735,7 +476,51 @@
       font-size:.87rem;
     }
 
-    /* 便利貼反思牆 */
+    .table-wrap{
+      overflow:auto;
+      border:1px solid var(--line);
+      border-radius:14px;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      min-width:620px;
+      background:#fff;
+    }
+
+    th,td{
+      padding:11px 12px;
+      border-bottom:1px solid #E6EDF0;
+      text-align:left;
+      font-size:.86rem;
+    }
+
+    th{
+      background:#F3F8FA;
+      color:var(--navy);
+      font-weight:900;
+      position:sticky;
+      top:0;
+    }
+
+    td.num{
+      text-align:right;
+      font-variant-numeric:tabular-nums;
+    }
+
+    .empty{
+      min-height:160px;
+      display:grid;
+      place-items:center;
+      text-align:center;
+      color:#8294A3;
+      background:#FAFCFD;
+      border-radius:12px;
+      border:1px dashed #CCD9DE;
+      padding:20px;
+    }
+
     .reflection-board{
       position:relative;
       overflow:hidden;
@@ -751,19 +536,7 @@
           #F5EDDF 1px,
           #F5EDDF 22px
         );
-      box-shadow:inset 0 0 36px rgba(115,90,60,.035),var(--warm-shadow);
-    }
-
-    .reflection-board::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      pointer-events:none;
-      opacity:.24;
-      background:
-        radial-gradient(circle at 11% 12%,#B8A88C 0 1px,transparent 1.5px),
-        radial-gradient(circle at 83% 42%,#B8A88C 0 1px,transparent 1.5px);
-      background-size:34px 34px,41px 41px;
+      box-shadow:inset 0 0 36px rgba(115,90,60,.035),var(--shadow);
     }
 
     .reflection-intro{
@@ -854,8 +627,10 @@
     .sticky-note::before{
       content:"";
       position:absolute;
-      width:58px;height:18px;
-      top:-8px;left:50%;
+      width:58px;
+      height:18px;
+      top:-8px;
+      left:50%;
       transform:translateX(-50%) rotate(-2deg);
       border-radius:2px;
       background:rgba(255,255,255,.48);
@@ -894,21 +669,16 @@
 
     .more-notes-btn:hover{background:#fff}
 
-    .keyword-row{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      margin-top:14px;
+    footer{
+      text-align:center;
+      color:#768998;
+      font-size:.78rem;
+      margin-top:26px;
     }
 
-    .keyword-chip{
-      padding:7px 11px;
-      border-radius:999px;
-      border:1px solid #DBE5DB;
-      background:#F5FAF5;
-      color:#61786B;
-      font-size:.8rem;
-      font-weight:800;
+    @media (max-width:1180px){
+      .kpi-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+      .grid-3{grid-template-columns:repeat(2,minmax(0,1fr))}
     }
 
     @media (max-width:1100px){
@@ -916,20 +686,38 @@
     }
 
     @media (max-width:760px){
-      .highlight-head{display:block}
+      .app{
+        width:min(100% - 16px,1480px);
+        padding-top:10px;
+      }
+
+      .hero{
+        padding:22px 18px;
+        border-radius:18px;
+      }
+
+      .hero-top{display:block}
+      .toolbar{justify-content:flex-start;margin-top:16px}
+      .kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .grid-2,.grid-3{grid-template-columns:1fr}
       .highlight-grid{grid-template-columns:1fr}
       .reflection-grid{grid-template-columns:1fr}
       .sticky-wall{grid-template-columns:1fr}
       .section-title span{max-width:100%;text-align:left}
+      .card{padding:14px}
+      .chart{height:300px}
+      .chart.tall{height:380px}
     }
 
     @media print{
-      .highlight-wrap,.reflection-board{box-shadow:none}
+      body{background:#fff}
+      .app{width:100%;padding:0}
+      .toolbar{display:none}
+      .hero,.card,.kpi,.highlight-wrap,.reflection-board{box-shadow:none}
+      .card,.kpi,.sticky-note{break-inside:avoid}
       .reflection-grid{grid-template-columns:1fr 1fr}
-      .sticky-note{break-inside:avoid}
       .more-notes-btn{display:none!important}
     }
-
   </style>
 </head>
 
@@ -961,6 +749,7 @@
         <span class="pill">🔗 即時連線 Google Sheet</span>
         <span class="pill" id="updatedAt">資料讀取中…</span>
       </div>
+
       <div class="instructors">
         <strong>🎓 當日講師</strong>
         <span>馬偕紀念醫院臨床技能中心 王明淑技術主任、醫學教育部 王郁雯管理師</span>
@@ -1149,9 +938,7 @@
 
     <section class="grid-2">
       <article class="card">
-        <div class="card-title">
-          <h3>De-role 身心狀態</h3>
-        </div>
+        <div class="card-title"><h3>De-role 身心狀態</h3></div>
         <div id="deroleChart" class="chart"></div>
         <div class="insight" id="deroleInsight">
           <div class="insight-icon">🌿</div>
@@ -1163,9 +950,7 @@
       </article>
 
       <article class="card">
-        <div class="card-title">
-          <h3>未來再參與意願</h3>
-        </div>
+        <div class="card-title"><h3>未來再參與意願</h3></div>
         <div id="participationChart" class="chart"></div>
       </article>
     </section>
@@ -1246,64 +1031,82 @@
       packages:['corechart','bar']
     });
 
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxWQS0nT481QXvRdHs-lhbqZDgI4ICUx0YSMdScVryqUt9myPy954PtOVOEJPqaUasa/exec";
-    const DASHBOARD_API_URL = `${WEB_APP_URL}?action=getDashboardData&format=json`;
+    const WEB_APP_URL =
+      "https://script.google.com/macros/s/AKfycbxWQS0nT481QXvRdHs-lhbqZDgI4ICUx0YSMdScVryqUt9myPy954PtOVOEJPqaUasa/exec";
+
+    const DASHBOARD_API_URL =
+      `${WEB_APP_URL}?action=getDashboardData&format=json`;
 
     let DASHBOARD_DATA = null;
+
     function loadDashboard(){
-      document.getElementById('loadingBox').classList.remove('hidden');
-      document.getElementById('errorBox').classList.remove('show');
+      const loadingBox = document.getElementById('loadingBox');
+      const errorBox = document.getElementById('errorBox');
+
+      loadingBox.classList.remove('hidden');
+      errorBox.classList.remove('show');
+      errorBox.textContent = '';
 
       const hasGasRuntime =
         typeof google !== 'undefined' &&
         google.script &&
         google.script.run;
 
-      if (!hasGasRuntime){
-        fetchDashboardData();
+      if (hasGasRuntime){
+        google.script.run
+          .withSuccessHandler(data => {
+            DASHBOARD_DATA = data;
+            google.charts.setOnLoadCallback(() => renderAll(data));
+          })
+          .withFailureHandler(err => {
+            showError(err && err.message ? err.message : String(err));
+          })
+          .getDashboardData();
         return;
       }
 
-      google.script.run
-        .withSuccessHandler(data => {
-          DASHBOARD_DATA = data;
-          google.charts.setOnLoadCallback(() => renderAll(data));
-        })
-        .withFailureHandler(err => {
-          showError(err && err.message ? err.message : String(err));
-        })
-        .getDashboardData();
+      fetchDashboardData();
     }
 
     async function fetchDashboardData(){
       try{
         const url = `${DASHBOARD_API_URL}&_=${Date.now()}`;
         const response = await fetch(url,{cache:'no-store'});
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-        const contentType = response.headers.get('content-type') || '';
+        if (!response.ok){
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        const contentType =
+          response.headers.get('content-type') || '';
+
         if (!contentType.includes('application/json')){
-          throw new Error('資料服務未回傳 JSON，請確認 GAS 已部署資料 API');
+          throw new Error(
+            '資料服務未回傳 JSON，請確認 GAS 已重新建立版本並部署'
+          );
         }
 
         const payload = await response.json();
         const data = payload.data || payload;
+
         if (!data || typeof data !== 'object' || !data.kpi){
           throw new Error('資料格式不正確');
         }
 
         DASHBOARD_DATA = data;
         google.charts.setOnLoadCallback(() => renderAll(data));
+
       }catch(err){
         showError(
           `${err && err.message ? err.message : String(err)}。`
-          + '儀表板已停留在新版畫面，不會再切換成舊版。'
+          + '請確認 GAS Web App 已更新為最新版本。'
         );
       }
     }
 
     function showError(message){
       document.getElementById('loadingBox').classList.add('hidden');
+
       const box = document.getElementById('errorBox');
       box.textContent = '讀取資料失敗：' + message;
       box.classList.add('show');
@@ -1311,19 +1114,64 @@
 
     function renderAll(data){
       document.getElementById('loadingBox').classList.add('hidden');
+      document.getElementById('errorBox').classList.remove('show');
+
+      data.distributions = data.distributions || {};
+      data.qualitative = data.qualitative || {};
 
       renderHighlights(data);
       renderKpis(data);
       renderLearning(data);
       renderTenureComparison(data);
-      drawPie('difficultyChart', data.distributions.difficulty, ['#789C88','#8FB6C8','#E8B46A']);
-      drawPie('paceChart', data.distributions.pace, ['#8FB6C8','#789C88','#E8B46A']);
-      drawPie('practiceChart', data.distributions.practiceTime, ['#789C88','#8FB6C8','#E8B46A']);
-      drawHorizontalBar('touchedChart', data.touchedActivities, '#789C88');
-      drawPie('tenureChart', data.distributions.tenure, ['#315F6B','#789C88','#8FB6C8','#D5B88F','#A9A2C8']);
-      drawPie('deroleChart', data.distributions.deRole, ['#789C88','#E8A78F']);
-      drawPie('participationChart', data.distributions.participation, ['#315F6B','#789C88','#E8B46A','#B8B6B0']);
-      drawHorizontalBar('futureNeedsChart', data.futureNeeds, '#789C88');
+
+      drawPie(
+        'difficultyChart',
+        data.distributions.difficulty,
+        ['#789C88','#8FB6C8','#E8B46A']
+      );
+
+      drawPie(
+        'paceChart',
+        data.distributions.pace,
+        ['#8FB6C8','#789C88','#E8B46A']
+      );
+
+      drawPie(
+        'practiceChart',
+        data.distributions.practiceTime,
+        ['#789C88','#8FB6C8','#E8B46A']
+      );
+
+      drawHorizontalBar(
+        'touchedChart',
+        data.touchedActivities,
+        '#789C88'
+      );
+
+      drawPie(
+        'tenureChart',
+        data.distributions.tenure,
+        ['#315F6B','#789C88','#8FB6C8','#D5B88F','#A9A2C8']
+      );
+
+      drawPie(
+        'deroleChart',
+        data.distributions.deRole,
+        ['#789C88','#E8A78F']
+      );
+
+      drawPie(
+        'participationChart',
+        data.distributions.participation,
+        ['#315F6B','#789C88','#E8B46A','#B8B6B0']
+      );
+
+      drawHorizontalBar(
+        'futureNeedsChart',
+        data.futureNeeds,
+        '#789C88'
+      );
+
       renderQualitative(data.qualitative);
       renderInsights(data);
 
@@ -1331,16 +1179,25 @@
         '🕒 更新：' + (data.generatedAt || '—');
     }
 
-
     function renderHighlights(data){
       const k = data.kpi || {};
+
       const learning = (data.learningDimensions || [])
-        .filter(x => x.value != null)
-        .sort((a,b) => b.value - a.value);
+        .filter(x => firstFinite(x.value) != null)
+        .sort(
+          (a,b) =>
+            Number(firstFinite(b.value) || 0) -
+            Number(firstFinite(a.value) || 0)
+        );
+
       const needs = data.futureNeeds || [];
 
       if (learning.length){
-        setText('highlightLearning', learning[0].label);
+        setText(
+          'highlightLearning',
+          learning[0].label
+        );
+
         setText(
           'highlightLearningNote',
           `平均 ${formatScore(learning[0].value)} 分，是目前最突出的學習收穫`
@@ -1351,23 +1208,42 @@
       }
 
       if (needs.length){
-        setText('highlightFuture', shortenLabel(needs[0].label));
+        setText(
+          'highlightFuture',
+          shortenLabel(needs[0].label)
+        );
+
         setText(
           'highlightFutureNote',
           `目前有 ${formatInt(needs[0].count)} 次勾選，可優先納入後續課程`
         );
       }else{
         setText('highlightFuture','尚無資料');
-        setText('highlightFutureNote','等待學員提出進階學習需求');
+        setText(
+          'highlightFutureNote',
+          '等待學員提出進階學習需求'
+        );
       }
 
-      const support = Number(k.needsSupportCount || 0);
+      const support =
+        Number(k.needsSupportCount || 0);
+
       if (support === 0){
         setText('highlightCare','全員順利離場');
-        setText('highlightCareNote','目前沒有填答者回報需要額外 De-role 協助');
+        setText(
+          'highlightCareNote',
+          '目前沒有填答者回報需要額外 De-role 協助'
+        );
       }else{
-        setText('highlightCare',`需關懷 ${support} 位`);
-        setText('highlightCareNote','建議由講師／訓練師主動確認情緒歸位狀態');
+        setText(
+          'highlightCare',
+          `需關懷 ${support} 位`
+        );
+
+        setText(
+          'highlightCareNote',
+          '建議由講師／訓練師主動確認情緒歸位狀態'
+        );
       }
     }
 
@@ -1375,8 +1251,16 @@
       const k = data.kpi || {};
       const satisfaction = resolveSatisfaction(data);
 
-      setText('kpiResponses', formatInt(k.responses));
-      setText('kpiSatisfaction', formatScore(satisfaction.average));
+      setText(
+        'kpiResponses',
+        formatInt(k.responses)
+      );
+
+      setText(
+        'kpiSatisfaction',
+        formatScore(satisfaction.average)
+      );
+
       setText(
         'kpiSatisfactionSub',
         satisfaction.positiveRate == null
@@ -1384,7 +1268,11 @@
           : `滿意＋非常滿意 ${formatPct(satisfaction.positiveRate)}`
       );
 
-      setText('kpiHelpfulness', formatScore(k.helpfulnessAvg));
+      setText(
+        'kpiHelpfulness',
+        formatScore(k.helpfulnessAvg)
+      );
+
       setText(
         'kpiHelpfulnessSub',
         k.helpfulnessPositiveRate == null
@@ -1392,7 +1280,11 @@
           : `有幫助以上 ${formatPct(k.helpfulnessPositiveRate)}`
       );
 
-      setText('kpiLearning', formatScore(k.learningAvg));
+      setText(
+        'kpiLearning',
+        formatScore(k.learningAvg)
+      );
+
       setText(
         'kpiParticipation',
         k.participationPositiveRate == null
@@ -1400,144 +1292,365 @@
           : formatPct(k.participationPositiveRate)
       );
 
-      setText('kpiSupport', formatInt(k.needsSupportCount));
-
-      const supportCard = document.getElementById('supportKpi');
-      supportCard.classList.remove('warn','alert');
-
-      if ((k.needsSupportCount || 0) > 0){
-        supportCard.classList.add('warn');
-      }
+      setText(
+        'kpiSupport',
+        formatInt(k.needsSupportCount)
+      );
     }
 
     function renderLearning(data){
-      const items = data.learningDimensions || [];
+      const items = (data.learningDimensions || [])
+        .filter(item => firstFinite(item.value) != null);
 
       if (!items.length){
-        showEmpty('learningChart','尚無學習成效資料');
+        showEmpty(
+          'learningChart',
+          '尚無學習成效資料'
+        );
         return;
       }
 
-      const ranked = [...items].sort((a,b) => Number(b.value || 0) - Number(a.value || 0));
-      const topValue = Number(ranked[0].value || 0);
-      const rows = [['指標','平均分數',{role:'style'},{role:'annotation'}]];
+      const topValue =
+        Math.max(
+          ...items.map(
+            item => Number(firstFinite(item.value))
+          )
+        );
 
-      items.forEach(item => {
-        const value = Number(item.value || 0);
-        const isTop = value === topValue;
-        rows.push([`${isTop ? '🏆 ' : ''}${item.label}`, value,
-          isTop ? 'color: #D59A24' : 'color: #789C88', formatScore(value)]);
+      const dt =
+        new google.visualization.DataTable();
+
+      dt.addColumn('string','指標');
+      dt.addColumn('number','平均分數');
+      dt.addColumn({
+        type:'string',
+        role:'style'
+      });
+      dt.addColumn({
+        type:'string',
+        role:'annotation'
       });
 
-      const dt = google.visualization.arrayToDataTable(rows);
+      items.forEach(item => {
+        const value =
+          Number(firstFinite(item.value));
 
-      const chart = new google.visualization.BarChart(
-        document.getElementById('learningChart')
-      );
+        const isTop =
+          value === topValue;
+
+        dt.addRow([
+          `${isTop ? '🏆 ' : ''}${item.label}`,
+          value,
+          isTop
+            ? 'color: #D59A24'
+            : 'color: #789C88',
+          formatScore(value)
+        ]);
+      });
+
+      const chart =
+        new google.visualization.BarChart(
+          document.getElementById('learningChart')
+        );
 
       chart.draw(dt,{
         legend:{position:'none'},
         backgroundColor:'transparent',
-        colors:['#789C88'],
-        chartArea:{left:130,top:20,width:'68%',height:'80%'},
+        chartArea:{
+          left:130,
+          top:20,
+          width:'68%',
+          height:'80%'
+        },
         hAxis:{
           minValue:0,
           maxValue:5,
           viewWindow:{min:0,max:5},
+          ticks:[0,1,2,3,4,5],
           gridlines:{color:'#E4ECEF'},
           textStyle:{color:'#607487'}
         },
         vAxis:{
-          textStyle:{color:'#17324D',fontSize:12}
+          textStyle:{
+            color:'#17324D',
+            fontSize:12
+          }
         },
-        annotations:{alwaysOutside:true},
-        bar:{groupWidth:'58%'}
+        annotations:{
+          alwaysOutside:true
+        },
+        bar:{
+          groupWidth:'58%'
+        }
       });
     }
 
     function renderTenureComparison(data){
-      const rowsData = data.tenureComparison || [];
+      const rowsData =
+        data.tenureComparison || [];
 
       if (!rowsData.length){
-        showEmpty('tenureComboChart','尚無年資比較資料');
-        document.getElementById('tenureTableBody').innerHTML = '';
+        showEmpty(
+          'tenureComboChart',
+          '尚無年資比較資料'
+        );
+
+        document.getElementById(
+          'tenureTableBody'
+        ).innerHTML = '';
+
         return;
       }
 
-      const satisfactionValues = rowsData.map(getTenureSatisfaction);
-      const finiteSatisfaction = satisfactionValues.filter(Number.isFinite);
-      const topSatisfaction = finiteSatisfaction.length
-        ? Math.max(...finiteSatisfaction)
-        : null;
-      const topLearning = Math.max(...rowsData.map(x => Number(x.learning || x.learningAvg || 0)));
-      const rows = [['SP年資','整體滿意度',{role:'annotation'},{role:'style'},'學習成效',{role:'annotation'},{role:'style'}]];
+      const satisfactionValues =
+        rowsData.map(getTenureSatisfaction);
+
+      const learningValues =
+        rowsData.map(
+          x => firstFinite(
+            x && x.learning,
+            x && x.learningAvg
+          )
+        );
+
+      const finiteSatisfaction =
+        satisfactionValues.filter(Number.isFinite);
+
+      const finiteLearning =
+        learningValues.filter(Number.isFinite);
+
+      const topSatisfaction =
+        finiteSatisfaction.length
+          ? Math.max(...finiteSatisfaction)
+          : null;
+
+      const topLearning =
+        finiteLearning.length
+          ? Math.max(...finiteLearning)
+          : null;
+
+      /*
+       * 這裡刻意不用 arrayToDataTable() 自動判斷型別。
+       * 當「整體滿意度」某次全部都是 null 時，
+       * Google Charts 可能把該 series 推斷成 string，
+       * 就會出現：
+       * All series on a given axis must be of the same data type
+       *
+       * 因此明確指定：
+       * SP 年資 = string
+       * 整體滿意度 = number
+       * 學習成效 = number
+       */
+      const dt =
+        new google.visualization.DataTable();
+
+      dt.addColumn(
+        'string',
+        'SP年資'
+      );
+
+      dt.addColumn(
+        'number',
+        '整體滿意度'
+      );
+
+      dt.addColumn({
+        type:'string',
+        role:'annotation'
+      });
+
+      dt.addColumn({
+        type:'string',
+        role:'style'
+      });
+
+      dt.addColumn(
+        'number',
+        '學習成效'
+      );
+
+      dt.addColumn({
+        type:'string',
+        role:'annotation'
+      });
+
+      dt.addColumn({
+        type:'string',
+        role:'style'
+      });
 
       rowsData.forEach((x,index) => {
-        const satisfaction = satisfactionValues[index];
-        const learning = Number(x.learning || x.learningAvg || 0);
-        rows.push([
-          `${((topSatisfaction != null && satisfaction === topSatisfaction) || learning === topLearning) ? '🏆 ' : ''}${x.label}`,
-          Number.isFinite(satisfaction) ? satisfaction : null,
-          Number.isFinite(satisfaction) ? formatScore(satisfaction) : '—',
-          topSatisfaction != null && satisfaction === topSatisfaction
+        const satisfaction =
+          satisfactionValues[index];
+
+        const learning =
+          learningValues[index];
+
+        const hasTop =
+          (
+            topSatisfaction != null &&
+            satisfaction === topSatisfaction
+          ) ||
+          (
+            topLearning != null &&
+            learning === topLearning
+          );
+
+        dt.addRow([
+          `${hasTop ? '🏆 ' : ''}${x.label}`,
+
+          Number.isFinite(satisfaction)
+            ? satisfaction
+            : null,
+
+          Number.isFinite(satisfaction)
+            ? formatScore(satisfaction)
+            : null,
+
+          (
+            topSatisfaction != null &&
+            satisfaction === topSatisfaction
+          )
             ? 'color: #D59A24'
             : 'color: #315F6B',
-          learning,
-          formatScore(learning),
-          learning === topLearning ? 'color: #E8A78F' : 'color: #789C88'
+
+          Number.isFinite(learning)
+            ? learning
+            : null,
+
+          Number.isFinite(learning)
+            ? formatScore(learning)
+            : null,
+
+          (
+            topLearning != null &&
+            learning === topLearning
+          )
+            ? 'color: #E8A78F'
+            : 'color: #789C88'
         ]);
       });
 
-      const dt = google.visualization.arrayToDataTable(rows);
-
-      const chart = new google.visualization.ColumnChart(
-        document.getElementById('tenureComboChart')
-      );
+      const chart =
+        new google.visualization.ColumnChart(
+          document.getElementById(
+            'tenureComboChart'
+          )
+        );
 
       chart.draw(dt,{
-        legend:{position:'top'},
+        legend:{
+          position:'top'
+        },
+
         backgroundColor:'transparent',
-        colors:['#315F6B','#789C88'],
-        chartArea:{left:55,top:45,width:'78%',height:'68%'},
+
+        chartArea:{
+          left:55,
+          top:45,
+          width:'78%',
+          height:'68%'
+        },
+
         vAxis:{
-          viewWindow:{min:0,max:5},
-          gridlines:{color:'#E4ECEF'}
+          viewWindow:{
+            min:0,
+            max:5
+          },
+          ticks:[0,1,2,3,4,5],
+          gridlines:{
+            color:'#E4ECEF'
+          }
         },
+
         hAxis:{
-          textStyle:{fontSize:11,color:'#607487'}
+          textStyle:{
+            fontSize:11,
+            color:'#607487'
+          }
         },
-        annotations:{alwaysOutside:true,textStyle:{fontSize:11,bold:true,color:'#294452'}}
+
+        annotations:{
+          alwaysOutside:true,
+          textStyle:{
+            fontSize:11,
+            bold:true,
+            color:'#294452'
+          }
+        }
       });
 
-      document.getElementById('tenureTableBody').innerHTML =
-        rowsData.map(x => `
-          <tr>
-            <td>${escapeHtml(x.label)}</td>
-            <td class="num">${x.n}</td>
-            <td class="num">${formatScore(getTenureSatisfaction(x))}</td>
-            <td class="num">${formatScore(x.learning ?? x.learningAvg)}</td>
-          </tr>
-        `).join('');
+      document.getElementById(
+        'tenureTableBody'
+      ).innerHTML =
+        rowsData.map((x,index) => {
+          const satisfaction =
+            satisfactionValues[index];
+
+          const learning =
+            learningValues[index];
+
+          return `
+            <tr>
+              <td>${escapeHtml(x.label)}</td>
+              <td class="num">
+                ${formatInt(x.n ?? x.count ?? 0)}
+              </td>
+              <td class="num">
+                ${formatScore(satisfaction)}
+              </td>
+              <td class="num">
+                ${formatScore(learning)}
+              </td>
+            </tr>
+          `;
+        }).join('');
     }
 
-    function drawPie(id, items, colors){
-      const el = document.getElementById(id);
+    function drawPie(id,items,colors){
+      const el =
+        document.getElementById(id);
 
-      if (!items || !items.length){
-        showEmpty(id,'尚無資料');
+      const list =
+        (items || [])
+          .filter(
+            x =>
+              x &&
+              Number(x.count || 0) > 0
+          );
+
+      if (!list.length){
+        showEmpty(
+          id,
+          '尚無資料'
+        );
         return;
       }
 
-      const rows = [['項目','人數']];
+      const dt =
+        new google.visualization.DataTable();
 
-      items.forEach(x => rows.push([
-        x.label,
-        Number(x.count || 0)
-      ]));
+      dt.addColumn(
+        'string',
+        '項目'
+      );
 
-      const dt = google.visualization.arrayToDataTable(rows);
+      dt.addColumn(
+        'number',
+        '人數'
+      );
 
-      const chart = new google.visualization.PieChart(el);
+      list.forEach(x => {
+        dt.addRow([
+          String(x.label || ''),
+          Number(x.count || 0)
+        ]);
+      });
+
+      const chart =
+        new google.visualization.PieChart(
+          el
+        );
 
       chart.draw(dt,{
         backgroundColor:'transparent',
@@ -1546,46 +1659,101 @@
         legend:{
           position:'bottom',
           alignment:'center',
-          textStyle:{fontSize:11,color:'#526D7C'}
+          textStyle:{
+            fontSize:11,
+            color:'#526D7C'
+          }
         },
         chartArea:{
-          left:10,top:10,width:'95%',height:'72%'
+          left:10,
+          top:10,
+          width:'95%',
+          height:'72%'
         },
         pieSliceText:'value',
-        tooltip:{text:'both'}
+        tooltip:{
+          text:'both'
+        }
       });
     }
 
-    function drawHorizontalBar(id, items, color){
-      const el = document.getElementById(id);
+    function drawHorizontalBar(id,items,color){
+      const el =
+        document.getElementById(id);
 
-      if (!items || !items.length){
-        showEmpty(id,'尚無資料');
+      const list =
+        (items || [])
+          .filter(
+            x =>
+              x &&
+              Number(x.count || 0) > 0
+          );
+
+      if (!list.length){
+        showEmpty(
+          id,
+          '尚無資料'
+        );
         return;
       }
 
-      const topCount = Math.max(...items.map(x => Number(x.count || 0)));
-      const rows = [['項目','勾選次數',{role:'style'},{role:'annotation'}]];
+      const topCount =
+        Math.max(
+          ...list.map(
+            x => Number(x.count || 0)
+          )
+        );
 
-      items.forEach(x => {
-        const count = Number(x.count || 0);
-        const isTop = count === topCount;
-        rows.push([
+      const dt =
+        new google.visualization.DataTable();
+
+      dt.addColumn(
+        'string',
+        '項目'
+      );
+
+      dt.addColumn(
+        'number',
+        '勾選次數'
+      );
+
+      dt.addColumn({
+        type:'string',
+        role:'style'
+      });
+
+      dt.addColumn({
+        type:'string',
+        role:'annotation'
+      });
+
+      list.forEach(x => {
+        const count =
+          Number(x.count || 0);
+
+        const isTop =
+          count === topCount;
+
+        dt.addRow([
           `${isTop ? '🏆 ' : ''}${shortenLabel(x.label)}`,
           count,
-          isTop ? 'color: #D59A24' : `color: ${color}`,
+          isTop
+            ? 'color: #D59A24'
+            : `color: ${color}`,
           formatInt(count)
         ]);
       });
 
-      const dt = google.visualization.arrayToDataTable(rows);
-
-      const chart = new google.visualization.BarChart(el);
+      const chart =
+        new google.visualization.BarChart(
+          el
+        );
 
       chart.draw(dt,{
-        legend:{position:'none'},
+        legend:{
+          position:'none'
+        },
         backgroundColor:'transparent',
-        colors:[color],
         chartArea:{
           left:210,
           top:20,
@@ -1595,38 +1763,78 @@
         hAxis:{
           minValue:0,
           format:'0',
-          gridlines:{color:'#E4ECEF'},
-          textStyle:{color:'#607487'}
+          gridlines:{
+            color:'#E4ECEF'
+          },
+          textStyle:{
+            color:'#607487'
+          }
         },
         vAxis:{
-          textStyle:{fontSize:11,color:'#17324D'}
+          textStyle:{
+            fontSize:11,
+            color:'#17324D'
+          }
         },
-        annotations:{alwaysOutside:true,textStyle:{fontSize:11,bold:true,color:'#294452'}},
-        bar:{groupWidth:'60%'}
+        annotations:{
+          alwaysOutside:true,
+          textStyle:{
+            fontSize:11,
+            bold:true,
+            color:'#294452'
+          }
+        },
+        bar:{
+          groupWidth:'60%'
+        }
       });
     }
 
     function renderInsights(data){
-      const learning = (data.learningDimensions || [])
-        .filter(x => x.value != null)
-        .sort((a,b) => b.value - a.value);
+      const learning =
+        (data.learningDimensions || [])
+          .filter(
+            x => firstFinite(x.value) != null
+          )
+          .sort(
+            (a,b) =>
+              Number(firstFinite(b.value) || 0) -
+              Number(firstFinite(a.value) || 0)
+          );
 
-      const learningBox = document.querySelector('#learningInsight p');
+      const learningBox =
+        document.querySelector(
+          '#learningInsight p'
+        );
 
       if (learning.length){
-        const top = learning[0];
-        const low = learning[learning.length - 1];
+        const top =
+          learning[0];
+
+        const low =
+          learning[learning.length - 1];
 
         learningBox.textContent =
           `目前最高為「${top.label}」${formatScore(top.value)}；`
           + `相對較低為「${low.label}」${formatScore(low.value)}。`
           + `可將較低指標作為下一次課程強化重點。`;
       }else{
-        learningBox.textContent = '目前尚無足夠資料進行判讀。';
+        learningBox.textContent =
+          '目前尚無足夠資料進行判讀。';
       }
 
-      const support = data.kpi.needsSupportCount || 0;
-      const deRoleBox = document.querySelector('#deroleInsight p');
+      const support =
+        Number(
+          data.kpi &&
+          data.kpi.needsSupportCount
+            ? data.kpi.needsSupportCount
+            : 0
+        );
+
+      const deRoleBox =
+        document.querySelector(
+          '#deroleInsight p'
+        );
 
       if (support === 0){
         deRoleBox.textContent =
@@ -1637,88 +1845,218 @@
           + `建議課後由講師／訓練師主動確認。`;
       }
 
-      const needs = data.futureNeeds || [];
-      const futureBox = document.querySelector('#futureInsight p');
+      const needs =
+        data.futureNeeds || [];
+
+      const futureBox =
+        document.querySelector(
+          '#futureInsight p'
+        );
 
       if (needs.length){
-        const top3 = needs.slice(0,3).map(x => `「${shortenLabel(x.label)}」`).join('、');
+        const top3 =
+          needs
+            .slice(0,3)
+            .map(
+              x => `「${shortenLabel(x.label)}」`
+            )
+            .join('、');
+
         futureBox.textContent =
           `目前前三項學習需求為 ${top3}，可優先納入下一梯次進階課程規劃。`;
       }else{
-        futureBox.textContent = '目前尚無未來學習需求資料。';
+        futureBox.textContent =
+          '目前尚無未來學習需求資料。';
       }
 
-      const dominant = (items) => {
-        if (!items || !items.length) return null;
-        return [...items].sort((a,b) => b.count - a.count)[0];
+      const dominant = items => {
+        if (!items || !items.length){
+          return null;
+        }
+
+        return [...items]
+          .sort(
+            (a,b) =>
+              Number(b.count || 0) -
+              Number(a.count || 0)
+          )[0];
       };
 
-      const diff = dominant(data.distributions.difficulty);
-      const pace = dominant(data.distributions.pace);
-      const practice = dominant(data.distributions.practiceTime);
-      const designText = document.getElementById('designInsightText');
+      const distributions =
+        data.distributions || {};
 
-      if (designText){
-        const parts = [];
-        if (diff) parts.push(`難度以「${diff.label}」為主`);
-        if (pace) parts.push(`節奏多數認為「${pace.label}」`);
-        if (practice) parts.push(`練習互動時間以「${practice.label}」回覆最多`);
+      const diff =
+        dominant(distributions.difficulty);
 
-        designText.textContent = parts.length
-          ? parts.join('；') + '。可作為下一次課程時間配置與活動比例調整的依據。'
-          : '目前尚無足夠資料進行課程設計判讀。';
+      const pace =
+        dominant(distributions.pace);
+
+      const practice =
+        dominant(distributions.practiceTime);
+
+      const designText =
+        document.getElementById(
+          'designInsightText'
+        );
+
+      const parts = [];
+
+      if (diff){
+        parts.push(
+          `難度以「${diff.label}」為主`
+        );
       }
+
+      if (pace){
+        parts.push(
+          `節奏多數認為「${pace.label}」`
+        );
+      }
+
+      if (practice){
+        parts.push(
+          `練習互動時間以「${practice.label}」回覆最多`
+        );
+      }
+
+      designText.textContent =
+        parts.length
+          ? parts.join('；')
+            + '。可作為下一次課程時間配置與活動比例調整的依據。'
+          : '目前尚無足夠資料進行課程設計判讀。';
     }
 
     function renderQualitative(q){
-      renderStickyNotes('quotesDiscovery','countDiscovery',q.discovery,'note-yellow');
-      renderStickyNotes('quotesTransfer','countTransfer',q.transfer,'note-green');
-      renderStickyNotes('quotesTouchReason','countTouchReason',q.touchReason,'note-pink');
-      renderStickyNotes('quotesComments','countComments',q.comments,'note-blue');
+      q = q || {};
+
+      renderStickyNotes(
+        'quotesDiscovery',
+        'countDiscovery',
+        q.discovery,
+        'note-yellow'
+      );
+
+      renderStickyNotes(
+        'quotesTransfer',
+        'countTransfer',
+        q.transfer,
+        'note-green'
+      );
+
+      renderStickyNotes(
+        'quotesTouchReason',
+        'countTouchReason',
+        q.touchReason,
+        'note-pink'
+      );
+
+      renderStickyNotes(
+        'quotesComments',
+        'countComments',
+        q.comments,
+        'note-blue'
+      );
     }
 
-    function renderStickyNotes(containerId,countId,items,tone){
-      const container = document.getElementById(containerId);
-      const count = document.getElementById(countId);
-      const list = items || [];
+    function renderStickyNotes(
+      containerId,
+      countId,
+      items,
+      tone
+    ){
+      const container =
+        document.getElementById(
+          containerId
+        );
 
-      count.textContent = String(list.length);
+      const count =
+        document.getElementById(
+          countId
+        );
+
+      const list =
+        (items || [])
+          .map(
+            value => String(value || '').trim()
+          )
+          .filter(Boolean);
+
+      count.textContent =
+        String(list.length);
 
       if (!list.length){
         container.innerHTML =
-          '<div class="sticky-empty">目前尚無文字回饋<br>期待第一張便利貼 ✨</div>';
+          '<div class="sticky-empty">'
+          + '目前尚無文字回饋'
+          + '<br>'
+          + '期待第一張便利貼 ✨'
+          + '</div>';
+
         return;
       }
 
-      const makeNotes = (showAll) => {
-        const visible = showAll ? list : list.slice(0,6);
-        container.innerHTML = visible
-          .map(text => `<div class="sticky-note ${tone}">${escapeHtml(text)}</div>`)
-          .join('');
+      const makeNotes =
+        showAll => {
+          const visible =
+            showAll
+              ? list
+              : list.slice(0,6);
 
-        if (list.length > 6){
-          const btn = document.createElement('button');
-          btn.type = 'button';
-          btn.className = 'more-notes-btn';
-          btn.textContent = showAll
-            ? '收起部分便利貼'
-            : `查看全部 ${list.length} 張便利貼`;
-          btn.onclick = () => makeNotes(!showAll);
-          container.appendChild(btn);
-        }
-      };
+          container.innerHTML =
+            visible
+              .map(
+                text =>
+                  `<div class="sticky-note ${tone}">${escapeHtml(text)}</div>`
+              )
+              .join('');
+
+          if (list.length > 6){
+            const btn =
+              document.createElement(
+                'button'
+              );
+
+            btn.type =
+              'button';
+
+            btn.className =
+              'more-notes-btn';
+
+            btn.textContent =
+              showAll
+                ? '收起部分便利貼'
+                : `查看全部 ${list.length} 張便利貼`;
+
+            btn.onclick =
+              () => makeNotes(!showAll);
+
+            container.appendChild(
+              btn
+            );
+          }
+        };
 
       makeNotes(false);
     }
 
     function showEmpty(id,text){
-      document.getElementById(id).innerHTML =
+      const el =
+        document.getElementById(id);
+
+      if (!el){
+        return;
+      }
+
+      el.innerHTML =
         `<div class="empty">${escapeHtml(text)}</div>`;
     }
 
     function shortenLabel(text){
-      if (!text) return '';
-      return text
+      if (!text){
+        return '';
+      }
+
+      return String(text)
         .replace('（內在狀態掃描）','')
         .replace('（口語／非口語協調）','')
         .replace('（角色冰山與情緒深度轉譯）','')
@@ -1730,24 +2068,64 @@
     }
 
     function formatScore(value){
-      if (value === null || value === undefined || value === '') return '—';
-      const n = Number(value);
-      return Number.isFinite(n) ? n.toFixed(2) : '—';
+      if (
+        value === null ||
+        value === undefined ||
+        value === ''
+      ){
+        return '—';
+      }
+
+      const n =
+        Number(value);
+
+      return Number.isFinite(n)
+        ? n.toFixed(2)
+        : '—';
     }
 
     function formatPct(value){
-      if (value === null || value === undefined || value === '') return '—';
-      const n = Number(value);
-      return Number.isFinite(n) ? `${Math.round(n)}%` : '—';
+      if (
+        value === null ||
+        value === undefined ||
+        value === ''
+      ){
+        return '—';
+      }
+
+      const n =
+        Number(value);
+
+      return Number.isFinite(n)
+        ? `${Math.round(n)}%`
+        : '—';
+    }
+
+    function formatInt(value){
+      const n =
+        Number(value);
+
+      return Number.isFinite(n)
+        ? String(Math.round(n))
+        : '0';
     }
 
     function firstFinite(...values){
       for (const value of values){
-        if (value !== null && value !== undefined && value !== ''){
-          const number = Number(value);
-          if (Number.isFinite(number)) return number;
+        if (
+          value !== null &&
+          value !== undefined &&
+          value !== ''
+        ){
+          const number =
+            Number(value);
+
+          if (Number.isFinite(number)){
+            return number;
+          }
         }
       }
+
       return null;
     }
 
@@ -1764,57 +2142,138 @@
     }
 
     function resolveSatisfaction(data){
-      const k = data.kpi || {};
-      let average = firstFinite(
-        k.satisfactionAvg, k.overallSatisfactionAvg,
-        k.overallSatisfaction, k.overall_satisfaction,
-        data.satisfactionAvg, data.overallSatisfactionAvg
-      );
-      const positiveRate = firstFinite(
-        k.satisfactionPositiveRate, k.overallSatisfactionPositiveRate,
-        k.overall_satisfaction_positive_rate
-      );
+      const k =
+        data.kpi || {};
 
-      // 某些後端版本只回傳分布，先由 1–5 分的人數加權還原平均。
+      let average =
+        firstFinite(
+          k.satisfactionAvg,
+          k.overallSatisfactionAvg,
+          k.overallSatisfaction,
+          k.overall_satisfaction,
+          data.satisfactionAvg,
+          data.overallSatisfactionAvg
+        );
+
+      const positiveRate =
+        firstFinite(
+          k.satisfactionPositiveRate,
+          k.overallSatisfactionPositiveRate,
+          k.overall_satisfaction_positive_rate
+        );
+
       if (average == null){
         const distribution =
-          (data.distributions && (
-            data.distributions.satisfaction ||
-            data.distributions.overallSatisfaction ||
-            data.distributions.overall_satisfaction
-          )) || [];
-        const scores = distribution
-          .map(item => ({
-            score:firstFinite(item.value, item.score, String(item.label || '').match(/[1-5]/)?.[0]),
-            count:Number(item.count || 0)
-          }))
-          .filter(item => item.score != null && item.count > 0);
-        const count = scores.reduce((sum,item) => sum + item.count, 0);
-        if (count) average = scores.reduce((sum,item) => sum + item.score * item.count, 0) / count;
+          (
+            data.distributions &&
+            (
+              data.distributions.satisfaction ||
+              data.distributions.overallSatisfaction ||
+              data.distributions.overall_satisfaction
+            )
+          ) || [];
+
+        const scores =
+          distribution
+            .map(item => ({
+              score:firstFinite(
+                item && item.value,
+                item && item.score,
+                String(
+                  item && item.label
+                    ? item.label
+                    : ''
+                ).match(/[1-5]/)?.[0]
+              ),
+              count:Number(
+                item && item.count
+                  ? item.count
+                  : 0
+              )
+            }))
+            .filter(
+              item =>
+                item.score != null &&
+                item.count > 0
+            );
+
+        const count =
+          scores.reduce(
+            (sum,item) =>
+              sum + item.count,
+            0
+          );
+
+        if (count){
+          average =
+            scores.reduce(
+              (sum,item) =>
+                sum +
+                item.score *
+                item.count,
+              0
+            ) / count;
+        }
       }
 
-      // 舊版後端僅在年資比較提供滿意度時，以人數加權回填總覽 KPI。
       if (average == null){
-        const groups = (data.tenureComparison || [])
-          .map(row => ({value:getTenureSatisfaction(row), n:Number(row.n || row.count || 0)}))
-          .filter(row => row.value != null && row.n > 0);
-        const total = groups.reduce((sum,row) => sum + row.n, 0);
-        if (total) average = groups.reduce((sum,row) => sum + row.value * row.n, 0) / total;
-      }
-      return {average, positiveRate};
-    }
+        const groups =
+          (data.tenureComparison || [])
+            .map(row => ({
+              value:getTenureSatisfaction(row),
+              n:Number(
+                row && (
+                  row.n ??
+                  row.count ??
+                  0
+                )
+              )
+            }))
+            .filter(
+              row =>
+                row.value != null &&
+                row.n > 0
+            );
 
-    function formatInt(value){
-      const n = Number(value);
-      return Number.isFinite(n) ? String(Math.round(n)) : '0';
+        const total =
+          groups.reduce(
+            (sum,row) =>
+              sum + row.n,
+            0
+          );
+
+        if (total){
+          average =
+            groups.reduce(
+              (sum,row) =>
+                sum +
+                row.value *
+                row.n,
+              0
+            ) / total;
+        }
+      }
+
+      return {
+        average,
+        positiveRate
+      };
     }
 
     function setText(id,text){
-      document.getElementById(id).textContent = text;
+      const el =
+        document.getElementById(id);
+
+      if (el){
+        el.textContent =
+          text;
+      }
     }
 
     function escapeHtml(value){
-      return String(value ?? '')
+      return String(
+        value ?? ''
+      )
         .replace(/&/g,'&amp;')
         .replace(/</g,'&lt;')
         .replace(/>/g,'&gt;')
@@ -1822,15 +2281,26 @@
         .replace(/'/g,'&#039;');
     }
 
-    window.addEventListener('resize',()=>{
-      if (!DASHBOARD_DATA) return;
+    window.addEventListener(
+      'resize',
+      () => {
+        if (!DASHBOARD_DATA){
+          return;
+        }
 
-      clearTimeout(window.__resizeTimer);
-      window.__resizeTimer = setTimeout(
-        ()=>renderAll(DASHBOARD_DATA),
-        220
-      );
-    });
+        clearTimeout(
+          window.__resizeTimer
+        );
+
+        window.__resizeTimer =
+          setTimeout(
+            () => renderAll(
+              DASHBOARD_DATA
+            ),
+            220
+          );
+      }
+    );
 
     loadDashboard();
   </script>
